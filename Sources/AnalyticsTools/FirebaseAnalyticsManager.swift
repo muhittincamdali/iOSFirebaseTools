@@ -36,7 +36,7 @@ import Combine
 /// analytics.setUserProperty(key: "subscription_type", value: "premium")
 /// ```
 ///
-/// - Author: Muhittin Camdali
+/// - Author: iOSFirebaseTools Team
 /// - Since: 1.0.0
 /// - Version: 2.1.0
 public class FirebaseAnalyticsManager: ObservableObject {
