@@ -61,7 +61,7 @@ git clone https://github.com/your-username/iOSFirebaseTools.git
 cd iOSFirebaseTools
 
 # Add upstream remote
-git remote add upstream https://github.com/muhittincamdali/iOSFirebaseTools.git
+git remote add upstream https://github.com/iOSFirebaseTools/iOSFirebaseTools.git
 ```
 
 ### 2. Setup Development Environment
@@ -180,7 +180,7 @@ public class FirebaseAuthManager: ObservableObject {
 /// - Real-time auth state monitoring
 /// - Profile management
 ///
-/// - Author: Muhittin Camdali
+/// - Author: iOSFirebaseTools Team
 /// - Since: 1.0.0
 /// - Version: 2.1.0
 public class FirebaseAuthManager: ObservableObject {
@@ -507,10 +507,10 @@ We recognize and appreciate all contributors to this project. Your contributions
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/muhittincamdali/iOSFirebaseTools/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/muhittincamdali/iOSFirebaseTools/discussions)
-- **Email**: muhittincamdali@example.com
-- **Twitter**: [@muhittincamdali](https://twitter.com/muhittincamdali)
+- **Issues**: [GitHub Issues](https://github.com/iOSFirebaseTools/iOSFirebaseTools/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/iOSFirebaseTools/iOSFirebaseTools/discussions)
+- **Email**: iOSFirebaseTools@example.com
+- **Twitter**: [@iOSFirebaseTools](https://twitter.com/iOSFirebaseTools)
 
 ---
 

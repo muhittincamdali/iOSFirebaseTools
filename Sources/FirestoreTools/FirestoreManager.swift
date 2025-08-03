@@ -33,7 +33,7 @@ import Combine
 /// )
 /// ```
 ///
-/// - Author: Muhittin Camdali
+/// - Author: iOSFirebaseTools Team
 /// - Since: 1.0.0
 /// - Version: 2.1.0
 public class FirestoreManager: ObservableObject {
