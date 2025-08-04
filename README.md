@@ -255,7 +255,7 @@ Complete API documentation.
 Simple Firebase integration example.
 
 ### [Advanced Example](Examples/AdvancedExample/)
-Complex Firebase features demonstration.
+Complex Firebase features implementation.
 
 ### [Custom Example](Examples/CustomExample/)
 Custom Firebase implementation.
@@ -325,6 +325,23 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**⭐ Star this repository if it helped you!**
+
+## 📊 Project Statistics
+
+<div align="center">
+
+[![GitHub stars](https://img.shields.io/github/stars/muhittincamdali/iOSFirebaseTools?style=social)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/muhittincamdali/iOSFirebaseTools?style=social)](https://github.com/muhittincamdali/iOSFirebaseTools/network)
+[![GitHub issues](https://img.shields.io/github/issues/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/pulls)
+
+</div>
+
+## 🌟 Stargazers
+
+[![Stargazers repo roster for @muhittincamdali/iOSFirebaseTools](https://reporoster.com/stars/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers)
 
 ## 🙏 Acknowledgments
 
