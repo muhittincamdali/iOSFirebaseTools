@@ -366,7 +366,6 @@ fcmManager.subscribeToTopic("news") { result in
 
 // Send notification
 let notification = FCMPushNotification(
-    title: "New Message",
     body: "You have a new message",
     data: ["messageId": "123", "sender": "John"]
 )
@@ -393,7 +392,6 @@ let notificationHandler = FirebaseNotificationHandler()
 // Handle incoming notifications
 notificationHandler.onNotificationReceived { notification in
     print("📱 Notification received")
-    print("Title: \(notification.title)")
     print("Body: \(notification.body)")
     print("Data: \(notification.data)")
     
@@ -451,7 +449,6 @@ analyticsManager.logEvent(
     parameters: [
         "item_id": "product_123",
         "price": 29.99,
-        "currency": "USD",
         "category": "premium"
     ]
 ) { result in
@@ -527,7 +524,6 @@ performanceManager.stopTrace(trace) { result in
 
 ```bash
 # Clone the repository
-git clone https://github.com/muhittincamdali/iOSFirebaseTools.git
 
 # Navigate to project directory
 cd iOSFirebaseTools
@@ -545,7 +541,6 @@ Add the framework to your project:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/muhittincamdali/iOSFirebaseTools.git", from: "1.0.0")
 ]
 ```
 
@@ -744,15 +739,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/muhittincamdali/iOSFirebaseTools?style=social)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/muhittincamdali/iOSFirebaseTools?style=social)](https://github.com/muhittincamdali/iOSFirebaseTools/network)
-[![GitHub issues](https://img.shields.io/github/issues/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/pulls)
-[![GitHub contributors](https://img.shields.io/github/contributors/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/graphs/contributors)
-[![GitHub last commit](https://img.shields.io/github/last-commit/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/commits/master)
 
 </div>
 
 ## 🌟 Stargazers
 
-[![Stargazers repo roster for @muhittincamdali/iOSFirebaseTools](https://reporoster.com/stars/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers) 
