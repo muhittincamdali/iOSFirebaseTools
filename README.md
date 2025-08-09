@@ -744,7 +744,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/muhittincamdali/iOSFirebaseTools?style=social)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/muhittincamdali/iOSFirebaseTools?style=social&logo=github)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/muhittincamdali/iOSFirebaseTools?style=social)](https://github.com/muhittincamdali/iOSFirebaseTools/network)
 [![GitHub issues](https://img.shields.io/github/issues/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/pulls)
