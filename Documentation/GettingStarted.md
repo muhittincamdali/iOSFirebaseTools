@@ -1,5 +1,52 @@
 # Getting Started
 
+<!-- TOC START -->
+## Table of Contents
+- [Getting Started](#getting-started)
+- [🚀 Quick Start Guide](#-quick-start-guide)
+- [📋 Prerequisites](#-prerequisites)
+- [🔧 Installation](#-installation)
+  - [1. Create Firebase Project](#1-create-firebase-project)
+  - [2. Add iOS App to Firebase](#2-add-ios-app-to-firebase)
+  - [3. Install iOS Firebase Tools](#3-install-ios-firebase-tools)
+    - [Swift Package Manager](#swift-package-manager)
+    - [CocoaPods](#cocoapods)
+- [⚡ Basic Setup](#-basic-setup)
+  - [1. Import the Framework](#1-import-the-framework)
+  - [2. Initialize Firebase Tools](#2-initialize-firebase-tools)
+  - [3. Configure Firebase Project](#3-configure-firebase-project)
+- [🔐 Authentication Setup](#-authentication-setup)
+  - [1. Configure Authentication](#1-configure-authentication)
+  - [2. First Sign-In](#2-first-sign-in)
+- [🗄️ Firestore Setup](#-firestore-setup)
+  - [1. Configure Firestore](#1-configure-firestore)
+  - [2. First Database Operation](#2-first-database-operation)
+- [📱 Cloud Messaging Setup](#-cloud-messaging-setup)
+  - [1. Configure Cloud Messaging](#1-configure-cloud-messaging)
+  - [2. Register for Notifications](#2-register-for-notifications)
+- [📊 Analytics Setup](#-analytics-setup)
+  - [1. Configure Analytics](#1-configure-analytics)
+  - [2. First Analytics Event](#2-first-analytics-event)
+- [🎯 Complete Example](#-complete-example)
+- [🔧 Configuration Files](#-configuration-files)
+  - [GoogleService-Info.plist](#googleservice-infoplist)
+  - [Info.plist Configuration](#infoplist-configuration)
+- [🚨 Troubleshooting](#-troubleshooting)
+  - [Common Issues](#common-issues)
+    - [1. Build Errors](#1-build-errors)
+- [Clean build folder](#clean-build-folder)
+- [Reset package cache](#reset-package-cache)
+- [Update dependencies](#update-dependencies)
+    - [2. Configuration Issues](#2-configuration-issues)
+    - [3. Permission Issues](#3-permission-issues)
+  - [Debug Mode](#debug-mode)
+- [📚 Next Steps](#-next-steps)
+  - [Recommended Reading](#recommended-reading)
+- [🔗 Related Documentation](#-related-documentation)
+- [📞 Support](#-support)
+<!-- TOC END -->
+
+
 ## 🚀 Quick Start Guide
 
 Complete guide to get started with iOS Firebase Tools in your iOS application.

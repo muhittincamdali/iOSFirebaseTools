@@ -1,5 +1,44 @@
 # Analytics Guide
 
+<!-- TOC START -->
+## Table of Contents
+- [Analytics Guide](#analytics-guide)
+- [📊 Firebase Analytics Integration Guide](#-firebase-analytics-integration-guide)
+- [🚀 Quick Start](#-quick-start)
+  - [1. Installation](#1-installation)
+  - [2. Basic Setup](#2-basic-setup)
+  - [3. First Event](#3-first-event)
+- [📈 Event Tracking](#-event-tracking)
+  - [Standard Events](#standard-events)
+  - [Custom Events](#custom-events)
+- [👤 User Properties](#-user-properties)
+  - [Setting User Properties](#setting-user-properties)
+  - [User Property Best Practices](#user-property-best-practices)
+- [📱 Screen Tracking](#-screen-tracking)
+  - [Automatic Screen Tracking](#automatic-screen-tracking)
+  - [Screen Tracking Integration](#screen-tracking-integration)
+- [💰 E-commerce Tracking](#-e-commerce-tracking)
+  - [Purchase Events](#purchase-events)
+  - [Product Views](#product-views)
+- [🎮 Gaming Analytics](#-gaming-analytics)
+  - [Game Events](#game-events)
+- [🚨 Error Tracking](#-error-tracking)
+  - [Application Errors](#application-errors)
+- [🔧 Configuration](#-configuration)
+  - [Advanced Configuration](#advanced-configuration)
+  - [Privacy Configuration](#privacy-configuration)
+- [📊 Performance Monitoring](#-performance-monitoring)
+  - [App Performance](#app-performance)
+- [🎯 Best Practices](#-best-practices)
+  - [Event Naming](#event-naming)
+  - [Parameter Guidelines](#parameter-guidelines)
+  - [Performance Considerations](#performance-considerations)
+  - [Privacy Compliance](#privacy-compliance)
+- [🔗 Related Documentation](#-related-documentation)
+- [📞 Support](#-support)
+<!-- TOC END -->
+
+
 ## 📊 Firebase Analytics Integration Guide
 
 Complete guide for integrating Firebase Analytics into your iOS application.
