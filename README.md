@@ -1,4 +1,5 @@
 # 🔥 iOS Firebase Tools
+[![CI](https://github.com/muhittincamdali/iOSFirebaseTools/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/muhittincamdali/iOSFirebaseTools/actions/workflows/ci.yml)
 
 <!-- TOC START -->
 ## Table of Contents
