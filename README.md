@@ -755,4 +755,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🌟 Stargazers
 
-[![Stargazers repo roster for @muhittincamdali/iOSFirebaseTools](https://reporoster.com/stars/muhittincamdali/iOSFirebaseTools)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers) 
+[![Stargazers repo roster for @muhittincamdali/iOSFirebaseTools](https://starchart.cc/muhittincamdali/iOSFirebaseTools.svg)](https://github.com/muhittincamdali/iOSFirebaseTools/stargazers) 
