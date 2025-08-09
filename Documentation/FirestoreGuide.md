@@ -1,5 +1,50 @@
 # Firestore Guide
 
+<!-- TOC START -->
+## Table of Contents
+- [Firestore Guide](#firestore-guide)
+- [🗄️ Firebase Firestore Integration Guide](#-firebase-firestore-integration-guide)
+- [🚀 Quick Start](#-quick-start)
+  - [1. Installation](#1-installation)
+  - [2. Basic Setup](#2-basic-setup)
+  - [3. First Database Operation](#3-first-database-operation)
+- [📝 Basic Operations](#-basic-operations)
+  - [Add Documents](#add-documents)
+  - [Get Documents](#get-documents)
+  - [Update Documents](#update-documents)
+  - [Delete Documents](#delete-documents)
+- [🔄 Real-Time Listeners](#-real-time-listeners)
+  - [Listen to Document Changes](#listen-to-document-changes)
+  - [Remove Listeners](#remove-listeners)
+- [🔍 Queries](#-queries)
+  - [Simple Queries](#simple-queries)
+  - [Advanced Queries](#advanced-queries)
+- [📊 Batch Operations](#-batch-operations)
+  - [Batch Writes](#batch-writes)
+  - [Transaction Operations](#transaction-operations)
+- [🔐 Security Rules](#-security-rules)
+  - [Basic Security Rules](#basic-security-rules)
+  - [Role-Based Access](#role-based-access)
+- [📱 Offline Support](#-offline-support)
+  - [Enable Offline Persistence](#enable-offline-persistence)
+  - [Offline Data Handling](#offline-data-handling)
+- [🔄 Data Synchronization](#-data-synchronization)
+  - [Sync Data](#sync-data)
+- [📊 Performance Optimization](#-performance-optimization)
+  - [Indexing](#indexing)
+  - [Query Optimization](#query-optimization)
+- [🚨 Error Handling](#-error-handling)
+  - [Common Errors](#common-errors)
+  - [Retry Logic](#retry-logic)
+- [📱 Best Practices](#-best-practices)
+  - [Data Modeling](#data-modeling)
+  - [Query Optimization](#query-optimization)
+  - [Security](#security)
+- [🔗 Related Documentation](#-related-documentation)
+- [📞 Support](#-support)
+<!-- TOC END -->
+
+
 ## 🗄️ Firebase Firestore Integration Guide
 
 Complete guide for integrating Firebase Firestore into your iOS application.

@@ -1,5 +1,15 @@
 # Firestore API
 
+<!-- TOC START -->
+## Table of Contents
+- [Firestore API](#firestore-api)
+- [Overview](#overview)
+- [Core Features](#core-features)
+- [Usage](#usage)
+- [Features](#features)
+<!-- TOC END -->
+
+
 ## Overview
 
 The Firestore API provides comprehensive Firestore database operations for iOS applications.

@@ -1,5 +1,38 @@
 # Authentication Guide
 
+<!-- TOC START -->
+## Table of Contents
+- [Authentication Guide](#authentication-guide)
+- [🔐 Firebase Authentication Integration Guide](#-firebase-authentication-integration-guide)
+- [🚀 Quick Start](#-quick-start)
+  - [1. Installation](#1-installation)
+  - [2. Basic Setup](#2-basic-setup)
+  - [3. First Sign-In](#3-first-sign-in)
+- [🔑 Authentication Methods](#-authentication-methods)
+  - [Email/Password Authentication](#emailpassword-authentication)
+  - [Google Sign-In](#google-sign-in)
+  - [Phone Authentication](#phone-authentication)
+  - [Anonymous Authentication](#anonymous-authentication)
+- [👤 User Management](#-user-management)
+  - [User Profile Management](#user-profile-management)
+  - [User State Management](#user-state-management)
+- [🔐 Multi-Factor Authentication](#-multi-factor-authentication)
+  - [Setup MFA](#setup-mfa)
+  - [MFA Management](#mfa-management)
+- [🚪 Sign Out](#-sign-out)
+  - [Sign Out Methods](#sign-out-methods)
+- [🔧 Configuration](#-configuration)
+  - [Authentication Configuration](#authentication-configuration)
+  - [Security Configuration](#security-configuration)
+- [🛡️ Security Best Practices](#-security-best-practices)
+  - [Password Security](#password-security)
+  - [Session Management](#session-management)
+  - [Data Protection](#data-protection)
+- [🔗 Related Documentation](#-related-documentation)
+- [📞 Support](#-support)
+<!-- TOC END -->
+
+
 ## 🔐 Firebase Authentication Integration Guide
 
 Complete guide for integrating Firebase Authentication into your iOS application.

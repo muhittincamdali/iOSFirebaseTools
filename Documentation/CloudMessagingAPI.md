@@ -1,5 +1,40 @@
 # Cloud Messaging API
 
+<!-- TOC START -->
+## Table of Contents
+- [Cloud Messaging API](#cloud-messaging-api)
+- [📱 Firebase Cloud Messaging API Reference](#-firebase-cloud-messaging-api-reference)
+- [🔧 Core Messaging Manager](#-core-messaging-manager)
+  - [FirebaseCloudMessagingManager](#firebasecloudmessagingmanager)
+  - [FCMConfiguration](#fcmconfiguration)
+- [📱 Notification Registration](#-notification-registration)
+  - [Register for Remote Notifications](#register-for-remote-notifications)
+  - [Request Notification Permission](#request-notification-permission)
+- [🔑 Token Management](#-token-management)
+  - [FCM Token Operations](#fcm-token-operations)
+  - [Token Validation](#token-validation)
+- [📢 Topic Management](#-topic-management)
+  - [Topic Subscription](#topic-subscription)
+  - [Topic Validation](#topic-validation)
+- [📨 Message Sending](#-message-sending)
+  - [Send Push Notifications](#send-push-notifications)
+  - [Rich Notifications](#rich-notifications)
+- [🔔 Notification Handling](#-notification-handling)
+  - [Foreground Message Handling](#foreground-message-handling)
+  - [Background Message Handling](#background-message-handling)
+- [🎯 Notification Actions](#-notification-actions)
+  - [Action Handling](#action-handling)
+  - [Action Configuration](#action-configuration)
+- [🔧 Configuration](#-configuration)
+  - [FCM Configuration](#fcm-configuration)
+  - [Notification Settings](#notification-settings)
+- [📊 Analytics Integration](#-analytics-integration)
+  - [Notification Analytics](#notification-analytics)
+- [🔗 Related Documentation](#-related-documentation)
+- [📞 Support](#-support)
+<!-- TOC END -->
+
+
 ## 📱 Firebase Cloud Messaging API Reference
 
 Comprehensive API documentation for Firebase Cloud Messaging integration in iOS applications.

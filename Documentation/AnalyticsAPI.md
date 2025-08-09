@@ -1,5 +1,38 @@
 # Analytics API
 
+<!-- TOC START -->
+## Table of Contents
+- [Analytics API](#analytics-api)
+- [📊 Firebase Analytics API Reference](#-firebase-analytics-api-reference)
+- [🔧 Core Analytics Manager](#-core-analytics-manager)
+  - [FirebaseAnalyticsManager](#firebaseanalyticsmanager)
+  - [AnalyticsConfiguration](#analyticsconfiguration)
+- [📈 Event Logging](#-event-logging)
+  - [Basic Event Logging](#basic-event-logging)
+  - [Screen View Tracking](#screen-view-tracking)
+  - [Purchase Tracking](#purchase-tracking)
+- [👤 User Properties](#-user-properties)
+  - [Setting User Properties](#setting-user-properties)
+  - [User Property Management](#user-property-management)
+- [🎯 Custom Events](#-custom-events)
+  - [AnalyticsEvent Structure](#analyticsevent-structure)
+  - [Custom Event Logging](#custom-event-logging)
+- [🚨 Error Tracking](#-error-tracking)
+  - [Error Logging](#error-logging)
+- [📊 Performance Analytics](#-performance-analytics)
+  - [Performance Event Tracking](#performance-event-tracking)
+- [🔧 Configuration](#-configuration)
+  - [Analytics Setup](#analytics-setup)
+  - [Debug Mode](#debug-mode)
+- [📈 Best Practices](#-best-practices)
+  - [Event Naming Conventions](#event-naming-conventions)
+  - [Parameter Guidelines](#parameter-guidelines)
+  - [Performance Considerations](#performance-considerations)
+- [🔗 Related Documentation](#-related-documentation)
+- [📞 Support](#-support)
+<!-- TOC END -->
+
+
 ## 📊 Firebase Analytics API Reference
 
 Comprehensive API documentation for Firebase Analytics integration in iOS applications.
