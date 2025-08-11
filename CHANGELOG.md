@@ -161,4 +161,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-**For detailed migration instructions, see our [Migration Guide](Documentation/MigrationGuide.md).** 
+**For detailed migration instructions, see our [Migration Guide](Documentation/MigrationGuide.md).** # iOSFirebaseTools - Update 1
+# iOSFirebaseTools - Update 2
+# iOSFirebaseTools - Update 3
+# iOSFirebaseTools - Update 4
+# iOSFirebaseTools - Update 5
+# iOSFirebaseTools - Update 6
+# iOSFirebaseTools - Update 7
+# iOSFirebaseTools - Update 8
+# iOSFirebaseTools - Update 9
+# iOSFirebaseTools - Update 10
+# iOSFirebaseTools - Update 11
+# iOSFirebaseTools - Update 12
+# iOSFirebaseTools - Update 13
+# iOSFirebaseTools - Update 14
+# iOSFirebaseTools - Update 15
+# iOSFirebaseTools - Update 16
+# iOSFirebaseTools - Update 17
+# iOSFirebaseTools - Update 18
+# iOSFirebaseTools - Update 19
+# iOSFirebaseTools - Update 20
+# iOSFirebaseTools - Update 21
+# iOSFirebaseTools - Update 22
+# iOSFirebaseTools - Update 23
+# iOSFirebaseTools - Update 24
+# iOSFirebaseTools - Update 25
+# iOSFirebaseTools - Update 26
+# iOSFirebaseTools - Update 27
+# iOSFirebaseTools - Update 28
+# iOSFirebaseTools - Update 29
+# iOSFirebaseTools - Update 30
+# iOSFirebaseTools - Update 31
+# iOSFirebaseTools - Update 32
+# iOSFirebaseTools - Update 33
+# iOSFirebaseTools - Update 34
+# iOSFirebaseTools - Update 35
+# iOSFirebaseTools - Update 36
+# iOSFirebaseTools - Update 37
+# iOSFirebaseTools - Update 38
+# iOSFirebaseTools - Update 39
+# iOSFirebaseTools - Update 40
+# iOSFirebaseTools - Update 41
+# iOSFirebaseTools - Update 42
+# iOSFirebaseTools - Update 43
+# iOSFirebaseTools - Update 44
+# iOSFirebaseTools - Update 45
+# iOSFirebaseTools - Update 46
+# iOSFirebaseTools - Update 47
+# iOSFirebaseTools - Update 48
+# iOSFirebaseTools - Update 49
+# iOSFirebaseTools - Update 50
+# iOSFirebaseTools - Update 51
+# iOSFirebaseTools - Update 52
+# iOSFirebaseTools - Update 53
+# iOSFirebaseTools - Update 54
+# iOSFirebaseTools - Update 55
+# iOSFirebaseTools - Update 56
+# iOSFirebaseTools - Update 57
