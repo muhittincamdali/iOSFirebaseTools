@@ -1,0 +1,365 @@
+[1/1] Compiling plugin SwiftLintCommandPlugin
+[2/2] Compiling plugin SwiftLintBuildToolPlugin
+[3/3] Compiling plugin GenerateManual
+[4/4] Compiling plugin GenerateDoccReference
+[5/5] Compiling plugin SwiftProtobufPlugin
+Building for debugging...
+[5/294] Write sources
+[14/294] Compiling FirebaseAppCheckInterop dummy.m
+[14/294] Copying PrivacyInfo.xcprivacy
+[14/294] Write sources
+[30/294] Compiling FirebaseAuthInterop dummy.m
+[30/294] Write swift-version--58304C5D6DBC2206.txt
+[32/294] Compiling FIRHeartbeatLogger+AppCheck.m
+[33/294] Compiling FIRAppCheckDebugProviderFactory.m
+[33/294] Compiling FIRAppCheckLogger.m
+[35/294] Compiling FIRDeviceCheckProviderFactory.m
+[35/294] Compiling FIRAppCheckComponent.m
+[35/294] Compiling FIRAppCheckSettings.m
+[35/294] Compiling FIRDeviceCheckProvider.m
+[35/294] Compiling FIRAppCheckValidator.m
+[40/294] Compiling FIRInternalAppCheckProvider.m
+[40/294] Compiling FIRAppCheckErrorUtil.m
+[41/294] Compiling FIRAppCheckTokenResult.m
+[43/294] Compiling FIRAppCheckToken.m
+[44/294] Compiling FIRAppCheck.m
+[44/294] Compiling FIRAppAttestProvider.m
+[46/294] Compiling FIRAppCheckDebugProvider.m
+[47/294] Copying openssl_grpc.framework
+[48/294] Compiling FIRAppCheckErrors.m
+[49/294] Compiling nanopb pb_common.c
+[50/294] Compiling nanopb pb_encode.c
+[51/294] Compiling nanopb pb_decode.c
+[52/297] Compiling filter_policy.cc
+[53/297] Compiling status.cc
+[54/297] Compiling histogram.cc
+[55/297] Compiling hash.cc
+[56/297] Compiling bloom.cc
+[57/297] Compiling crc32c.cc
+[58/297] Compiling comparator.cc
+[59/297] Compiling coding.cc
+[60/297] Compiling cache.cc
+[61/297] Compiling two_level_iterator.cc
+[62/297] Compiling options.cc
+[63/297] Compiling logging.cc
+[64/297] Compiling env.cc
+[65/297] Compiling arena.cc
+[66/297] Compiling iterator.cc
+[67/297] Compiling merger.cc
+[68/297] Compiling format.cc
+[69/297] Compiling table.cc
+[70/297] Compiling block.cc
+[71/297] Compiling block_builder.cc
+[72/297] Compiling table_builder.cc
+[73/297] Compiling env_posix.cc
+[74/297] Compiling write_batch.cc
+[75/297] Compiling filter_block.cc
+[76/297] Compiling table_cache.cc
+[77/297] Compiling memtable.cc
+[78/297] Copying absl.framework
+[79/297] Compiling GoogleUtilities-NSData resource_bundle_accessor.m
+[80/297] Compiling version_edit.cc
+[81/297] Copying grpcpp.framework
+[82/297] Copying grpc.framework
+[83/297] Compiling log_writer.cc
+[84/297] Compiling GoogleUtilities-Environment resource_bundle_accessor.m
+[84/297] Compiling log_reader.cc
+[86/297] Compiling GULURLSessionDataResponse.m
+[86/297] Compiling repair.cc
+[86/297] Compiling NSURLSession+GULPromises.m
+[87/297] Compiling GULKeychainUtils.m
+[90/297] Compiling GoogleUtilities-NSData GULNSData+zlib.m
+[91/297] Compiling GoogleUtilities-Environment GULSecureCoding.m
+[92/297] Compiling GULNetworkInfo.m
+[93/297] Compiling GULKeychainStorage.m
+[93/297] Copying GoogleAppMeasurementIdentitySupport.framework
+[93/297] Copying GoogleAppMeasurement.framework
+[93/297] Compiling GoogleUtilities-Environment GULHeartbeatDateStorage.m
+[93/297] Compiling GoogleUtilities-Environment GULHeartbeatDateStorageUserDefaults.m
+[98/297] Compiling filename.cc
+[99/297] Compiling version_set.cc
+[100/311] Compiling GoogleUtilities-Environment GULAppEnvironmentUtil.m
+[101/311] Compiling c.cc
+[102/311] Compiling db_iter.cc
+[103/311] Compiling builder.cc
+[104/311] Compiling dbformat.cc
+[105/311] Compiling dumpfile.cc
+[106/311] Compiling db_impl.cc
+[107/311] Compiling grpcppWrapper resource_bundle_accessor.m
+[108/311] Compiling abslWrapper empty.m
+[109/311] Compiling GTMSessionFetcherCore resource_bundle_accessor.m
+[110/311] Compiling grpcppWrapper empty.m
+[111/311] Compiling abslWrapper resource_bundle_accessor.m
+[112/311] Compiling GTMSessionFetcherCore GTMSessionFetcherService.m
+[113/311] Compiling GTMSessionFetcherCore GTMSessionFetcherLogging.m
+[114/311] Compiling GTMSessionFetcherCore GTMSessionUploadFetcher.m
+[115/311] Compiling GTMSessionFetcherCore GTMSessionFetcher.m
+[116/311] Compiling FIRMessagingKeychain.m
+[117/311] Compiling FIRMessagingAuthKeychain.m
+[118/311] Compiling FIRMessagingTokenInfo.m
+[119/311] Compiling FIRMessagingTokenDeleteOperation.m
+[120/311] Compiling FIRMessagingCheckinPreferences.m
+[121/311] Compiling FIRMessagingTokenStore.m
+[122/311] Compiling FIRMessagingAuthService.m
+[123/311] Compiling FIRMessagingBackupExcludedPlist.m
+[124/311] Compiling FIRMessagingCheckinService.m
+[125/311] Compiling FirebaseMessaging resource_bundle_accessor.m
+[126/311] Compiling FIRMessagingCheckinStore.m
+[127/311] Compiling FIRMessagingTokenOperation.m
+[128/311] Compiling FIRMessagingTokenManager.m
+[129/311] Compiling FirebaseMessaging NSDictionary+FIRMessaging.m
+[130/311] Compiling FirebaseMessaging FIRMessagingSyncMessageManager.m
+[131/311] Compiling FIRMessagingAPNSInfo.m
+[132/311] Compiling FirebaseMessaging NSError+FIRMessaging.m
+[133/311] Compiling me.nanopb.c
+[134/311] Compiling FirebaseMessaging FIRMessagingPersistentSyncMessage.m
+[135/311] Copying FirebaseFirestoreInternal.framework
+[136/311] Compiling FirebaseMessaging FIRMessagingTopicOperation.m
+[137/311] Compiling FirebaseMessaging FIRMessagingUtilities.m
+[138/311] Compiling FirebaseMessaging FIRMessagingPubSub.m
+[139/311] Compiling FirebaseFirestoreInternalWrapper dummy.m
+[140/311] Compiling FIRMessagingTokenFetchOperation.m
+[141/311] Compiling FirebaseMessaging FIRMessagingPendingTopicsList.m
+[142/311] Compiling FirebaseMessaging FIRMessagingConstants.m
+[143/311] Compiling FirebaseMessaging FIRMessagingLogger.m
+[144/311] Compiling FirebaseCoreExtension dummy.m
+[145/311] Compiling NSData+FIRBase64.m
+[146/311] Compiling FIRAuthWebViewController.m
+[147/311] Compiling FirebaseCoreExtension resource_bundle_accessor.m
+[148/311] Compiling FirebaseAuth resource_bundle_accessor.m
+[149/311] Compiling FIRAuthWebView.m
+[150/311] Compiling FIRAuthURLPresenter.m
+[151/311] Compiling FirebaseMessaging FIRMessagingRmqManager.m
+[152/311] Compiling FIRAuthWebUtils.m
+[153/311] Compiling FIRAuthRecaptchaVerifier.m
+[154/311] Compiling FIRAuthExceptionUtils.m
+[155/311] Compiling FIRAuthDefaultUIDelegate.m
+[156/311] Compiling FIRUserMetadata.m
+[157/311] Compiling FIRUserInfoImpl.m
+[158/311] Compiling FIRAdditionalUserInfo.m
+[159/311] Compiling FIRAuthAppCredentialManager.m
+[160/311] Compiling FIRAuthNotificationManager.m
+[161/311] Compiling FIRAuthErrorUtils.m
+[162/311] Compiling FIRAuthAPNSTokenManager.m
+[163/311] Compiling FIRAuthAppCredential.m
+[164/311] Compiling FirebaseMessaging FIRMessagingExtensionHelper.m
+[165/311] Compiling FIRSecureTokenService.m
+[166/311] Compiling FIRAuthStoredUserManager.m
+[167/311] Compiling FIRAuthAPNSToken.m
+[168/311] Compiling FIRTOTPSecret.m
+[169/311] Compiling FIRAuthUserDefaults.m
+[170/311] Compiling FIRTOTPMultiFactorInfo.m
+[171/311] Compiling FIRTOTPMultiFactorGenerator.m
+[172/311] Compiling FIRPhoneMultiFactorInfo.m
+[173/311] Compiling FIRTOTPMultiFactorAssertion.m
+[174/311] Compiling FIRPhoneMultiFactorGenerator.m
+[175/311] Compiling FIRPhoneMultiFactorAssertion.m
+[176/311] Compiling FIRMultiFactorSession.m
+[177/311] Compiling FIRUser.m
+[178/311] Compiling FIRMultiFactorInfo.m
+[179/311] Compiling FIRMultiFactorResolver.m
+[180/311] Compiling FIRMultiFactorConstants.m
+[181/311] Compiling FIRAuthKeychainServices.m
+[182/311] Compiling FIRMultiFactorAssertion.m
+[183/311] Compiling FIRMultiFactor.m
+[184/311] Compiling FIRAuthProtoStartMFATOTPEnrollmentRequestInfo.m
+[185/311] Compiling FIRAuthProtoStartMFATOTPEnrollmentResponseInfo.m
+[186/311] Compiling FIRAuthProtoFinalizeMFATOTPSignInRequestInfo.m
+[187/311] Compiling FIRAuthProtoFinalizeMFATOTPEnrollmentResponseInfo.m
+[188/311] Compiling FIRAuthProtoFinalizeMFATOTPEnrollmentRequestInfo.m
+[188/311] Compiling FIRAuthProtoStartMFAPhoneResponseInfo.m
+[190/311] Compiling FIRAuthProtoFinalizeMFAPhoneRequestInfo.m
+[191/311] Compiling FIRAuthProtoFinalizeMFAPhoneResponseInfo.m
+[192/311] Compiling FIRAuthProtoStartMFAPhoneRequestInfo.m
+[193/311] Compiling FIRAuthProtoMFAEnrollment.m
+[194/311] Compiling FIRWithdrawMFARequest.m
+[195/311] Compiling FIRWithdrawMFAResponse.m
+[196/311] Compiling FIRStartMFASignInResponse.m
+[197/311] Compiling FIRFinalizeMFASignInResponse.m
+[198/311] Compiling FIRStartMFAEnrollmentResponse.m
+[199/311] Compiling FIRStartMFASignInRequest.m
+[200/311] Compiling FIRFinalizeMFAEnrollmentResponse.m
+[201/311] Compiling FIRFinalizeMFASignInRequest.m
+[202/311] Compiling FIRStartMFAEnrollmentRequest.m
+[203/311] Compiling FIRFinalizeMFAEnrollmentRequest.m
+[204/311] Compiling FIRVerifyPhoneNumberResponse.m
+[205/311] Compiling FIRVerifyCustomTokenResponse.m
+[206/311] Compiling FIRVerifyPasswordResponse.m
+[207/311] Compiling FIRVerifyPhoneNumberRequest.m
+[208/311] Compiling FIRVerifyCustomTokenRequest.m
+[209/311] Compiling FIRVerifyClientResponse.m
+[210/311] Compiling FIRVerifyPasswordRequest.m
+[211/311] Compiling FIRVerifyClientRequest.m
+[212/311] Compiling FIRVerifyAssertionResponse.m
+[213/311] Compiling FIRSignUpNewUserResponse.m
+[214/311] Compiling FIRSignInWithGameCenterResponse.m
+[215/311] Compiling FIRSignUpNewUserRequest.m
+[216/311] Compiling FIRVerifyAssertionRequest.m
+[217/311] Compiling FIRSignInWithGameCenterRequest.m
+[218/311] Compiling FIRSetAccountInfoResponse.m
+[219/311] Compiling FIRSendVerificationCodeResponse.m
+[220/311] Compiling FIRSendVerificationCodeRequest.m
+[221/311] Compiling FIRSetAccountInfoRequest.m
+[222/311] Compiling FIRRevokeTokenResponse.m
+[223/311] Compiling FIRSecureTokenResponse.m
+[224/311] Compiling FIRSecureTokenRequest.m
+[225/311] Compiling FIRResetPasswordResponse.m
+[226/311] Compiling FIRGetRecaptchaConfigRequest.m
+[227/311] Compiling FIRResetPasswordRequest.m
+[228/311] Compiling FIRRevokeTokenRequest.m
+[229/311] Compiling FIRGetRecaptchaConfigResponse.m
+[230/311] Compiling FIRGetProjectConfigResponse.m
+[231/311] Compiling FIRGetOOBConfirmationCodeResponse.m
+[232/311] Compiling FIRGetProjectConfigRequest.m
+[233/311] Compiling FIRGetAccountInfoRequest.m
+[234/311] Compiling FIRGetAccountInfoResponse.m
+[235/311] Compiling FIREmailLinkSignInResponse.m
+[236/311] Compiling FIRDeleteAccountResponse.m
+[237/311] Compiling FIREmailLinkSignInRequest.m
+[238/311] Compiling FIRGetOOBConfirmationCodeRequest.m
+[238/311] Compiling FIRCreateAuthURIResponse.m
+[240/311] Compiling FIRDeleteAccountRequest.m
+[241/311] Compiling FIRCreateAuthURIRequest.m
+[242/311] Compiling FIRPhoneAuthCredential.m
+[243/311] Compiling FIRAuthBackend+MultiFactor.m
+[244/311] Compiling FIRIdentityToolkitRequest.m
+[245/311] Compiling FIRTwitterAuthProvider.m
+[246/311] Compiling FIRPhoneAuthProvider.m
+[247/311] Compiling FIRAuthRequestConfiguration.m
+[248/311] Compiling FIRTwitterAuthCredential.m
+[249/311] Compiling FIRGoogleAuthProvider.m
+[250/311] Compiling FIRGitHubAuthProvider.m
+[251/311] Compiling FIROAuthCredential.m
+[252/311] Compiling FIRGoogleAuthCredential.m
+[253/311] Compiling FIRGameCenterAuthCredential.m
+[254/311] Compiling FIRGitHubAuthCredential.m
+[255/311] Compiling FIRFacebookAuthProvider.m
+[256/311] Compiling FIRAuthProvider.m
+[257/311] Compiling FIRAuthCredential.m
+[258/311] Compiling FIRAuthBackend.m
+[259/311] Compiling FIRFacebookAuthCredential.m
+[260/311] Compiling FIREmailPasswordAuthCredential.m
+[261/311] Compiling FIREmailAuthProvider.m
+[262/311] Compiling FIROAuthProvider.m
+[263/311] Compiling FIRAuthSerialTaskQueue.m
+[264/311] Copying FirebaseAnalytics.framework
+[265/311] Compiling FIRAuthSettings.m
+[266/311] Compiling FirebaseAnalyticsTarget dummy.m
+[267/311] Compiling FIRAuthDispatcher.m
+[268/311] Compiling FIRAuthTokenResult.m
+[269/311] Compiling FIRAuthGlobalWorkQueue.m
+[270/311] Compiling FIRAuthDataResult.m
+[271/311] Compiling FIRActionCodeSettings.m
+[272/311] Compiling FIRApp+AppCheck.m
+[274/315] Compiling FirebaseCoreInternal resource_bundle_accessor.swift
+[274/315] Compiling FirebaseMessaging FIRMessagingAnalytics.m
+[275/315] Compiling FirebaseMessaging FIRMessagingRemoteNotificationsProxy.m
+[277/315] Compiling FirebaseCoreInternal _ObjC_HeartbeatsPayload.swift
+[278/315] Compiling FirebaseCoreInternal HeartbeatsBundle.swift
+[279/315] Compiling FirebaseCoreInternal _ObjC_HeartbeatController.swift
+[280/315] Compiling FirebaseCoreInternal Storage.swift
+[281/315] Compiling FirebaseCoreInternal Heartbeat.swift
+[282/315] Compiling FirebaseCoreInternal HeartbeatStorage.swift
+[283/315] Compiling FirebaseCoreInternal HeartbeatController.swift
+[284/315] Compiling FirebaseCoreInternal WeakContainer.swift
+[285/315] Compiling FirebaseCoreInternal StorageFactory.swift
+[286/315] Compiling FirebaseCoreInternal HeartbeatsPayload.swift
+[287/315] Compiling FirebaseCoreInternal HeartbeatLoggingTestUtils.swift
+[288/315] Compiling FirebaseCoreInternal RingBuffer.swift
+[289/315] Emitting module FirebaseCoreInternal
+[289/315] Compiling FirebaseMessaging FIRMessagingContextManagerService.m
+[290/315] Compiling FirebaseMessaging FIRMessaging.m
+[292/315] Emitting module FirebaseSharedSwift
+[293/315] Compiling FirebaseSharedSwift FirebaseRemoteConfigValueDecoding.swift
+[294/315] Compiling FirebaseSharedSwift FirebaseDataEncoder.swift
+[294/317] Compiling FIRAuth.m
+[295/317] Compiling FIRGameCenterAuthProvider.m
+[296/317] Compiling FirebaseCore FIRBundleUtil.m
+[297/317] Compiling FirebaseCore FIRComponentType.m
+[298/317] Compiling FirebaseCore FIRConfiguration.m
+[299/317] Compiling FirebaseCore FIRLogger.m
+[300/317] Compiling FirebaseCore resource_bundle_accessor.m
+[301/317] Compiling FirebaseCore FIRVersion.m
+[302/317] Compiling FirebaseCore FIRComponentContainer.m
+[303/317] Compiling FirebaseCore FIRComponent.m
+[304/317] Compiling FirebaseCore FIROptions.m
+[305/317] Compiling FirebaseCore FIRFirebaseUserAgent.m
+[306/317] Compiling FirebaseCore FIRDependency.m
+[307/317] Compiling FirebaseCore FIRAnalyticsConfiguration.m
+[308/317] Compiling FirebaseCore FIRHeartbeatLogger.m
+[309/319] Compiling FirebaseCore FIRApp.m
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+[311/367] Emitting module MessagingTools
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:479:1: error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+477 | // MARK: - MessagingDelegate
+478 | 
+479 | extension FirebaseMessagingManager: MessagingDelegate {
+    | |- error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+    | `- note: add stubs for conformance
+480 |     
+481 |     public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+[312/367] Compiling MessagingTools FirebaseMessagingManager.swift
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:479:1: error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+477 | // MARK: - MessagingDelegate
+478 | 
+479 | extension FirebaseMessagingManager: MessagingDelegate {
+    | |- error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+    | `- note: add stubs for conformance
+480 |     
+481 |     public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:76:18: error: cannot assign to property: 'attachments' is a 'let' constant
+ 57 |         public let sound: String?
+ 58 |         public let category: String?
+ 59 |         public let attachments: [FCMAttachment]
+    |                `- note: change 'let' to 'var' to make it mutable
+ 60 |         public let actions: [FCMNotificationAction]
+ 61 |         
+    :
+ 74 |             var newAttachments = attachments
+ 75 |             newAttachments.append(attachment)
+ 76 |             self.attachments = newAttachments
+    |                  `- error: cannot assign to property: 'attachments' is a 'let' constant
+ 77 |         }
+ 78 |         
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:82:18: error: cannot assign to property: 'actions' is a 'let' constant
+ 58 |         public let category: String?
+ 59 |         public let attachments: [FCMAttachment]
+ 60 |         public let actions: [FCMNotificationAction]
+    |                `- note: change 'let' to 'var' to make it mutable
+ 61 |         
+ 62 |         public init(title: String, body: String, data: [String: Any] = [:], badge: Int? = nil, sound: String? = nil, category: String? = nil, attachments: [FCMAttachment] = [], actions: [FCMNotificationAction] = []) {
+    :
+ 80 |             var newActions = actions
+ 81 |             newActions.append(action)
+ 82 |             self.actions = newActions
+    |                  `- error: cannot assign to property: 'actions' is a 'let' constant
+ 83 |         }
+ 84 |     }
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:203:17: error: cannot find 'UIApplication' in scope
+201 |             // Register for remote notifications
+202 |             DispatchQueue.main.async {
+203 |                 UIApplication.shared.registerForRemoteNotifications()
+    |                 `- error: cannot find 'UIApplication' in scope
+204 |             }
+205 |             
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:409:13: error: cannot find 'UIApplication' in scope
+407 |     public func setBadgeCount(_ count: Int, completion: @escaping (Result<Void, MessagingError>) -> Void) {
+408 |         DispatchQueue.main.async {
+409 |             UIApplication.shared.applicationIconBadgeNumber = count
+    |             `- error: cannot find 'UIApplication' in scope
+410 |             completion(.success(()))
+411 |         }
+[313/367] Emitting module SecurityTools
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/SecurityTools/FirebaseSecurityManager.swift:297:13: warning: initialization of immutable value 'expectedCertificates' was never used; consider replacing with assignment to '_' or removing it
+295 |         // Implement certificate pinning validation
+296 |         // This is a simplified example
+297 |         let expectedCertificates = [
+    |             `- warning: initialization of immutable value 'expectedCertificates' was never used; consider replacing with assignment to '_' or removing it
+298 |             "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+299 |             "sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB="
+
+[314/367] Emitting module AuthenticationTools
