@@ -1,0 +1,86 @@
+[0/1] Planning build
+[1/1] Compiling plugin SwiftLintCommandPlugin
+[2/2] Compiling plugin SwiftLintBuildToolPlugin
+[3/3] Compiling plugin GenerateManual
+[4/4] Compiling plugin GenerateDoccReference
+[5/5] Compiling plugin SwiftProtobufPlugin
+Building for debugging...
+[5/24] Write swift-version--58304C5D6DBC2206.txt
+[6/10] Compiling FirebaseAnalyticsTarget dummy.m
+[7/10] Compiling grpcppWrapper empty.m
+[8/18] Compiling grpcppWrapper resource_bundle_accessor.m
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+[10/66] Emitting module MessagingTools
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:479:1: error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+477 | // MARK: - MessagingDelegate
+478 | 
+479 | extension FirebaseMessagingManager: MessagingDelegate {
+    | |- error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+    | `- note: add stubs for conformance
+480 |     
+481 |     public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+[11/66] Compiling MessagingTools FirebaseMessagingManager.swift
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:479:1: error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+477 | // MARK: - MessagingDelegate
+478 | 
+479 | extension FirebaseMessagingManager: MessagingDelegate {
+    | |- error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'FirebaseMessagingManager' should inherit 'NSObject' instead
+    | `- note: add stubs for conformance
+480 |     
+481 |     public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:76:18: error: cannot assign to property: 'attachments' is a 'let' constant
+ 57 |         public let sound: String?
+ 58 |         public let category: String?
+ 59 |         public let attachments: [FCMAttachment]
+    |                `- note: change 'let' to 'var' to make it mutable
+ 60 |         public let actions: [FCMNotificationAction]
+ 61 |         
+    :
+ 74 |             var newAttachments = attachments
+ 75 |             newAttachments.append(attachment)
+ 76 |             self.attachments = newAttachments
+    |                  `- error: cannot assign to property: 'attachments' is a 'let' constant
+ 77 |         }
+ 78 |         
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:82:18: error: cannot assign to property: 'actions' is a 'let' constant
+ 58 |         public let category: String?
+ 59 |         public let attachments: [FCMAttachment]
+ 60 |         public let actions: [FCMNotificationAction]
+    |                `- note: change 'let' to 'var' to make it mutable
+ 61 |         
+ 62 |         public init(title: String, body: String, data: [String: Any] = [:], badge: Int? = nil, sound: String? = nil, category: String? = nil, attachments: [FCMAttachment] = [], actions: [FCMNotificationAction] = []) {
+    :
+ 80 |             var newActions = actions
+ 81 |             newActions.append(action)
+ 82 |             self.actions = newActions
+    |                  `- error: cannot assign to property: 'actions' is a 'let' constant
+ 83 |         }
+ 84 |     }
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:203:17: error: cannot find 'UIApplication' in scope
+201 |             // Register for remote notifications
+202 |             DispatchQueue.main.async {
+203 |                 UIApplication.shared.registerForRemoteNotifications()
+    |                 `- error: cannot find 'UIApplication' in scope
+204 |             }
+205 |             
+
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/MessagingTools/FirebaseMessagingManager.swift:409:13: error: cannot find 'UIApplication' in scope
+407 |     public func setBadgeCount(_ count: Int, completion: @escaping (Result<Void, MessagingError>) -> Void) {
+408 |         DispatchQueue.main.async {
+409 |             UIApplication.shared.applicationIconBadgeNumber = count
+    |             `- error: cannot find 'UIApplication' in scope
+410 |             completion(.success(()))
+411 |         }
+[12/66] Emitting module AuthenticationTools
+[13/66] Emitting module SecurityTools
+/Users/muhittincamdali/Desktop/Cursor Projects/GitHub/iOSFirebaseTools/Sources/SecurityTools/FirebaseSecurityManager.swift:297:13: warning: initialization of immutable value 'expectedCertificates' was never used; consider replacing with assignment to '_' or removing it
+295 |         // Implement certificate pinning validation
+296 |         // This is a simplified example
+297 |         let expectedCertificates = [
+    |             `- warning: initialization of immutable value 'expectedCertificates' was never used; consider replacing with assignment to '_' or removing it
+298 |             "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+299 |             "sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB="
+
