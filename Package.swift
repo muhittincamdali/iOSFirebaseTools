@@ -19,7 +19,7 @@ let package = Package(
         .library(name: "SecurityTools", targets: ["SecurityTools"])
     ],
     dependencies: [
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.18.0"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "12.8.0"),
         .package(url: "https://github.com/realm/SwiftLint.git", from: "0.54.0")
     ],
     targets: [
