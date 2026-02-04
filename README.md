@@ -35,6 +35,20 @@
 
 ---
 
+## 📋 Table of Contents
+
+- [Overview](#-overview)
+- [Features](#-features)
+- [Quick Start](#-quick-start)
+- [Firebase Services](#-firebase-services)
+- [Code Examples](#-code-examples)
+- [Documentation](#-documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Star History](#-star-history)
+
+---
+
 ## 🎯 Overview
 
 **iOSFirebaseTools** provides a clean, Swift-native abstraction layer over Firebase SDK. Instead of dealing with Firebase's verbose APIs, you get simple, chainable interfaces that feel like native Swift.
