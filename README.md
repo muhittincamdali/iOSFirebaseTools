@@ -71,6 +71,20 @@ FireAuth.signIn(email: email, password: password)
 
 ---
 
+## ⚔️ The Brutal Truth: Firebase vs. Native
+Firebase is powerful, but it comes at a massive cost in binary size and cold-start latency. Use this toolkit to manage the transition to a truly native architecture.
+
+```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#FFCA28', 'edgeLabelBackground':'#1e1e1e', 'tertiaryColor': '#FF3B30'}}}%%
+xychart-beta
+    title "Binary Bloat: Added Size (MB)"
+    x-axis ["Firebase Full SDK", "SwiftNetwork + SwiftCache"]
+    y-axis "Lower is Better" 0 --> 50
+    bar [42.6, 0.4]
+```
+
+---
+
 ## ✨ Features
 
 - 🔐 **Unified Auth** — Email, Google, Apple, Phone auth with single API
