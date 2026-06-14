@@ -15,6 +15,9 @@
 
 # iOSFirebaseTools
 
+## 🚀 Killer Feature: Firebase Auto-Migrator
+Ready to drop the 45MB binary bloat? Use the included `firebase_migrator.swift` to automatically scan and convert your Firestore/Realtime DB calls into high-performance, zero-dependency `SwiftNetwork` WebSocket streams.
+
 ```
     ███████╗██╗██████╗ ███████╗██████╗  █████╗ ███████╗███████╗
     ██╔════╝██║██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝
