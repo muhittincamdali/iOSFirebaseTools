@@ -212,6 +212,38 @@ struct AuthClientTests {
         #expect(try await client.restoreSession() == nil)
     }
 
+    @Test("Concurrent restores read the store once, and a sign-in during the read wins")
+    func restoreRaces() async throws {
+        let saved = AuthSession(userID: "saved", email: nil, isAnonymous: true, idToken: Secret("t"),
+                                refreshToken: Secret("r"), expiresAt: clock.now.addingTimeInterval(3_600))
+        let store = SlowStore(session: saved)
+        let racing = FirebaseAuthClient(project: try Fixtures.project(), transport: MockTransport { _, _ in Fixtures.signInResponse() },
+                                        store: store, clock: clock.function)
+        async let first = racing.restoreSession()
+        async let second = racing.restoreSession()
+        let results = try await [first, second]
+        #expect(results.map { $0?.userID } == ["saved", "saved"])
+        #expect(await store.loads == 1)
+
+        let fresh = FirebaseAuthClient(project: try Fixtures.project(), transport: MockTransport { _, _ in Fixtures.signInResponse() },
+                                       store: SlowStore(session: saved), clock: clock.function)
+        let restoring = Task { try await fresh.restoreSession() }
+        try await Task.sleep(for: .milliseconds(10))
+        try await fresh.signIn(email: "ada@example.com", password: "pw")
+        _ = try await restoring.value
+        #expect(await fresh.session?.userID == "user-1")
+    }
+
+    @Test("A password reset locale cannot carry header text")
+    func checksLocale() async throws {
+        let transport = MockTransport { _, _ in .json("{}") }
+        let client = try makeClient(transport)
+        await #expect(throws: ValidationError.self) { try await client.sendPasswordReset(to: "ada@example.com", locale: "en\r\nX-Evil: 1") }
+        await #expect(throws: ValidationError.self) { try await client.sendPasswordReset(to: "ada@example.com", locale: "") }
+        #expect(transport.requests.isEmpty)
+        try await client.sendPasswordReset(to: "ada@example.com", locale: "pt-BR")
+    }
+
     @Test("Password reset and account deletion send the documented bodies")
     func resetAndDelete() async throws {
         let transport = MockTransport { request, _ in
@@ -255,4 +287,24 @@ actor AsyncGate {
         for waiter in waiters { waiter.resume() }
         waiters.removeAll()
     }
+}
+
+/// A store whose reads take a moment, to race restores against sign-ins.
+actor SlowStore: SessionStore {
+    private var session: AuthSession?
+    private(set) var loads = 0
+
+    init(session: AuthSession?) {
+        self.session = session
+    }
+
+    func load() async throws -> AuthSession? {
+        loads += 1
+        let snapshot = session // what the keychain held when the read started
+        try await Task.sleep(for: .milliseconds(100))
+        return snapshot
+    }
+
+    func save(_ session: AuthSession) { self.session = session }
+    func clear() { session = nil }
 }

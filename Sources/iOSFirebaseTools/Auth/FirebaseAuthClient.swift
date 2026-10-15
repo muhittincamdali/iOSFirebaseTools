@@ -23,6 +23,7 @@ public actor FirebaseAuthClient {
     // a session the user left.
     private var generation = 0
     private var refreshTask: Task<AuthSession, any Error>?
+    private var restoreTask: Task<Void, any Error>?
     private var observers: [UUID: AsyncStream<AuthSession?>.Continuation] = [:]
 
     /// Creates a client for a project.
@@ -51,14 +52,29 @@ public actor FirebaseAuthClient {
     /// Loads the saved session, once per client. Call it when the app starts.
     @discardableResult
     public func restoreSession() async throws -> AuthSession? {
-        if !restored {
-            restored = true
-            if current == nil, let saved = try await store.load() {
-                current = saved
-                notify()
-            }
+        guard !restored else { return current }
+        // Concurrent callers wait for the same load.
+        let task = restoreTask ?? Task { [generation] in
+            let saved = try await store.load()
+            finishRestore(saved, startedIn: generation)
+        }
+        restoreTask = task
+        do {
+            try await task.value
+        } catch {
+            restoreTask = nil
+            throw error
         }
         return current
+    }
+
+    // A sign-in or sign-out while the store was being read wins over the saved session.
+    private func finishRestore(_ saved: AuthSession?, startedIn: Int) {
+        restored = true
+        restoreTask = nil
+        guard generation == startedIn, current == nil, let saved else { return }
+        current = saved
+        notify()
     }
 
     /// The signed-in user, or `nil`. The ID token in it may have expired; use
@@ -109,6 +125,13 @@ public actor FirebaseAuthClient {
     ///   - locale: A language code such as `"de"` for the e-mail's language.
     public func sendPasswordReset(to email: String, locale: String? = nil) async throws {
         try Self.checkEmail(email)
+        if let locale {
+            // A header value: letters, digits, "-" and "_" only, as in "pt-BR" or "zh_CN".
+            guard (1...35).contains(locale.count),
+                  locale.allSatisfy({ $0.isASCIILetterOrDigit || $0 == "-" || $0 == "_" }) else {
+                throw ValidationError("locale", "use a language code such as de or pt-BR")
+            }
+        }
         let request = try endpoints.identityToolkit(.sendOobCode, body: AuthBodies.PasswordReset(email: email), locale: locale)
         _ = try await send(request)
     }
