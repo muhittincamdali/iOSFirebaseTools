@@ -1,4 +1,5 @@
 import Foundation
+import Security
 import Testing
 @testable import iOSFirebaseTools
 
@@ -58,7 +59,19 @@ struct RedactionTests {
     }
 }
 
-@Suite("Keychain session store")
+/// A test bundle on the iOS simulator has no keychain entitlement (errSecMissingEntitlement);
+/// FirebaseLab's UI tests cover the store there, inside a signed app.
+enum KeychainProbe {
+    static var isAvailable: Bool {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "iOSFirebaseTools.tests.probe",
+        ]
+        return SecItemCopyMatching(query as CFDictionary, nil) != errSecMissingEntitlement
+    }
+}
+
+@Suite("Keychain session store", .enabled(if: KeychainProbe.isAvailable))
 struct KeychainSessionStoreTests {
     @Test("Saves, replaces, loads and clears a session")
     func roundTrip() async throws {
