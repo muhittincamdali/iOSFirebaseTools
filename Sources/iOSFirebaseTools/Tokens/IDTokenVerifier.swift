@@ -40,8 +40,12 @@ public actor IDTokenVerifier {
 
     /// A verifier that fetches Google's public keys.
     ///
-    /// - Parameter clockSkew: Seconds of difference allowed between this server's clock and
-    ///   Google's, from 0 to 300. Defaults to 60.
+    /// - Parameters:
+    ///   - projectID: The project whose tokens are accepted.
+    ///   - transport: Fetches the keys; tests pass their own.
+    ///   - clockSkew: Seconds of difference allowed between this server's clock and Google's,
+    ///     from 0 to 300. Defaults to 60.
+    ///   - clock: The current time; tests pass a fixed clock.
     public init(
         projectID: String,
         transport: any HTTPTransport = URLSessionTransport(),

@@ -31,8 +31,14 @@ public struct FirestoreClient: Sendable {
     private let transport: any HTTPTransport
     private let retryDelay: @Sendable (Int) async throws -> Void
 
-    /// - Parameter retryDelay: Waits before retry number 1 or 2 of a read; tests pass a function
-    ///   that returns at once.
+    /// Creates a client for a project's Firestore database.
+    ///
+    /// - Parameters:
+    ///   - project: The project and database, or the Firestore emulator.
+    ///   - credentials: How requests are authorized; ``Credentials/user(_:)`` for app users.
+    ///   - transport: Sends the requests; tests pass their own.
+    ///   - retryDelay: Waits before retry number 1 or 2 of a read; tests pass a function that
+    ///     returns at once.
     public init(
         project: FirebaseProject,
         credentials: Credentials = .none,
@@ -62,7 +68,11 @@ public struct FirestoreClient: Sendable {
 
     /// One page of the documents in `collection`, ordered by ID.
     ///
-    /// - Parameter pageSize: 1 to 1,000.
+    /// - Parameters:
+    ///   - collection: A collection path, such as `"notes"` or `"users/ada/notes"`.
+    ///   - type: The model to decode each document into.
+    ///   - pageSize: 1 to 1,000.
+    ///   - pageToken: ``FirestorePage/nextPageToken`` of the previous page, or `nil` for the first.
     public func documents<Model: Decodable & Sendable>(
         in collection: String,
         as type: Model.Type,

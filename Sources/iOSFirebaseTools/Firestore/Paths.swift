@@ -129,8 +129,8 @@ public struct FieldPath: Sendable, Hashable, CustomStringConvertible, Expressibl
         self.names = names
     }
 
-    /// The path as Firestore reads it: plain names as they are, others in backticks with
-    /// `` ` `` and `\` escaped, joined by dots.
+    /// The path as Firestore reads it: plain names as they are, other names quoted with
+    /// backticks (a backtick or backslash inside is escaped with a backslash), joined by dots.
     public var encoded: String {
         names.map { name in
             if Self.isSimple(name) { return name }

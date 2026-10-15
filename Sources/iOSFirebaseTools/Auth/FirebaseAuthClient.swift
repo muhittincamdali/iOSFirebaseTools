@@ -25,7 +25,11 @@ public actor FirebaseAuthClient {
     private var refreshTask: Task<AuthSession, any Error>?
     private var observers: [UUID: AsyncStream<AuthSession?>.Continuation] = [:]
 
+    /// Creates a client for a project.
+    ///
     /// - Parameters:
+    ///   - project: The project to sign in to, or its Authentication emulator.
+    ///   - transport: Sends the requests; tests pass their own.
     ///   - store: Where the session is kept between launches. Defaults to the keychain, with the
     ///     project ID as the account.
     ///   - clock: The current time; tests pass a fixed clock.
@@ -100,7 +104,9 @@ public actor FirebaseAuthClient {
 
     /// Sends a password reset e-mail.
     ///
-    /// - Parameter locale: A language code such as `"de"` for the e-mail's language.
+    /// - Parameters:
+    ///   - email: The account's e-mail address.
+    ///   - locale: A language code such as `"de"` for the e-mail's language.
     public func sendPasswordReset(to email: String, locale: String? = nil) async throws {
         try Self.checkEmail(email)
         let request = try endpoints.identityToolkit(.sendOobCode, body: AuthBodies.PasswordReset(email: email), locale: locale)

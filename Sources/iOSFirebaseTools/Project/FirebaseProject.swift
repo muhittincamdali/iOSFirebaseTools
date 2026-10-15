@@ -31,8 +31,12 @@ public struct FirebaseProject: Sendable, Hashable {
 
     /// Creates a project after checking the ID, key and database name.
     ///
-    /// - Parameter bundleID: Defaults to the main bundle's identifier, which is what an
-    ///   iOS-restricted API key expects. Pass `nil` from a server or command-line tool.
+    /// - Parameters:
+    ///   - projectID: The project ID from the Firebase console's project settings.
+    ///   - apiKey: The project's Web API key.
+    ///   - databaseID: The Firestore database; `(default)` unless you created named databases.
+    ///   - bundleID: Defaults to the main bundle's identifier, which is what an
+    ///     iOS-restricted API key expects. Pass `nil` from a server or command-line tool.
     public init(
         projectID: String,
         apiKey: String,
