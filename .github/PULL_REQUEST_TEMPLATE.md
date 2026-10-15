@@ -7,4 +7,4 @@
 - [ ] Logic changes have a unit test, including invalid and hostile input
 - [ ] README samples and `Examples/FirebaseLab/FirebaseLab/ReadmeSamples.swift` still match
 - [ ] README translations updated, or noted here if `README.md` changed
-- [ ] Screenshots regenerated with `scripts/capture-screenshots.sh` if a screen changed
+- [ ] Screenshots captured again with `scripts/capture-screenshots.sh` if a screen changed
