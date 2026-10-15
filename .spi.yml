@@ -1,0 +1,13 @@
+version: 1
+builder:
+  configs:
+    - platform: ios
+      scheme: iOSFirebaseTools
+      documentation_targets: [iOSFirebaseTools]
+    - platform: macos-spm
+    - platform: tvos
+      scheme: iOSFirebaseTools
+    - platform: watchos
+      scheme: iOSFirebaseTools
+    - platform: visionos
+      scheme: iOSFirebaseTools
