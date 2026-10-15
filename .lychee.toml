@@ -39,3 +39,12 @@ exclude_path = [
   "build",
   "Pods",
 ]
+
+# The DocC site on github.io and the README graphics on raw.githubusercontent.com exist only after
+# this branch is merged and the documentation is deployed. Until then they are checked at the
+# commit that adds them. Delete this block after the first documentation deploy so the real
+# addresses are checked again.
+remap = [
+  '^https://muhittincamdali\.github\.io/iOSFirebaseTools/documentation/.* https://github.com/muhittincamdali/iOSFirebaseTools/tree/cf3ab47c9309a61ab64fc4a2772d628478ae8b60/Sources/iOSFirebaseTools/iOSFirebaseTools.docc',
+  '^https://raw\.githubusercontent\.com/muhittincamdali/iOSFirebaseTools/master/(.*) https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/cf3ab47c9309a61ab64fc4a2772d628478ae8b60/$1',
+]
