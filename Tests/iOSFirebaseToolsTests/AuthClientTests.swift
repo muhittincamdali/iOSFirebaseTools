@@ -179,6 +179,40 @@ struct AuthClientTests {
         #expect(await client.session == nil)
     }
 
+    @Test("The next user's token request does not join a refresh still running for the previous user")
+    func nextUserGetsOwnRefresh() async throws {
+        let gate = AsyncGate()
+        let transport = MockTransport { request, _ in
+            guard request.url.path.hasSuffix("/token") else {
+                let email = request.jsonBody["email"] as? String ?? ""
+                return email.hasPrefix("ada")
+                    ? Fixtures.signInResponse(userID: "user-A", idToken: "A-1", refreshToken: "refresh-A")
+                    : Fixtures.signInResponse(userID: "user-B", idToken: "B-1", refreshToken: "refresh-B")
+            }
+            guard request.bodyText.hasSuffix("refresh-B") else {
+                await gate.wait()
+                return Fixtures.refreshResponse(userID: "user-A", idToken: "A-2")
+            }
+            return Fixtures.refreshResponse(userID: "user-B", idToken: "B-2")
+        }
+        let client = try makeClient(transport)
+        try await client.signIn(email: "ada@example.com", password: "pw")
+        let refreshForA = Task { try await client.idToken(forceRefresh: true) }
+        while transport.requests.count < 2 { await Task.yield() }
+        try await client.signOut()
+        try await client.signIn(email: "bob@example.com", password: "pw")
+
+        let tokenForB = Task { try await client.idToken(forceRefresh: true) }
+        // B's refresh is the fourth request. Bounded, so a B that joined A's refresh fails below
+        // instead of hanging here.
+        for _ in 0..<1_000 where transport.requests.count < 4 { await Task.yield() }
+        await gate.open()
+        #expect(try await tokenForB.value.revealed == "B-2")
+        #expect(try await refreshForA.value.revealed == "A-2")
+        #expect(await client.session?.userID == "user-B")
+        #expect(await client.session?.idToken.revealed == "B-2")
+    }
+
     @Test("A refresh answered for another user is rejected")
     func rejectsForeignRefresh() async throws {
         let transport = MockTransport { request, _ in

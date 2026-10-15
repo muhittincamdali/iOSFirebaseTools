@@ -167,17 +167,18 @@ public actor FirebaseAuthClient {
         return try await refreshedSession().idToken
     }
 
+    // The task belongs to the session it was started for. Signing in or out drops it, so the
+    // next user's callers start their own refresh instead of joining one for the previous user.
     private func refreshedSession() async throws -> AuthSession {
         if let refreshTask { return try await refreshTask.value }
-        let task = Task { try await self.performRefresh() }
+        guard let session = current else { throw AuthError(code: .notSignedIn, message: "No user is signed in") }
+        let task = Task { [generation] in try await self.performRefresh(of: session, startedIn: generation) }
         refreshTask = task
-        defer { refreshTask = nil }
+        defer { if refreshTask == task { refreshTask = nil } }
         return try await task.value
     }
 
-    private func performRefresh() async throws -> AuthSession {
-        guard let session = current else { throw AuthError(code: .notSignedIn, message: "No user is signed in") }
-        let startedIn = generation
+    private func performRefresh(of session: AuthSession, startedIn: Int) async throws -> AuthSession {
         let response: HTTPResponse
         do {
             response = try await send(endpoints.refresh(refreshToken: session.refreshToken))
@@ -214,8 +215,7 @@ public actor FirebaseAuthClient {
             idToken: Secret(body.idToken), refreshToken: Secret(body.refreshToken),
             expiresAt: clock().addingTimeInterval(try AuthBodies.lifetime(body.expiresIn, statusCode: response.statusCode))
         )
-        generation += 1
-        restored = true
+        beginGeneration()
         try await adopt(session)
         return session
     }
@@ -229,11 +229,18 @@ public actor FirebaseAuthClient {
     }
 
     private func endSession() async throws {
-        generation += 1
-        restored = true
+        beginGeneration()
         current = nil
         notify()
         try await store.clear()
+    }
+
+    /// Marks a sign-in or sign-out: work started for the previous session can no longer
+    /// change the state or be joined.
+    private func beginGeneration() {
+        generation += 1
+        restored = true
+        refreshTask = nil
     }
 
     func send(_ request: HTTPRequest) async throws -> HTTPResponse {
