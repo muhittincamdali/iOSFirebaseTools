@@ -190,6 +190,31 @@ struct EmulatorTests {
         #expect(nan?.data["nan"]?.isNaN == true)
     }
 
+    @Test("The README samples work end to end")
+    func readmeSamples() async throws {
+        let auth = FirebaseAuthClient(project: project, store: InMemorySessionStore())
+        let firestore = FirestoreClient(project: project, credentials: .user(auth))
+        let userID = try await currentUserID(with: auth)
+        #expect(try await currentUserID(with: auth) == userID, "the second call reuses the session")
+
+        let path = try await addNote("Written by the README sample", ownerID: userID, to: firestore)
+        try await pinNote(at: path, in: firestore)
+        let notes = try await loadNotes(ownerID: userID, from: firestore)
+        #expect(notes.map(\.data.pinned) == [true])
+        #expect(notes.first?.data.createdAt != nil)
+
+        let newPath = "notes/moved-\(UUID().uuidString)"
+        try await moveNote(from: path, to: newPath, in: firestore)
+        #expect(try await firestore.document(path, as: Note.self) == nil)
+        #expect(try await firestore.document(newPath, as: Note.self)?.data.text == "Written by the README sample")
+        try await deleteNote(at: newPath, in: firestore)
+
+        let token = try await auth.idToken()
+        let verifier = try IDTokenVerifier.emulator(projectID: project.projectID)
+        #expect(try await iOSFirebaseToolsTests.userID(fromAuthorizationHeader: "Bearer \(token.revealed)", verifier: verifier) == userID)
+        await #expect(throws: AuthError.self) { try await signIn(with: auth, email: "nobody@example.com", password: "wrong") }
+    }
+
     @Test("Listing pages through a collection")
     func listsPages() async throws {
         let owner = FirestoreClient(project: project, credentials: .emulatorOwner)
