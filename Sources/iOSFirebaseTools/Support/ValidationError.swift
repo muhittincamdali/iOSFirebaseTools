@@ -33,8 +33,6 @@ enum Limits {
     static let maxDocumentBytes = 1_048_576
     /// Firestore: maximum number of writes in one commit.
     static let maxWritesPerCommit = 500
-    /// Largest JSON response read from Firebase before the request fails.
-    static let maxResponseBytes = 16 * 1_048_576
     /// Largest JSON Web Token accepted for decoding or verification.
     static let maxTokenBytes = 16 * 1_024
     /// Longest e-mail address (RFC 5321 path limit).
