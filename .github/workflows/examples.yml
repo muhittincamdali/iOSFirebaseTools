@@ -1,0 +1,157 @@
+# Repository-specific: runs the package's end-to-end tests and the FirebaseLab UI tests against
+# the Firebase Local Emulator Suite (Emulators/firebase.json), and checks fbcheck on both of its
+# jobs. The shared CI in ci.yml runs the unit tests, which skip the emulator suite.
+name: Examples
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  FIREBASE_TOOLS: firebase-tools@15.11.0
+  PROJECT_ID: demo-iosfirebasetools
+
+jobs:
+  emulator-tests:
+    name: Package against the emulators (macOS)
+    runs-on: macos-26
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          java -version
+
+      - name: Run the emulator suite and the README samples
+        run: |
+          npx --yes "$FIREBASE_TOOLS" emulators:exec --config Emulators/firebase.json --project "$PROJECT_ID" \
+            'swift test --filter EmulatorTests'
+
+  firebase-lab:
+    name: FirebaseLab UI tests (iOS simulator)
+    runs-on: macos-26
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Build and run the UI tests
+        run: |
+          set -o pipefail
+          udid=$(xcrun simctl list devices available --json \
+            | jq -r '[.devices | to_entries[] | select(.key | test("iOS")) | .value[] | select(.name | startswith("iPhone"))] | last | .udid')
+          if [ -z "$udid" ] || [ "$udid" = "null" ]; then
+            echo "::error::No available iPhone simulator on this image"
+            exit 1
+          fi
+          # A cold simulator makes the first app launch exceed Xcode's launch timeout.
+          xcrun simctl bootstatus "$udid" -b
+          npx --yes "$FIREBASE_TOOLS" emulators:exec --config Emulators/firebase.json --project "$PROJECT_ID" \
+            "xcodebuild test -project Examples/FirebaseLab/FirebaseLab.xcodeproj -scheme FirebaseLab \
+              -destination id=$udid -skipPackagePluginValidation -skipMacroValidation -quiet \
+              -resultBundlePath '$RUNNER_TEMP/FirebaseLab.xcresult'"
+
+      - name: Summarise a failed run
+        if: failure()
+        run: |
+          xcrun xcresulttool get test-results summary --path "$RUNNER_TEMP/FirebaseLab.xcresult" || true
+          xcrun xcresulttool get test-results tests --path "$RUNNER_TEMP/FirebaseLab.xcresult" || true
+
+      - name: Upload the result bundle
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: FirebaseLab-xcresult
+          path: ${{ runner.temp }}/FirebaseLab.xcresult
+          retention-days: 7
+
+  fbcheck:
+    name: fbcheck (macOS)
+    runs-on: macos-26
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Build
+        working-directory: Examples/ConfigCheck
+        run: swift build
+
+      - name: Report a plist that belongs to another app
+        working-directory: Examples/ConfigCheck
+        run: |
+          cat > "$RUNNER_TEMP/GoogleService-Info.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <plist version="1.0"><dict>
+            <key>API_KEY</key><string>not-a-key</string>
+            <key>GCM_SENDER_ID</key><string>123</string>
+            <key>BUNDLE_ID</key><string>com.example.notes</string>
+            <key>PROJECT_ID</key><string>notes-prod</string>
+            <key>GOOGLE_APP_ID</key><string>1:999:ios:abc</string>
+          </dict></plist>
+          PLIST
+          status=0
+          swift run fbcheck plist "$RUNNER_TEMP/GoogleService-Info.plist" --bundle-id com.example.notes.dev || status=$?
+          if [ "$status" -ne 1 ]; then
+            echo "::error::fbcheck should exit with 1 for a damaged plist, exited with $status"
+            exit 1
+          fi
+
+      - name: Verify a token from the Authentication emulator
+        working-directory: Examples/ConfigCheck
+        run: |
+          cat > "$RUNNER_TEMP/verify.sh" <<'SCRIPT'
+          set -euo pipefail
+          token=$(curl -sf -X POST "http://$FIREBASE_AUTH_EMULATOR_HOST/identitytoolkit.googleapis.com/v1/accounts:signUp?key=ci" \
+            -H 'Content-Type: application/json' -d '{"returnSecureToken":true}' | jq -r .idToken)
+          swift run fbcheck token "$token" --project "$PROJECT_ID" --emulator
+          SCRIPT
+          npx --yes "$FIREBASE_TOOLS" emulators:exec --config ../../Emulators/firebase.json --only auth \
+            --project "$PROJECT_ID" "bash '$RUNNER_TEMP/verify.sh'"
