@@ -197,6 +197,12 @@ struct EmulatorTests {
         let userID = try await currentUserID(with: auth)
         #expect(try await currentUserID(with: auth) == userID, "the second call reuses the session")
 
+        // The quick start's write: an anonymous user's dictionary passes the Security Rules.
+        let quickStartPath = try await firestore.add(["text": "Hello, Firestore", "ownerID": userID], to: "notes")
+        #expect(quickStartPath.hasPrefix("notes/"))
+        #expect(try await firestore.document(quickStartPath, as: [String: String].self)?.data["text"] == "Hello, Firestore")
+        try await deleteNote(at: quickStartPath, in: firestore)
+
         let path = try await addNote("Written by the README sample", ownerID: userID, to: firestore)
         try await pinNote(at: path, in: firestore)
         let notes = try await loadNotes(ownerID: userID, from: firestore)
