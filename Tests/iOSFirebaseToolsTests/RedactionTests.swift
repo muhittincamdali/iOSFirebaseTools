@@ -52,6 +52,21 @@ struct RedactionTests {
         }
     }
 
+    @Test("Requests and responses print without tokens, passwords or bodies")
+    func transportValuesAreRedacted() {
+        let request = HTTPRequest(method: "POST", url: URL(string: "https://securetoken.googleapis.com/v1/token?key=k")!,
+                                  headers: ["Authorization": "Bearer \(token)"],
+                                  body: Data("grant_type=refresh_token&refresh_token=\(refresh)&password=hunter2".utf8))
+        let response = HTTPResponse(statusCode: 200, body: Data(#"{"id_token":"\#(token)","refresh_token":"\#(refresh)"}"#.utf8))
+        for value in [request as Any, response as Any] {
+            for text in renderings(of: value) {
+                #expect(!text.contains("c2VjcmV0") && !text.contains("refresh-token-value") && !text.contains("hunter2"), "\(text)")
+            }
+        }
+        #expect(request.description.contains("Authorization"))
+        #expect(response.description == "HTTPResponse(200, headers: [], body: \(response.body.count) bytes)")
+    }
+
     @Test("Codable keeps the full value for the keychain")
     func codableRoundTrip() throws {
         let data = try JSONEncoder().encode(session)

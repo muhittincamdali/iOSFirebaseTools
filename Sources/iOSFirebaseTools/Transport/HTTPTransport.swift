@@ -29,6 +29,35 @@ public struct HTTPResponse: Sendable, Hashable {
     }
 }
 
+// Requests carry ID tokens, refresh tokens and passwords, and responses carry new tokens. A
+// transport that logs them must not leak those: the text forms show the method, URL, header names
+// and body size only.
+extension HTTPRequest: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    public var description: String {
+        "HTTPRequest(\(method) \(url.absoluteString), headers: \(headers.keys.sorted()), body: \(body?.count ?? 0) bytes)"
+    }
+
+    public var debugDescription: String { description }
+
+    public var customMirror: Mirror {
+        Mirror(self, children: ["method": method, "url": url, "headerNames": headers.keys.sorted(), "bodySize": body?.count ?? 0],
+               displayStyle: .struct)
+    }
+}
+
+extension HTTPResponse: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    public var description: String {
+        "HTTPResponse(\(statusCode), headers: \(headers.keys.sorted()), body: \(body.count) bytes)"
+    }
+
+    public var debugDescription: String { description }
+
+    public var customMirror: Mirror {
+        Mirror(self, children: ["statusCode": statusCode, "headerNames": headers.keys.sorted(), "bodySize": body.count],
+               displayStyle: .struct)
+    }
+}
+
 /// Sends the clients' requests. ``URLSessionTransport`` is the default; tests and previews
 /// pass their own implementation to answer without a network.
 public protocol HTTPTransport: Sendable {
