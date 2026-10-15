@@ -13,7 +13,7 @@ import Foundation
 /// by default) and restored by ``restoreSession()``.
 public actor FirebaseAuthClient {
     public nonisolated let project: FirebaseProject
-    private let endpoints: AuthEndpoints
+    let endpoints: AuthEndpoints
     private let transport: any HTTPTransport
     private let store: any SessionStore
     private let clock: @Sendable () -> Date
@@ -174,7 +174,11 @@ public actor FirebaseAuthClient {
     // MARK: - Helpers
 
     private func startSession(_ request: HTTPRequest, anonymous: Bool) async throws -> AuthSession {
-        let response = try await send(request)
+        try await startSession(from: send(request), anonymous: anonymous)
+    }
+
+    /// Starts a session from a successful sign-in response.
+    func startSession(from response: HTTPResponse, anonymous: Bool) async throws -> AuthSession {
         let body = try JSONBody.decode(AuthBodies.SignInResponse.self, from: response)
         let session = AuthSession(
             userID: body.localId, email: body.email?.isEmpty == false ? body.email : nil, isAnonymous: anonymous,
@@ -203,7 +207,7 @@ public actor FirebaseAuthClient {
         try await store.clear()
     }
 
-    private func send(_ request: HTTPRequest) async throws -> HTTPResponse {
+    func send(_ request: HTTPRequest) async throws -> HTTPResponse {
         let response = try await transport.send(request)
         guard (200..<300).contains(response.statusCode) else { throw AuthError.from(response) }
         return response

@@ -77,6 +77,24 @@ struct EmulatorTests {
         #expect(claims.signInProvider == "anonymous")
     }
 
+    @Test("Sign in with Apple creates a user with the apple.com provider")
+    func appleSignIn() async throws {
+        let auth = FirebaseAuthClient(project: project, store: InMemorySessionStore())
+        let nonce = AppleSignInNonce()
+        let now = Date().timeIntervalSince1970.rounded(.down)
+        let appleUser = "apple-\(UUID().uuidString.prefix(8).lowercased())"
+        // The emulator accepts unsigned provider tokens; Apple's real ones are checked by Firebase.
+        let idToken = Fixtures.unsignedToken([
+            "iss": "https://appleid.apple.com", "aud": "io.github.muhittincamdali.FirebaseLab", "sub": appleUser,
+            "email": "\(appleUser)@privaterelay.appleid.com", "nonce": nonce.sha256, "iat": now, "exp": now + 600,
+        ])
+        let session = try await auth.signIn(with: .apple(idToken: idToken, rawNonce: nonce.raw))
+        #expect(session.email == "\(appleUser)@privaterelay.appleid.com")
+        let claims = try await IDTokenVerifier.emulator(projectID: project.projectID).verify(session.idToken.revealed)
+        #expect(claims.signInProvider == "apple.com")
+        #expect(try await auth.signIn(with: .apple(idToken: idToken, rawNonce: nonce.raw)).userID == session.userID)
+    }
+
     @Test("Notes: create, read, query, update with transforms and delete under Security Rules")
     func notesLifecycle() async throws {
         let (_, firestore, session) = try await newUser()

@@ -9,7 +9,7 @@ struct AuthEndpoints: Sendable {
         case signInWithPassword = "accounts:signInWithPassword"
         case sendOobCode = "accounts:sendOobCode"
         case delete = "accounts:delete"
-        case update = "accounts:update"
+        case signInWithIdp = "accounts:signInWithIdp"
     }
 
     func identityToolkit(_ method: Method, body: some Encodable, locale: String? = nil) throws -> HTTPRequest {
