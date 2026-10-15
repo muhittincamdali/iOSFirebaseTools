@@ -8,7 +8,8 @@ An iOS app for notes that belong to their author:
 
 - create an account, sign in with e-mail and password, or continue without an account;
 - stay signed in across launches (the session is in the keychain);
-- write, pin and delete notes in Cloud Firestore, with the creation time set by the server;
+- write, pin and delete notes in Cloud Firestore (swipe a row or long-press it for its menu),
+  with the creation time set by the server;
 - see the user, the sign-in provider read from the ID token's claims, and the token itself only
   as `Secret(redacted, … characters)`.
 
@@ -28,8 +29,9 @@ enable **Email/Password** and **Anonymous** sign-in and Cloud Firestore with the
 the Firebase console.
 
 The UI tests in `FirebaseLabUITests` run against the emulators: they sign up, add and pin notes,
-check that a second user sees none of them and that they come back after signing in again, show
-the error for a wrong password, and sign in anonymously.
+check that a second user sees none of them and that they come back after signing in again,
+relaunch the app and find the session restored from the keychain, show the error for a wrong
+password, and sign in anonymously.
 
 ```sh
 firebase emulators:exec --config Emulators/firebase.json --project demo-iosfirebasetools \
@@ -37,8 +39,8 @@ firebase emulators:exec --config Emulators/firebase.json --project demo-iosfireb
    -destination 'platform=iOS Simulator,name=iPhone 17 Pro'"
 ```
 
-[`scripts/capture-screenshots.sh`](../scripts/capture-screenshots.sh) runs the same tests in
-light and dark appearance to make the README screenshots.
+[`scripts/capture-screenshots.sh`](../scripts/capture-screenshots.sh) runs the sign-up test in
+light and dark appearance to make the README screenshots in `docs/images/`.
 
 The README samples live in
 [`FirebaseLab/ReadmeSamples.swift`](FirebaseLab/FirebaseLab/ReadmeSamples.swift). The app uses
