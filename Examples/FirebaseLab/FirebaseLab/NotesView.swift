@@ -25,6 +25,12 @@ struct NotesView: View {
                             }
                             .tint(.labBlue)
                         }
+                        .contextMenu {
+                            Button(note.data.pinned ? "Unpin" : "Pin", systemImage: note.data.pinned ? "pin.slash" : "pin") {
+                                Task { await model.togglePin(note) }
+                            }
+                            Button("Delete", systemImage: "trash", role: .destructive) { Task { await model.delete(note) } }
+                        }
                 }
             }
             .overlay {
