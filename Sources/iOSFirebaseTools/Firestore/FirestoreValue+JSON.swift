@@ -3,7 +3,7 @@ import Foundation
 /// The REST API's JSON form of a value: an object with exactly one key, such as
 /// `{"integerValue": "42"}` or `{"mapValue": {"fields": {...}}}`.
 extension FirestoreValue: Codable {
-    private enum Key: String, CodingKey {
+    private enum TypeKey: String, CodingKey {
         case nullValue, booleanValue, integerValue, doubleValue, timestampValue, stringValue
         case bytesValue, referenceValue, geoPointValue, arrayValue, mapValue
     }
@@ -17,7 +17,7 @@ extension FirestoreValue: Codable {
     }
 
     public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: Key.self)
+        let container = try decoder.container(keyedBy: TypeKey.self)
         let keys = container.allKeys
         guard keys.count == 1, let key = keys.first else {
             throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath,
@@ -26,7 +26,7 @@ extension FirestoreValue: Codable {
         self = try Self.decode(key, from: container)
     }
 
-    private static func decode(_ key: Key, from container: KeyedDecodingContainer<Key>) throws -> FirestoreValue {
+    private static func decode(_ key: TypeKey, from container: KeyedDecodingContainer<TypeKey>) throws -> FirestoreValue {
         switch key {
         case .nullValue: return .null
         case .booleanValue: return .bool(try container.decode(Bool.self, forKey: key))
@@ -56,7 +56,7 @@ extension FirestoreValue: Codable {
 
     // A decimal string in Int64's range. Int64(String) returns nil instead of trapping on
     // overflow; numbers are accepted too, but only when they are exact integers.
-    private static func decodeInteger(_ container: KeyedDecodingContainer<Key>) throws -> Int64 {
+    private static func decodeInteger(_ container: KeyedDecodingContainer<TypeKey>) throws -> Int64 {
         if let text = try? container.decode(String.self, forKey: .integerValue) {
             guard text.utf8.count <= 20, let value = Int64(text) else {
                 throw DecodingError.dataCorruptedError(forKey: .integerValue, in: container,
@@ -68,7 +68,7 @@ extension FirestoreValue: Codable {
     }
 
     // proto3 JSON writes NaN and the infinities as strings.
-    private static func decodeDouble(_ container: KeyedDecodingContainer<Key>) throws -> Double {
+    private static func decodeDouble(_ container: KeyedDecodingContainer<TypeKey>) throws -> Double {
         if let text = try? container.decode(String.self, forKey: .doubleValue) {
             switch text {
             case "NaN": return .nan
@@ -83,7 +83,7 @@ extension FirestoreValue: Codable {
     }
 
     public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: Key.self)
+        var container = encoder.container(keyedBy: TypeKey.self)
         switch self {
         case .null: try container.encodeNil(forKey: .nullValue)
         case let .bool(value): try container.encode(value, forKey: .booleanValue)
