@@ -1,2 +1,16 @@
 .DS_Store
 .build/
+.swiftpm/
+DerivedData/
+build/
+xcuserdata/
+*.xcuserstate
+Package.resolved
+
+# Firebase Local Emulator Suite logs
+firestore-debug.log
+firebase-debug.log
+ui-debug.log
+
+# lychee link checker cache
+.lycheecache

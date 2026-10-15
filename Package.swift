@@ -1,24 +1,22 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
     name: "iOSFirebaseTools",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v13)
+        .iOS(.v17),
+        .macOS(.v14),
+        .tvOS(.v17),
+        .watchOS(.v10),
+        .visionOS(.v1)
     ],
     products: [
-        .library(name: "iOSFirebaseTools", targets: ["iOSFirebaseTools"]),
+        .library(name: "iOSFirebaseTools", targets: ["iOSFirebaseTools"])
     ],
-    dependencies: [],
     targets: [
         .target(
             name: "iOSFirebaseTools",
-            dependencies: [],
-            path: "Sources/iOSFirebaseTools",
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            path: "Sources/iOSFirebaseTools"
         ),
         .testTarget(
             name: "iOSFirebaseToolsTests",
