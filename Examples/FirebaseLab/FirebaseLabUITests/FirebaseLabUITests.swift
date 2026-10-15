@@ -87,9 +87,9 @@ final class FirebaseLabUITests: XCTestCase {
 
         fill(email: email, password: "not the password")
         submit("sign-in")
-        let message = app.descendants(matching: .any).matching(identifier: "message").firstMatch
-        XCTAssertTrue(message.waitForExistence(timeout: 10))
-        XCTAssertTrue(message.label.contains("Wrong e-mail or password"), message.label)
+        // On some iOS versions the "message" identifier lands on the Label's icon, so look for the text.
+        let message = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Wrong e-mail or password")).firstMatch
+        XCTAssertTrue(message.waitForExistence(timeout: 10), "No error was shown\n\(app.debugDescription)")
     }
 
     func testContinueWithoutAnAccount() throws {
@@ -136,7 +136,11 @@ final class FirebaseLabUITests: XCTestCase {
         let field = app.textFields["new-note"]
         focus(field)
         field.typeText(text)
-        app.buttons["add-note"].tap()
+        // The button stays disabled while the first load of the notes is still running.
+        let add = app.buttons["add-note"]
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: add)
+        XCTAssertEqual(XCTWaiter().wait(for: [enabled], timeout: 15), .completed, "The Add button stayed disabled")
+        add.tap()
         XCTAssertTrue(noteCell(text).waitForExistence(timeout: 10), "\(text) was not added")
     }
 
