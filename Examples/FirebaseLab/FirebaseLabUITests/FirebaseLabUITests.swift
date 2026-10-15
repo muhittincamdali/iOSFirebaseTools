@@ -26,10 +26,7 @@ final class FirebaseLabUITests: XCTestCase {
         for text in ["Book the venue for Saturday", "Buy oat milk", "Call the dentist"] {
             addNote(text)
         }
-        dismissKeyboard()
-        let venue = noteCell("Book the venue for Saturday")
-        venue.swipeRight()
-        app.buttons["Pin"].tap()
+        menuItem("Pin", on: noteCell("Book the venue for Saturday")).tap()
         XCTAssertTrue(app.images["Pinned"].waitForExistence(timeout: 10), "The note was not pinned")
         let firstNote = app.cells.element(boundBy: 0).staticTexts.element(boundBy: 0).label
         XCTAssertTrue(firstNote.hasPrefix("Book the venue"), "Pinned notes come first, found \(firstNote)")
@@ -62,12 +59,23 @@ final class FirebaseLabUITests: XCTestCase {
         fill(email: email, password: "correct horse")
         submit("sign-in")
         XCTAssertTrue(noteCell("Only mine").waitForExistence(timeout: 15), "The note did not survive signing out and in")
-        dismissKeyboard()
-        noteCell("Only mine").swipeLeft()
-        // A long swipe deletes at once; a short one shows the Delete button.
-        let delete = app.buttons["Delete"]
-        if delete.waitForExistence(timeout: 2) { delete.tap() }
+        menuItem("Delete", on: noteCell("Only mine")).tap()
         XCTAssertTrue(app.staticTexts["No Notes Yet"].waitForExistence(timeout: 10))
+    }
+
+    /// The session is saved by KeychainSessionStore, so a relaunch opens the notes directly.
+    func testSessionSurvivesRelaunch() throws {
+        fill(email: Self.newEmail(), password: "correct horse")
+        submit("sign-up")
+        XCTAssertTrue(app.navigationBars["Notes"].waitForExistence(timeout: 15))
+        addNote("Still here after a relaunch")
+
+        app.terminate()
+        app.launchArguments = []
+        app.launch()
+        XCTAssertTrue(noteCell("Still here after a relaunch").waitForExistence(timeout: 15),
+                      "The keychain session was not restored")
+        XCTAssertFalse(app.textFields["email"].exists)
     }
 
     func testWrongPasswordShowsAnError() throws {
@@ -105,10 +113,10 @@ final class FirebaseLabUITests: XCTestCase {
     private func fill(email: String, password: String) {
         let emailField = app.textFields["email"]
         XCTAssertTrue(emailField.waitForExistence(timeout: 10))
-        emailField.tap()
+        focus(emailField)
         emailField.typeText(email)
         let passwordField = app.secureTextFields["password"]
-        passwordField.tap()
+        focus(passwordField)
         passwordField.typeText(password)
     }
 
@@ -126,13 +134,38 @@ final class FirebaseLabUITests: XCTestCase {
 
     private func addNote(_ text: String) {
         let field = app.textFields["new-note"]
-        field.tap()
+        focus(field)
         field.typeText(text)
         app.buttons["add-note"].tap()
         XCTAssertTrue(noteCell(text).waitForExistence(timeout: 10), "\(text) was not added")
     }
 
-    /// Swipes on list rows are unreliable while the keyboard is up.
+    /// Taps a text field until it has keyboard focus. A late system sheet, such as "Save
+    /// Password?", can take the first tap.
+    private func focus(_ field: XCUIElement) {
+        for _ in 0..<3 {
+            dismissSavePassword(timeout: 0)
+            field.tap()
+            if (field.value(forKey: "hasKeyboardFocus") as? Bool) == true { return }
+            Thread.sleep(forTimeInterval: 1)
+        }
+        XCTFail("\(field) did not get keyboard focus\n\(app.debugDescription)")
+    }
+
+    /// Opens a row's context menu and returns one of its buttons.
+    private func menuItem(_ title: String, on cell: XCUIElement) -> XCUIElement {
+        let item = app.buttons[title].firstMatch
+        for _ in 0..<3 {
+            dismissSavePassword(timeout: 0)
+            dismissKeyboard()
+            cell.press(forDuration: 1.5)
+            if item.waitForExistence(timeout: 3) { return item }
+        }
+        XCTFail("The context menu did not show \(title)\n\(app.debugDescription)")
+        return item
+    }
+
+    /// Long presses on list rows are unreliable while the keyboard is up.
     private func dismissKeyboard() {
         let done = app.keyboards.buttons["Done"]
         if done.exists { done.tap() }
