@@ -1,0 +1,44 @@
+{
+  "name": "iOSFirebaseTools",
+  "repository": "muhittincamdali/iOSFirebaseTools",
+  "branch": "master",
+  "tagline": {
+    "en": "Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."
+  },
+  "tags": {
+    "en": [
+      "Swift 6",
+      "Firebase",
+      "5 platforms",
+      "No dependencies"
+    ]
+  },
+  "motif": "code",
+  "buttons": [
+    "start",
+    "docs",
+    "examples"
+  ],
+  "links": {
+    "docs": "https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/",
+    "examples": "Examples/"
+  },
+  "languages": [
+    "en",
+    "tr",
+    "zh-CN",
+    "ja",
+    "ko",
+    "es",
+    "de",
+    "fr",
+    "pt-BR",
+    "ru"
+  ],
+  "docc": {
+    "targets": [
+      "iOSFirebaseTools"
+    ]
+  },
+  "socialTheme": "dark"
+}
