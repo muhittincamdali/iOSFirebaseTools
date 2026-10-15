@@ -1,517 +1,363 @@
+<!-- brand:start -->
+
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
+
+<!-- lang-selector:start -->
+<p align="center"><a href="README.md">English</a> · <a href="README.tr.md">Türkçe</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.ko.md">한국어</a> · <a href="README.es.md">Español</a> · <a href="README.de.md">Deutsch</a> · <a href="README.fr.md">Français</a> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.ru.md">Русский</a></p>
+<!-- lang-selector:end -->
+
 <p align="center">
-  <img src="https://img.shields.io/badge/Swift-6.0-FA7343?style=for-the-badge&logo=swift&logoColor=white" alt="Swift 6.0"/>
-  <img src="https://img.shields.io/badge/Platform-iOS%20|%20macOS%20|%20visionOS-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Platform"/>
-  <img src="https://img.shields.io/badge/Standard-Unified%20Core-5856D6?style=for-the-badge" alt="Standard"/>
+<a href="https://github.com/muhittincamdali/iOSFirebaseTools/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/iOSFirebaseTools/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+<a href="https://github.com/muhittincamdali/iOSFirebaseTools/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-version-light.svg" alt="Latest version: v1.0.0"></picture></a>
+<a href="https://github.com/muhittincamdali/iOSFirebaseTools/blob/master/Package.swift"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-platforms-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-platforms-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-platforms-light.svg" alt="Supported platforms: iOS 17+ · macOS 14+ · tvOS 17+ · watchOS 10+ · visionOS 1+"></picture></a>
+<a href="https://github.com/muhittincamdali/iOSFirebaseTools/blob/master/Package.swift"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-language-light.svg" alt="Language version: Swift 6.2+"></picture></a>
+<a href="https://github.com/muhittincamdali/iOSFirebaseTools/blob/master/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/badge-license-light.svg" alt="License: MIT"></picture></a>
 </p>
 
----
+<p align="center">
+<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-start-en-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-start-en-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-start-en-light.svg" alt="Get started"></picture></a>
+<a href="https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-docs-en-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-docs-en-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-docs-en-light.svg" alt="Documentation"></picture></a>
+<a href="https://github.com/muhittincamdali/iOSFirebaseTools/tree/master/Examples"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-examples-en-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-examples-en-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/button-examples-en-light.svg" alt="Examples"></picture></a>
+</p>
 
-> **🛡️ PART OF THE 2026 UNIFIED CORE**
-> This repository is a verified component of 'The Endless March' initiative. Purified for Swift 6, zero-dependency, and engineered for maximum hardware saturation.
-> 
-> *Flagship Engines:* [SwiftNetwork](https://github.com/muhittincamdali/SwiftNetwork) | [SwiftAI](https://github.com/muhittincamdali/SwiftAI) | [LiquidGlassKit](https://github.com/muhittincamdali/LiquidGlassKit)
+<!-- brand:end -->
 
----
+iOSFirebaseTools is a Swift package for Firebase Authentication and Cloud Firestore that talks to
+Firebase's REST APIs with `URLSession` instead of embedding the Firebase SDK. It is for code where
+the SDK does not fit or does not exist: App Clips and widgets with tight size and memory budgets,
+watchOS, command-line tools, and Swift servers that need to check the ID token an app sends. It
+signs users in and keeps their token fresh, maps `Codable` models to Firestore documents, runs
+against the Firebase Local Emulator Suite, and verifies ID tokens on a server. It has no
+dependencies outside Apple's SDK.
 
-# iOSFirebaseTools
+## Highlights
 
-## 🚀 Killer Feature: Firebase Auto-Migrator
-Ready to drop the 45MB binary bloat? Use the included `firebase_migrator.swift` to automatically scan and convert your Firestore/Realtime DB calls into high-performance, zero-dependency `SwiftNetwork` WebSocket streams.
+- **Sign-in that stays signed in** — e-mail and password, anonymous, Sign in with Apple and
+  Google; the session is kept in the keychain and the ID token is refreshed before it expires,
+  with one request for any number of concurrent callers.
+- **Firestore with your own types** — read, query, write and batch `Codable` models; `Date`
+  becomes a timestamp, and server timestamps and increments are one argument.
+- **Errors instead of crashes** — an integer that overflows `Int64`, a NaN in an `Int` field, a
+  date in the year 10000 or a 20 MB response throws a typed error; paths, field names and limits
+  are checked against Firebase's rules before a request is sent.
+- **ID tokens checked on your server** — `IDTokenVerifier` applies Firebase's rules for RS256
+  tokens with Google's published keys, which the Admin SDKs do for other languages but not Swift.
+- **Tokens never print** — sessions and tokens show only their length in `print`, `dump`, logs
+  and the debugger.
+- **Tested end to end** — 104 Swift Testing tests, 9 of them against the Authentication and
+  Firestore emulators with Security Rules, and five UI tests of the example app on a simulator.
 
-```
-    ███████╗██╗██████╗ ███████╗██████╗  █████╗ ███████╗███████╗
-    ██╔════╝██║██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝
-    █████╗  ██║██████╔╝█████╗  ██████╔╝███████║███████╗█████╗  
-    ██╔══╝  ██║██╔══██╗██╔══╝  ██╔══██╗██╔══██║╚════██║██╔══╝  
-    ██║     ██║██║  ██║███████╗██████╔╝██║  ██║███████║███████╗
-    ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝
-                                                                
-         ████████╗ ██████╗  ██████╗ ██╗     ███████╗            
-            ██║   ██╔═══██╗██╔═══██╗██║     ██╔════╝            
-            ██║   ██║   ██║██║   ██║██║     ███████╗            
-            ██║   ██║   ██║██║   ██║██║     ╚════██║            
-            ██║   ╚██████╔╝╚██████╔╝███████╗███████║            
-            ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚══════╝            
-                                                                
-                🔥 iOS Firebase Integration Toolkit 🔥
-```
+## Quick start
 
-<div align="center">
+**1. Add the package**
 
-[![CI](https://github.com/muhittincamdali/iOSFirebaseTools/actions/workflows/ci.yml/badge.svg)](https://github.com/muhittincamdali/iOSFirebaseTools/actions/workflows/ci.yml)
-[![Swift](https://img.shields.io/badge/Swift-5.9+-F05138?logo=swift&logoColor=white)](https://swift.org)
-[![iOS](https://img.shields.io/badge/iOS-15.0+-000000?logo=apple&logoColor=white)](https://developer.apple.com/ios/)
-[![Firebase](https://img.shields.io/badge/Firebase-10.0+-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
-[![SPM](https://img.shields.io/badge/SPM-Compatible-FA7343?logo=swift&logoColor=white)](https://swift.org/package-manager/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+In Xcode, choose **File › Add Package Dependencies…** and enter the repository URL:
 
-**Production-ready Firebase wrappers for iOS • Clean APIs • Type-safe • Battle-tested**
-
-[Features](#-features) • [Quick Start](#-quick-start) • [Services](#-firebase-services) • [Examples](#-code-examples) • [Docs](#-documentation)
-
-</div>
-
----
-
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Features](#-features)
-- [Quick Start](#-quick-start)
-- [Firebase Services](#-firebase-services)
-- [Code Examples](#-code-examples)
-- [Documentation](#-documentation)
-- [Contributing](#contributing)
-- [License](#license)
-- [Star History](#-star-history)
-
----
-
-## 🎯 Overview
-
-**iOSFirebaseTools** provides a clean, Swift-native abstraction layer over Firebase SDK. Instead of dealing with Firebase's verbose APIs, you get simple, chainable interfaces that feel like native Swift.
-
-```swift
-// Before: Firebase SDK
-Auth.auth().signIn(withEmail: email, password: password) { result, error in
-    if let error = error {
-        // handle error
-    }
-    guard let user = result?.user else { return }
-    // use user
-}
-
-// After: iOSFirebaseTools
-FireAuth.signIn(email: email, password: password)
-    .onSuccess { user in print("Welcome \(user.displayName)") }
-    .onError { error in print(error.localizedDescription) }
+```text
+https://github.com/muhittincamdali/iOSFirebaseTools.git
 ```
 
----
-
-## ⚔️ The Brutal Truth: Firebase vs. Native
-Firebase is powerful, but it comes at a massive cost in binary size and cold-start latency. Use this toolkit to manage the transition to a truly native architecture.
-
-```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#FFCA28', 'edgeLabelBackground':'#1e1e1e', 'tertiaryColor': '#FF3B30'}}}%%
-xychart-beta
-    title "Binary Bloat: Added Size (MB)"
-    x-axis ["Firebase Full SDK", "SwiftNetwork + SwiftCache"]
-    y-axis "Lower is Better" 0 --> 50
-    bar [42.6, 0.4]
-```
-
----
-
-## ✨ Features
-
-- 🔐 **Unified Auth** — Email, Google, Apple, Phone auth with single API
-- 📦 **Firestore ORM** — Codable models mapped directly to documents
-- 📁 **Storage Helpers** — Upload/download with progress tracking
-- 💥 **Crashlytics+** — Custom keys, logs, and non-fatal reporting
-- 📊 **Analytics DSL** — Type-safe event logging
-- 🎛️ **Remote Config** — Fetch & activate with defaults
-- ⚡ **Cloud Functions** — Callable functions with typed responses
-- 🔄 **Combine Support** — Publishers for reactive streams
-- 🧪 **Testable** — Protocol-based for easy mocking
-
----
-
-## 📋 Firebase Services Matrix
-
-| Service | Status | Features |
-|---------|--------|----------|
-| **Authentication** | ✅ Full | Email, Google, Apple, Phone, Anonymous, Link accounts |
-| **Cloud Firestore** | ✅ Full | CRUD, Queries, Real-time listeners, Codable mapping |
-| **Cloud Storage** | ✅ Full | Upload, Download, Progress, Metadata, Delete |
-| **Crashlytics** | ✅ Full | Crash reports, Custom keys, Logs, Non-fatals |
-| **Analytics** | ✅ Full | Events, User properties, Screen tracking |
-| **Remote Config** | ✅ Full | Fetch, Activate, Defaults, Real-time updates |
-| **Cloud Functions** | ✅ Full | HTTPS callable, Typed request/response |
-| **Performance** | 🔶 Partial | Custom traces, HTTP metrics |
-| **Cloud Messaging** | 🔶 Partial | Token management, Topic subscription |
-
----
-
-## 🏗️ Architecture
-
-```mermaid
-graph TB
-    subgraph App["📱 Your App"]
-        UI[SwiftUI / UIKit]
-        VM[ViewModels]
-    end
-    
-    subgraph FT["🔥 iOSFirebaseTools"]
-        FA[FireAuth]
-        FS[FireStore]
-        FST[FireStorage]
-        FC[FireCrash]
-        FAN[FireAnalytics]
-        FRC[FireConfig]
-        FF[FireFunctions]
-    end
-    
-    subgraph Firebase["☁️ Firebase SDK"]
-        AUTH[Auth]
-        STORE[Firestore]
-        STORAGE[Storage]
-        CRASH[Crashlytics]
-        ANALYTICS[Analytics]
-        CONFIG[RemoteConfig]
-        FUNCTIONS[Functions]
-    end
-    
-    UI --> VM
-    VM --> FA
-    VM --> FS
-    VM --> FST
-    VM --> FAN
-    
-    FA --> AUTH
-    FS --> STORE
-    FST --> STORAGE
-    FC --> CRASH
-    FAN --> ANALYTICS
-    FRC --> CONFIG
-    FF --> FUNCTIONS
-    
-    style FT fill:#FFCA28,stroke:#F57C00,color:#000
-    style Firebase fill:#1976D2,stroke:#0D47A1,color:#fff
-```
-
----
-
-## 🚀 Quick Start
-
-### Installation
-
-**Swift Package Manager**
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/muhittincamdali/iOSFirebaseTools.git", from: "1.0.0")
-]
-```
-
-### Setup
-
-1. Add `GoogleService-Info.plist` to your project
-2. Initialize in `AppDelegate` or `@main`:
+**2. Import the module**
 
 ```swift
 import iOSFirebaseTools
+```
 
-@main
-struct MyApp: App {
-    init() {
-        FirebaseToolsManager.configure()
-    }
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
+**3. Use it**
+
+Add your project's `GoogleService-Info.plist` to the app target, enable **Anonymous** sign-in
+and create a Cloud Firestore database in the [Firebase console](https://console.firebase.google.com),
+with [Security Rules](Emulators/firestore.rules) that let users write their own notes. Then
+replace the `ContentView.swift` of a new iOS app with:
+
+```swift
+import iOSFirebaseTools
+import SwiftUI
+
+struct ContentView: View {
+    @State private var status = "Nothing saved yet"
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(status)
+            Button("Save a note to Firestore") {
+                Task { status = await saveFirstNote() }
+            }
         }
+        .padding()
+    }
+}
+
+func saveFirstNote() async -> String {
+    do {
+        // Reads the GoogleService-Info.plist in your app target.
+        let project = try GoogleServiceInfo.inMainBundle().project()
+        let auth = FirebaseAuthClient(project: project)
+        let firestore = FirestoreClient(project: project, credentials: .user(auth))
+
+        let session = try await auth.signInAnonymously()
+        let note = ["text": "Hello, Firestore", "ownerID": session.userID]
+        let path = try await firestore.add(note, to: "notes")
+        return "Saved \(path)"
+    } catch {
+        return "Could not save: \(error)"
     }
 }
 ```
 
----
+Run the app and tap the button: the text shows `Saved notes/…` and the note appears under
+**Firestore Database** in the console. No Firebase project yet? The same code runs against the
+emulators on your Mac; see [Testing with the emulators](#testing-with-the-emulators).
 
-## 📖 Code Examples
+## Installation
 
-### 🔐 Authentication
+### Swift Package Manager
+
+In Xcode, choose **File › Add Package Dependencies…** and enter the repository URL:
+
+```text
+https://github.com/muhittincamdali/iOSFirebaseTools.git
+```
+
+Or add it to the `dependencies` in your `Package.swift`:
 
 ```swift
-// Email sign in
-let user = try await FireAuth.signIn(email: "user@example.com", password: "secret")
+dependencies: [
+    .package(url: "https://github.com/muhittincamdali/iOSFirebaseTools.git", from: "2.0.0")
+],
+targets: [
+    .target(name: "YourApp", dependencies: [
+        .product(name: "iOSFirebaseTools", package: "iOSFirebaseTools")
+    ])
+]
+```
 
-// Google sign in
-let user = try await FireAuth.signInWithGoogle(presenting: viewController)
+## Usage
 
-// Apple sign in
-let user = try await FireAuth.signInWithApple()
+The samples below are copied from
+[`Examples/FirebaseLab/FirebaseLab/ReadmeSamples.swift`](Examples/FirebaseLab/FirebaseLab/ReadmeSamples.swift),
+which the example app and the package's tests compile; the emulator tests run them.
 
-// Phone auth
-try await FireAuth.verifyPhone("+1234567890")
-let user = try await FireAuth.confirmCode("123456")
+### Configure the clients once
 
-// Sign out
-try FireAuth.signOut()
+```swift
+func makeClients() throws -> (FirebaseAuthClient, FirestoreClient) {
+    // The GoogleService-Info.plist you downloaded from the Firebase console.
+    let project = try GoogleServiceInfo.inMainBundle().project()
+    let auth = FirebaseAuthClient(project: project) // keeps the session in the keychain
+    let firestore = FirestoreClient(project: project, credentials: .user(auth))
+    return (auth, firestore)
+}
 
-// Auth state listener
-FireAuth.onAuthStateChanged { user in
-    if let user = user {
-        print("Signed in: \(user.uid)")
-    } else {
-        print("Signed out")
+func checkConfiguration() throws {
+    let info = try GoogleServiceInfo.inMainBundle()
+    for problem in info.problems(bundleIdentifier: Bundle.main.bundleIdentifier) {
+        // For example: BUNDLE_ID is com.example.notes but the app is com.example.notes.dev
+        assertionFailure(problem.description)
     }
 }
 ```
 
-### 📦 Cloud Firestore
+### Sign in
 
 ```swift
-// Define your model
-struct User: FirestoreDocument {
-    @DocumentID var id: String?
-    var name: String
-    var email: String
-    var createdAt: Date
-}
-
-// Create
-let user = User(name: "John", email: "john@example.com", createdAt: Date())
-try await FireStore.collection("users").add(user)
-
-// Read
-let user: User = try await FireStore.collection("users").document("abc123").get()
-
-// Query
-let users: [User] = try await FireStore.collection("users")
-    .whereField("age", isGreaterThan: 21)
-    .order(by: "createdAt", descending: true)
-    .limit(to: 10)
-    .get()
-
-// Real-time listener
-FireStore.collection("users").document("abc123")
-    .listen { (user: User) in
-        print("User updated: \(user.name)")
-    }
-
-// Batch write
-let batch = FireStore.batch()
-batch.set(user1, in: "users")
-batch.update(["status": "active"], in: "users/abc123")
-batch.delete("users/xyz789")
-try await batch.commit()
-```
-
-### 📁 Cloud Storage
-
-```swift
-// Upload image
-let url = try await FireStorage.upload(
-    data: imageData,
-    path: "avatars/\(userId).jpg",
-    onProgress: { progress in
-        print("Upload: \(Int(progress * 100))%")
-    }
-)
-
-// Download
-let data = try await FireStorage.download(path: "avatars/user123.jpg")
-
-// Get download URL
-let url = try await FireStorage.downloadURL(path: "documents/report.pdf")
-
-// Delete
-try await FireStorage.delete(path: "temp/old-file.txt")
-```
-
-### 💥 Crashlytics
-
-```swift
-// Set user identifier
-FireCrash.setUserID("user_12345")
-
-// Custom keys
-FireCrash.setCustomValue("premium", forKey: "subscription_type")
-FireCrash.setCustomValue(3, forKey: "items_in_cart")
-
-// Breadcrumb logs
-FireCrash.log("User tapped checkout button")
-
-// Record non-fatal
-FireCrash.record(error: PaymentError.cardDeclined)
-
-// Record with extra context
-FireCrash.record(
-    error: NetworkError.timeout,
-    userInfo: ["endpoint": "/api/users", "attempt": 3]
-)
-```
-
-### 📊 Analytics
-
-```swift
-// Log events
-FireAnalytics.log(.screenView(screenName: "Home", screenClass: "HomeViewController"))
-FireAnalytics.log(.selectContent(contentType: "product", itemId: "SKU123"))
-FireAnalytics.log(.purchase(currency: "USD", value: 29.99, items: purchaseItems))
-
-// Custom events
-FireAnalytics.log("level_completed", parameters: [
-    "level": 5,
-    "score": 12500,
-    "time_seconds": 45
-])
-
-// User properties
-FireAnalytics.setUserProperty("premium", forName: "subscription_status")
-
-// Set user ID
-FireAnalytics.setUserID("user_12345")
-```
-
-### 🎛️ Remote Config
-
-```swift
-// Set defaults
-FireConfig.setDefaults([
-    "welcome_message": "Hello!",
-    "feature_enabled": false,
-    "max_items": 10
-])
-
-// Fetch and activate
-try await FireConfig.fetchAndActivate()
-
-// Read values
-let message: String = FireConfig["welcome_message"]
-let isEnabled: Bool = FireConfig["feature_enabled"]
-let maxItems: Int = FireConfig["max_items"]
-
-// Real-time updates
-FireConfig.addOnConfigUpdateListener { config in
-    print("Config updated!")
-    config.activate()
-}
-```
-
-### ⚡ Cloud Functions
-
-```swift
-// Define request/response
-struct AddMessageRequest: Encodable {
-    let text: String
-    let pushToUsers: [String]
-}
-
-struct AddMessageResponse: Decodable {
-    let messageId: String
-    let timestamp: Date
-}
-
-// Call function
-let request = AddMessageRequest(text: "Hello!", pushToUsers: ["user1", "user2"])
-let response: AddMessageResponse = try await FireFunctions.call("addMessage", with: request)
-print("Created message: \(response.messageId)")
-```
-
----
-
-## 🔄 Combine Support
-
-All async operations have Combine publishers:
-
-```swift
-import Combine
-
-var cancellables = Set<AnyCancellable>()
-
-// Auth state as publisher
-FireAuth.authStatePublisher
-    .sink { user in
-        self.currentUser = user
-    }
-    .store(in: &cancellables)
-
-// Firestore document as publisher
-FireStore.collection("users").document("abc123")
-    .publisher(as: User.self)
-    .sink { user in
-        self.user = user
-    }
-    .store(in: &cancellables)
-```
-
----
-
-## 🧪 Testing
-
-All services conform to protocols for easy mocking:
-
-```swift
-// In tests
-class MockFireAuth: FireAuthProtocol {
-    var mockUser: User?
-    
-    func signIn(email: String, password: String) async throws -> User {
-        guard let user = mockUser else {
-            throw AuthError.userNotFound
-        }
-        return user
+func signIn(with auth: FirebaseAuthClient, email: String, password: String) async throws -> AuthSession {
+    do {
+        return try await auth.signIn(email: email, password: password)
+    } catch let error as AuthError where error.code == .invalidLoginCredentials {
+        print("Wrong e-mail or password")
+        throw error
+    } catch let error as AuthError where error.code == .tooManyAttempts {
+        print("Too many attempts; try again later")
+        throw error
     }
 }
 
-// Inject mock
-let viewModel = LoginViewModel(auth: MockFireAuth())
+func currentUserID(with auth: FirebaseAuthClient) async throws -> String {
+    // The session saved by an earlier launch, or a new anonymous user.
+    if let session = try await auth.restoreSession() { return session.userID }
+    return try await auth.signInAnonymously().userID
+}
 ```
 
----
+`auth.idToken()` returns a token that is valid for at least five more minutes, refreshing it if
+needed. Sign in with Apple is `auth.signIn(with: .apple(idToken:rawNonce:))`, with
+`AppleSignInNonce` for the nonce; the
+[Signing In](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/signingin)
+guide has the full flow.
 
-## 📚 Documentation
+### Read and write documents
 
-| Document | Description |
-|----------|-------------|
-| [Setup Guide](Documentation/Setup.md) | Initial configuration |
-| [Authentication](Documentation/Authentication.md) | All auth methods |
-| [Firestore](Documentation/Firestore.md) | Database operations |
-| [Storage](Documentation/Storage.md) | File upload/download |
-| [Analytics](Documentation/Analytics.md) | Event tracking |
-| [Crashlytics](Documentation/Crashlytics.md) | Crash reporting |
-| [Remote Config](Documentation/RemoteConfig.md) | Feature flags |
-| [Functions](Documentation/Functions.md) | Cloud functions |
+```swift
+struct Note: Codable, Sendable, Equatable {
+    var text: String
+    var ownerID: String
+    var pinned = false
+    var createdAt: Date? // set by the server
+}
 
----
+func addNote(_ text: String, ownerID: String, to firestore: FirestoreClient) async throws -> String {
+    let note = Note(text: text, ownerID: ownerID)
+    return try await firestore.add(note, to: "notes", transforms: ["createdAt": .serverTimestamp])
+}
 
-## 📋 Requirements
+func loadNotes(ownerID: String, from firestore: FirestoreClient) async throws -> [FirestoreDocument<Note>] {
+    let query = FirestoreQuery(collection: "notes")
+        .filter("ownerID", .equal, ownerID)
+        .limit(100)
+    return try await firestore.documents(matching: query, as: Note.self)
+}
 
-| Requirement | Minimum |
-|-------------|---------|
-| iOS | 15.0+ |
-| Swift | 5.9+ |
-| Xcode | 15.0+ |
-| Firebase iOS SDK | 10.0+ |
+func pinNote(at path: String, in firestore: FirestoreClient) async throws {
+    try await firestore.update(path, fields: ["pinned": true])
+}
+```
 
----
+### Write atomically
 
-## 🤝 Contributing
+```swift
+func moveNote(from oldPath: String, to newPath: String, in firestore: FirestoreClient) async throws {
+    guard let note = try await firestore.document(oldPath, as: Note.self) else { return }
+    var batch = WriteBatch() // both writes happen, or neither
+    try batch.create(note.data, at: newPath)
+    try batch.delete(oldPath)
+    try await firestore.commit(batch)
+}
+```
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing`)
-5. Open Pull Request
+### Check the token on your server
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+```swift
+func userID(fromAuthorizationHeader header: String, verifier: IDTokenVerifier) async throws -> String {
+    // let verifier = try IDTokenVerifier(projectID: "my-app-1a2b3"), created once
+    guard header.hasPrefix("Bearer ") else { throw TokenError.malformed("no bearer token") }
+    let claims = try await verifier.verify(String(header.dropFirst("Bearer ".count)))
+    return claims.subject
+}
+```
 
----
+### Testing with the emulators
 
-## 📄 License
+Start the Authentication and Firestore emulators with the [Firebase CLI](https://firebase.google.com/docs/cli)
+(`firebase emulators:start --only auth,firestore --project demo-notes`; Java 21 or later), and
+point the clients at them. A project ID that starts with `demo-` needs no Firebase account.
 
-MIT License - see [LICENSE](LICENSE) for details.
+```swift
+func makeEmulatorClients() throws -> (FirebaseAuthClient, FirestoreClient) {
+    // `firebase emulators:start --only auth,firestore --project demo-notes`
+    let project = try FirebaseProject(projectID: "demo-notes", apiKey: "any-key")
+        .usingEmulators(auth: "127.0.0.1:9099", firestore: "127.0.0.1:8080")
+    let auth = FirebaseAuthClient(project: project)
+    return (auth, FirestoreClient(project: project, credentials: .user(auth)))
+}
+```
 
----
+An iOS app also needs `NSAllowsLocalNetworking` under `NSAppTransportSecurity` in its Info.plist,
+because the emulators serve plain HTTP. For unit tests without any network, every client takes
+an `HTTPTransport` you can replace.
 
-<div align="center">
+## Demo
 
-**Built with 🔥 for the iOS community**
+| Sign in                                                  | Notes in Firestore                                 | Account and token                                      |
+| -------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------ |
+| ![Sign-in screen, light](docs/images/sign-in-light.png)  | ![Notes list, light](docs/images/notes-light.png)  | ![Account screen, light](docs/images/account-light.png) |
+| ![Sign-in screen, dark](docs/images/sign-in-dark.png)    | ![Notes list, dark](docs/images/notes-dark.png)    | ![Account screen, dark](docs/images/account-dark.png)   |
 
-[![GitHub stars](https://img.shields.io/github/stars/muhittincamdali/iOSFirebaseTools?style=social)](https://github.com/muhittincamdali/iOSFirebaseTools)
+The screenshots come from the UI tests of the example app on an iPhone simulator, run against the
+Firebase Local Emulator Suite by [`scripts/capture-screenshots.sh`](scripts/capture-screenshots.sh):
+the test signs up, writes three notes, pins one (pinned notes come first) and opens the account
+screen, where the ID token appears only as `Secret(redacted, … characters)`.
 
-</div>
+To try it yourself, run `scripts/start-emulators.sh`, open `FirebaseLab.xcodeproj` in
+[`Examples/FirebaseLab`](Examples/FirebaseLab), choose an iPhone simulator and press **Run**.
+[Examples/README.md](Examples/README.md) has the details, and the `fbcheck` command-line tool in
+[`Examples/ConfigCheck`](Examples/ConfigCheck) checks plists and verifies tokens.
 
----
+## Documentation
 
-## 📈 Star History
+Reference documentation and articles:
 
-<a href="https://star-history.com/#muhittincamdali/iOSFirebaseTools&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=muhittincamdali/iOSFirebaseTools&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=muhittincamdali/iOSFirebaseTools&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=muhittincamdali/iOSFirebaseTools&type=Date" />
- </picture>
-</a>
+- [API reference](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/)
+  (DocC, published to GitHub Pages from `master`)
+- Build it locally in Xcode with **Product › Build Documentation**, or from the command line:
+
+```sh
+xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macOS'
+```
+
+## Guides
+
+- [Getting Started](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/gettingstarted)
+  — add the package, prepare the Firebase project, sign in and save a document
+  ([source](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/GettingStarted.md)).
+- [Signing In](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/signingin)
+  — e-mail, anonymous, Apple and Google sign-in, errors, the keychain session and fresh tokens
+  ([source](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/SigningIn.md)).
+- [Working with Firestore](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/workingwithfirestore)
+  — models, queries, writes, transforms, batches and the limits the client checks
+  ([source](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/WorkingWithFirestore.md)).
+- [Verifying ID Tokens](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/verifyingidtokens)
+  — Firebase's rules, key caching, claims and clock skew on a Swift server
+  ([source](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/VerifyingIDTokens.md)).
+- [Testing with the Emulators](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/testingwiththeemulators)
+  — the Local Emulator Suite, `emulators:exec` and unit tests with a test transport
+  ([source](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/TestingWithTheEmulators.md)).
+
+## Requirements
+
+| Platform  | Minimum version       |
+| --------- | --------------------- |
+| iOS       | 17                    |
+| macOS     | 14                    |
+| tvOS      | 17                    |
+| watchOS   | 10                    |
+| visionOS  | 1                     |
+| Toolchain | Swift 6.2 · Xcode 26+ |
+
+The package uses the Security framework and CryptoKit, so it does not build on Linux. CI builds
+with the default Xcode of GitHub's `macos-26` runner image; the package is developed with
+Xcode 27. The emulator tests need the Firebase CLI and Java 21 or later.
+
+## Architecture
+
+- `Project/`: `FirebaseProject` (project ID, API key, database, emulators) and
+  `GoogleServiceInfo`, which reads and checks the plist.
+- `Auth/`: `FirebaseAuthClient`, an actor over the Identity Toolkit and Secure Token REST APIs;
+  `AuthSession` and the `SessionStore` it is saved in (keychain or memory); provider credentials.
+- `Firestore/`: `FirestoreClient`, a `Sendable` struct over the Firestore REST API;
+  `FirestoreValue` with its JSON form, the `Codable` encoder and decoder, paths, queries and
+  `WriteBatch`. All writes go through the `commit` endpoint, so a single write and a batch behave
+  the same.
+- `Tokens/`: `JSONWebToken` parsing, `IDTokenClaims` and `IDTokenVerifier` with RSA keys from
+  Google's JSON Web Key Set.
+- `Transport/`: the `HTTPTransport` protocol and its `URLSession` implementation, the only place
+  that touches the network.
+- Input from outside the process is bounded: response bodies (16 MiB), tokens (16 KiB), plists
+  (64 KiB), nesting depth, number ranges before any conversion, and emulator addresses
+  (`host:port` only).
+
+Run the tests locally:
+
+```sh
+swift test                                      # macOS, emulator suite skipped
+firebase emulators:exec --config Emulators/firebase.json --project demo-iosfirebasetools 'swift test'
+xcodebuild test -scheme iOSFirebaseTools -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
+
+## Roadmap
+
+- Add the package to the Swift Package Index; `.spi.yml` is already in the repository.
+- Firestore transactions (`beginTransaction` and a commit with the transaction).
+- Linking providers to an existing user, and e-mail verification.
+- A Linux build of `IDTokenVerifier` on swift-crypto.
+
+Real-time listeners and the offline cache are not planned: they need Firestore's gRPC streaming
+connection, which the REST API does not offer.
+
+## Contributing
+
+Contributions are welcome. Read the [contributing guide](https://github.com/muhittincamdali/iOSFirebaseTools/blob/master/CONTRIBUTING.md) and the [code of conduct](https://github.com/muhittincamdali/.github/blob/main/CODE_OF_CONDUCT.md) before opening a pull request. Report security issues privately as described in the [security policy](https://github.com/muhittincamdali/iOSFirebaseTools/blob/master/SECURITY.md).
+
+## License
+
+Released under the MIT license. See [LICENSE](LICENSE).

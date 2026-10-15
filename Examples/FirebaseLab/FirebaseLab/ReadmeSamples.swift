@@ -4,6 +4,39 @@
 
 import Foundation
 import iOSFirebaseTools
+import SwiftUI
+
+// MARK: - Quick start
+
+struct ContentView: View {
+    @State private var status = "Nothing saved yet"
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(status)
+            Button("Save a note to Firestore") {
+                Task { status = await saveFirstNote() }
+            }
+        }
+        .padding()
+    }
+}
+
+func saveFirstNote() async -> String {
+    do {
+        // Reads the GoogleService-Info.plist in your app target.
+        let project = try GoogleServiceInfo.inMainBundle().project()
+        let auth = FirebaseAuthClient(project: project)
+        let firestore = FirestoreClient(project: project, credentials: .user(auth))
+
+        let session = try await auth.signInAnonymously()
+        let note = ["text": "Hello, Firestore", "ownerID": session.userID]
+        let path = try await firestore.add(note, to: "notes")
+        return "Saved \(path)"
+    } catch {
+        return "Could not save: \(error)"
+    }
+}
 
 // MARK: - Configuration
 
