@@ -140,8 +140,13 @@ final class FirebaseLabUITests: XCTestCase {
         let add = app.buttons["add-note"]
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: add)
         XCTAssertEqual(XCTWaiter().wait(for: [enabled], timeout: 15), .completed, "The Add button stayed disabled")
-        add.tap()
-        XCTAssertTrue(noteCell(text).waitForExistence(timeout: 10), "\(text) was not added")
+        // A tap can be lost while the keyboard is still settling. The note field is emptied once
+        // the app accepts the note, which disables the button, so tapping again cannot add it twice.
+        for _ in 0..<3 {
+            if add.isEnabled { add.tap() }
+            if noteCell(text).waitForExistence(timeout: 8) { return }
+        }
+        XCTFail("\(text) was not added\n\(app.debugDescription)")
     }
 
     /// Taps a text field until it has keyboard focus. A late system sheet, such as "Save
