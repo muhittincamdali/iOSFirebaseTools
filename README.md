@@ -258,10 +258,10 @@ an `HTTPTransport` you can replace.
 
 ## Demo
 
-| Sign in                                                  | Notes in Firestore                                 | Account and token                                      |
-| -------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------ |
-| ![Sign-in screen, light](docs/images/sign-in-light.png)  | ![Notes list, light](docs/images/notes-light.png)  | ![Account screen, light](docs/images/account-light.png) |
-| ![Sign-in screen, dark](docs/images/sign-in-dark.png)    | ![Notes list, dark](docs/images/notes-dark.png)    | ![Account screen, dark](docs/images/account-dark.png)   |
+| Sign in                                                 | Notes in Firestore                                | Account and token                                       |
+| ------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
+| ![Sign-in screen, light](docs/images/sign-in-light.png) | ![Notes list, light](docs/images/notes-light.png) | ![Account screen, light](docs/images/account-light.png) |
+| ![Sign-in screen, dark](docs/images/sign-in-dark.png)   | ![Notes list, dark](docs/images/notes-dark.png)   | ![Account screen, dark](docs/images/account-dark.png)   |
 
 The screenshots come from the UI tests of the example app on an iPhone simulator, run against the
 Firebase Local Emulator Suite by [`scripts/capture-screenshots.sh`](scripts/capture-screenshots.sh):

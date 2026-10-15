@@ -40,12 +40,14 @@ is gone; see "Removed".
 - `IDTokenVerifier` for servers: RS256 signatures against Google's JSON Web Key Set (cached for
   `max-age`, refetched at most once a minute for unknown key IDs), audience, issuer, subject and
   time checks with a bounded clock skew, and an emulator mode that accepts unsigned tokens only.
-- `Secret`, which hides tokens from `print`, `dump`, `debugPrint` and `Mirror`.
+- `Secret`, which hides tokens from `print`, `dump`, `debugPrint` and `Mirror`; `AuthSession`,
+  provider credentials, `HTTPRequest` and `HTTPResponse` print without tokens or passwords.
 - `HTTPTransport` with `URLSessionTransport`, which stops reading a response past 16 MiB.
 - tvOS 17, watchOS 10 and visionOS 1 support next to iOS 17 and macOS 14.
 - `Emulators/` with the emulator configuration and Security Rules, and end-to-end tests that run
   against them.
-- Example app `Examples/FirebaseLab` with UI tests against the emulators, and
+- Example app `Examples/FirebaseLab` with five UI tests against the emulators (README screenshots
+  from `scripts/capture-screenshots.sh`), and
   `Examples/ConfigCheck` (`fbcheck`) for plists and token verification.
 - A DocC catalog with five articles, published to GitHub Pages.
 
