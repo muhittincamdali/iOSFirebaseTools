@@ -29,7 +29,7 @@ struct ProjectTests {
 
     @Test("Emulator addresses parse host and port", arguments: [
         ("127.0.0.1:9099", "127.0.0.1", 9099), ("localhost:8080", "localhost", 8080),
-        ("[::1]:9099", "::1", 9099), ("firebase-emulator.internal:1", "firebase-emulator.internal", 1),
+        ("[::1]:9099", "::1", 9099), ("[fe80::1]:8080", "fe80::1", 8080), ("firebase-emulator.internal:1", "firebase-emulator.internal", 1),
     ])
     func parsesEmulatorHosts(_ text: String, _ host: String, _ port: Int) throws {
         let parsed = try EmulatorHost(text)
@@ -41,7 +41,8 @@ struct ProjectTests {
     @Test("Emulator addresses that could redirect requests or overflow are rejected", arguments: [
         "", "localhost", "localhost:", ":8080", "http://localhost:8080", "localhost:8080/v1", "localhost:0",
         "localhost:65536", "localhost:99999999999999999999999", "localhost:-1", "localhost:+80", "local host:80",
-        "evil.com#@localhost:80", "user@localhost:80", "[::1:80", "[zz::1]:80", "localhost:٨٠", "-bad.com:80",
+        "evil.com#@localhost:80", "user@localhost:80", "[::1:80", "[zz::1]:80", "[::::::]:80", "[1:2]:80", "[:]:80",
+        "[fe80::1%en0]:80", "localhost:٨٠", "-bad.com:80",
     ])
     func rejectsEmulatorHosts(_ text: String) {
         #expect(throws: ValidationError.self) { try EmulatorHost(text) }

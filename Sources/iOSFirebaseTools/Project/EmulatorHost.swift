@@ -30,6 +30,7 @@ public struct EmulatorHost: Sendable, Hashable, CustomStringConvertible {
         }
         self.host = hostPart
         self.port = port
+        guard URL(string: "http://\(description)") != nil else { throw invalid("not a valid URL host") }
     }
 
     /// Creates an address from its parts.
@@ -45,7 +46,7 @@ public struct EmulatorHost: Sendable, Hashable, CustomStringConvertible {
 
     /// `http://host:port`: the emulators do not use TLS.
     var baseURL: URL {
-        // The host and port were validated, so the URL always parses.
+        // The initializer checked that this URL parses.
         URL(string: "http://\(description)")!
     }
 
@@ -59,8 +60,11 @@ public struct EmulatorHost: Sendable, Hashable, CustomStringConvertible {
     }
 
     private static func isIPv6(_ value: String) -> Bool {
-        guard !value.isEmpty, value.count <= 45, value.contains(":") else { return false }
-        return value.allSatisfy { $0.isHexDigit && $0.isASCII || $0 == ":" || $0 == "." }
+        // Hex digits, colons and dots only: no zone index ("%en0") or other text in the URL.
+        guard !value.isEmpty, value.utf8Count <= 45, value.contains(":"),
+              value.allSatisfy({ ($0.isHexDigit && $0.isASCII) || $0 == ":" || $0 == "." }) else { return false }
+        var address = in6_addr()
+        return inet_pton(AF_INET6, value, &address) == 1
     }
 }
 
