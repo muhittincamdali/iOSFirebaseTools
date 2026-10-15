@@ -44,7 +44,7 @@ dependencies outside Apple's SDK.
   tokens with Google's published keys, which the Admin SDKs do for other languages but not Swift.
 - **Tokens never print** — sessions and tokens show only their length in `print`, `dump`, logs
   and the debugger.
-- **Tested end to end** — 104 Swift Testing tests, 9 of them against the Authentication and
+- **Tested end to end** — 105 Swift Testing tests, 9 of them against the Authentication and
   Firestore emulators with Security Rules, and five UI tests of the example app on a simulator.
 
 ## Quick start

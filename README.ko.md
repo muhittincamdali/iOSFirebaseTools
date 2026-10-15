@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@57ac1265fcedc8b81a6c8a43c1038fb109899da4 status=reviewed -->
+<!-- i18n-source: README.md@e58ec5fc64f013f130f40242c1352ea03fa05302 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -46,7 +46,7 @@ Suite를 대상으로 실행할 수 있으며, 서버에서 ID 토큰을 검증�
 - **서버에서 ID 토큰 확인** — `IDTokenVerifier`는 Google이 공개한 키로 RS256 토큰에 Firebase의
   규칙을 적용합니다. Admin SDK는 다른 언어에는 이 기능을 제공하지만 Swift에는 제공하지 않습니다.
 - **토큰은 출력되지 않음** — 세션과 토큰은 `print`, `dump`, 로그, 디버거에서 길이만 표시됩니다.
-- **엔드 투 엔드 테스트** — Swift Testing 테스트 104개 중 9개는 Security Rules가 적용된
+- **엔드 투 엔드 테스트** — Swift Testing 테스트 105개 중 9개는 Security Rules가 적용된
   Authentication 및 Firestore 에뮬레이터를 대상으로 실행되며, 예제 앱의 UI 테스트 5개가
   시뮬레이터에서 실행됩니다.
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@57ac1265fcedc8b81a6c8a43c1038fb109899da4 status=reviewed -->
+<!-- i18n-source: README.md@e58ec5fc64f013f130f40242c1352ea03fa05302 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -34,7 +34,7 @@ iOSFirebaseTools 是一个用于 Firebase Authentication 和 Cloud Firestore 的
 - **抛出错误，而不是崩溃** — 超出 `Int64` 范围的整数、`Int` 字段中的 NaN、10000 年的日期或 20 MB 的响应都会抛出带类型的错误；路径、字段名和限制会在发出请求之前按 Firebase 的规则检查。
 - **在你的服务器上校验 ID 令牌** — `IDTokenVerifier` 使用 Google 公布的密钥，按 Firebase 的规则校验 RS256 令牌；Admin SDK 为其他语言提供了这一能力，但没有提供 Swift 版本。
 - **令牌不会被打印** — 会话和令牌在 `print`、`dump`、日志和调试器中只显示长度。
-- **端到端测试** — 104 个 Swift Testing 测试，其中 9 个针对启用 Security Rules 的 Authentication 和 Firestore 模拟器运行，另有 5 个在模拟器上运行的示例应用 UI 测试。
+- **端到端测试** — 105 个 Swift Testing 测试，其中 9 个针对启用 Security Rules 的 Authentication 和 Firestore 模拟器运行，另有 5 个在模拟器上运行的示例应用 UI 测试。
 
 ## 快速开始
 

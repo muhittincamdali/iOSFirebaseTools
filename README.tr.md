@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@57ac1265fcedc8b81a6c8a43c1038fb109899da4 status=reviewed -->
+<!-- i18n-source: README.md@e58ec5fc64f013f130f40242c1352ea03fa05302 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -49,7 +49,7 @@ bağımlılığı yoktur.
   yapar, ancak Swift için yapmaz.
 - **Token'lar asla yazdırılmaz** — oturumlar ve token'lar `print`, `dump`, günlüklerde ve
   hata ayıklayıcıda yalnızca uzunluklarını gösterir.
-- **Uçtan uca test edilmiş** — 104 Swift Testing testi; bunların 9'u Security Rules ile
+- **Uçtan uca test edilmiş** — 105 Swift Testing testi; bunların 9'u Security Rules ile
   Authentication ve Firestore emülatörlerine karşı çalışır; ayrıca örnek uygulamanın bir
   simülatörde çalışan beş arayüz testi vardır.
 
