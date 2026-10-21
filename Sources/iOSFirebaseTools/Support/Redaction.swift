@@ -17,10 +17,14 @@ public struct RedactionPolicy: Sendable, Hashable {
 
     let allowedHeaders: Set<String>
     let allowedQueryParameters: Set<String>
+    /// `true` writes URLs as scheme, host and port only.
+    public let recordsHostOnly: Bool
 
-    public init(allowedHeaders: Set<String> = defaultAllowedHeaders, allowedQueryParameters: Set<String> = []) {
+    public init(allowedHeaders: Set<String> = defaultAllowedHeaders, allowedQueryParameters: Set<String> = [],
+                recordsHostOnly: Bool = false) {
         self.allowedHeaders = Set(allowedHeaders.map(Redaction.fold))
         self.allowedQueryParameters = Set(allowedQueryParameters.map(Redaction.fold))
+        self.recordsHostOnly = recordsHostOnly
     }
 }
 
@@ -202,7 +206,7 @@ enum Redaction {
         guard isHostName(host) else { return "\(scheme)://\(hidden)" }
         let origin = "\(scheme)://\(host.lowercased())" + (components.port.map { ":\($0)" } ?? "")
         // A host that names a secret (`myapp://pin/4831`) keeps nothing after it.
-        if !host.hasPrefix("["), split(host, on: ".").contains(where: isSecretName) {
+        if policy.recordsHostOnly || (!host.hasPrefix("[") && split(host, on: ".").contains(where: isSecretName)) {
             return origin
         }
         guard let path = PathRedactor.renderURLPath(components.percentEncodedPath) else { return origin }

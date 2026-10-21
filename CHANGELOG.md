@@ -51,7 +51,8 @@ is gone; see "Removed".
   `FirestoreError` (code and status, not the server's message), `TokenError` and
   `ValidationError` (only short printable values), and `FirebaseProject` and
   `GoogleServiceInfo` (no API key). `RedactionPolicy` and `redactedDescription(_:)` let an app
-  allow more headers and query parameters in its own logs.
+  allow more headers and query parameters in its own logs, or record URLs as scheme, host and
+  port only.
 - `HTTPTransport` with `URLSessionTransport`, which stops reading a response past 16 MiB.
 - tvOS 17, watchOS 10 and visionOS 1 support next to iOS 17 and macOS 14.
 - `Emulators/` with the emulator configuration and Security Rules, and end-to-end tests that run

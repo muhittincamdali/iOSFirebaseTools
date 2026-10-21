@@ -120,9 +120,10 @@ struct RedactionHTTPTests {
         #expect(!query.contains("abcdefghijkl"), "\(query)")
     }
 
-    @Test("Every occurrence of a duplicate name is hidden")
-    func duplicates() {
+    @Test("Every occurrence of a duplicate name is hidden, and host-only records no path")
+    func duplicatesAndHostOnly() {
         #expect(url("https://example.com/a?key=one&key=two&key") == "https://example.com/a?key=<redacted>&key=<redacted>&key")
+        #expect(url("https://example.com/users/ada/notes?x=1", RedactionPolicy(recordsHostOnly: true)) == "https://example.com")
     }
 
     @Test("A combining mark after a slash does not join two path segments", arguments: [
