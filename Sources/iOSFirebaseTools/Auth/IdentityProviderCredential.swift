@@ -91,6 +91,17 @@ public struct AppleSignInNonce: Sendable, Hashable {
     }
 }
 
+// The raw nonce is what proves the Apple token was issued for this request, and the credential
+// keeps it as a `Secret`; the nonce itself prints only its length too.
+extension AppleSignInNonce: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    public var description: String { "AppleSignInNonce(redacted, \(raw.count) characters)" }
+
+    public var debugDescription: String { description }
+
+    /// An empty mirror, so `dump` and the debugger cannot list ``raw``.
+    public var customMirror: Mirror { Mirror(self, children: [], displayStyle: .struct) }
+}
+
 extension FirebaseAuthClient {
     /// Signs in with a credential from another identity provider, creating the Firebase user on
     /// first sign-in.

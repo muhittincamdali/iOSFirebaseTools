@@ -63,4 +63,16 @@ struct IdentityProviderTests {
         #expect(nonces[0].sha256.count == 64)
         #expect(AppleSignInNonce(raw: "abc").sha256 == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
     }
+
+    @Test("A nonce prints only its length")
+    func redactsNonce() {
+        let nonce = AppleSignInNonce(raw: "nonce-secret-0123456789abcdefghij")
+        var dumped = ""
+        dump(nonce, to: &dumped)
+        let children = Mirror(reflecting: nonce).children.map { "\($0.value)" }.joined()
+        for text in [String(describing: nonce), String(reflecting: nonce), "\(nonce)", dumped, children] {
+            #expect(!text.contains("nonce-secret"), "\(text)")
+        }
+        #expect(nonce.description == "AppleSignInNonce(redacted, 33 characters)")
+    }
 }

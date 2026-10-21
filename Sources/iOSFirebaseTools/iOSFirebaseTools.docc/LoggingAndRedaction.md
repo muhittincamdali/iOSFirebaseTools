@@ -18,7 +18,7 @@ the first place, and prefer structured logging such as `os.Logger` with `privacy
 
 | Value                                  | Shown                                                                                                | Never shown                                                                         |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| ``Secret``                               | its length                                                                                           | the value                                                                           |
+| ``Secret``, ``AppleSignInNonce``           | its length                                                                                           | the value                                                                           |
 | ``AuthSession``                          | the first 10 characters of the user ID, anonymous or not, expiry                                     | tokens, e-mail address                                                              |
 | ``IDTokenClaims``                        | the first 10 characters of the user ID, project, provider, dates, the number of claims               | e-mail address, custom claim values                                                 |
 | ``HTTPRequest``, ``HTTPResponse``          | method, scheme, host, port, path, query names, allowlisted headers, status, body size and media type | body, user info, fragment, query values, ID-like path segments, other header values |
@@ -27,8 +27,8 @@ the first place, and prefer structured logging such as `os.Logger` with `privacy
 | ``TokenError``, ``ValidationError``        | short printable values you passed or the token holds, paths with IDs as `:id`                        | long, multi-line or token-like values                                               |
 | ``FirebaseProject``, ``GoogleServiceInfo`` | project ID, database, bundle ID, emulators                                                           | the API key                                                                         |
 
-The full values stay available in code: ``Secret/revealed``, ``AuthSession/email``,
-``IDTokenClaims/email`` and ``IDTokenClaims/all``, ``AuthError/message``,
+The full values stay available in code: ``Secret/revealed``, ``AppleSignInNonce/raw``,
+``AuthSession/email``, ``IDTokenClaims/email`` and ``IDTokenClaims/all``, ``AuthError/message``,
 ``FirestoreError/message`` (with the link that creates a missing index), and the stored
 properties of every request and response. Those are not redacted; show them to a developer,
 not in a log.
