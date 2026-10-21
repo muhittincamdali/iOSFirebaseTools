@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d129bb0a18c40a2fac23059d3da5c2523967051e status=reviewed -->
+<!-- i18n-source: README.md@9444151db75676a7995e80b9caace05a8fecbc34 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -47,7 +47,7 @@ Suite를 대상으로 실행할 수 있으며, 서버에서 ID 토큰을 검증�
   규칙을 적용합니다. Admin SDK는 다른 언어에는 이 기능을 제공하지만 Swift에는 제공하지 않습니다.
 - **비밀이 없는 로그** — 토큰, 이메일 주소, 요청 본문, 쿼리 값, ID처럼 보이는 경로 세그먼트, 서버의 메시지는 `print`,
   `dump`, 로그, 디버거가 보여 주는 내용에서 제외됩니다. [로그에 표시되는 내용](#로그에-표시되는-내용)을 참고하세요.
-- **엔드 투 엔드 테스트** — Swift Testing 테스트 139개 중 10개는 Security Rules가 적용된
+- **엔드 투 엔드 테스트** — Swift Testing 테스트 142개 중 10개는 Security Rules가 적용된
   Authentication 및 Firestore 에뮬레이터를 대상으로 실행되며, 예제 앱의 UI 테스트 5개가
   시뮬레이터에서 실행됩니다.
 

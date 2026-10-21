@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d129bb0a18c40a2fac23059d3da5c2523967051e status=reviewed -->
+<!-- i18n-source: README.md@9444151db75676a7995e80b9caace05a8fecbc34 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -34,7 +34,7 @@ iOSFirebaseTools は、Firebase Authentication と Cloud Firestore のための 
 - **クラッシュではなくエラー** — `Int64` を超える整数、`Int` フィールドの NaN、10000 年の日付、20 MB のレスポンスは、型付きのエラーとして throw されます。パス、フィールド名、上限は、リクエストを送る前に Firebase のルールに照らして検査されます。
 - **サーバーで ID トークンを検証** — `IDTokenVerifier` は、Google が公開している鍵を使って RS256 トークンに Firebase のルールを適用します。Admin SDK は他の言語向けにこれを提供していますが、Swift 向けにはありません。
 - **秘密を含まないログ** — トークン、メールアドレス、リクエストボディ、クエリの値、ID に見えるパスの断片、サーバーのメッセージは、`print`、`dump`、ログ、デバッガーの表示に含まれません。[ログに表示される内容](#ログに表示される内容)を参照してください。
-- **エンドツーエンドでテスト済み** — 139 件の Swift Testing テストがあり、そのうち 10 件は Security Rules 付きの Authentication と Firestore エミュレータに対して実行されます。さらに、サンプルアプリの UI テストがシミュレータ上で 5 件実行されます。
+- **エンドツーエンドでテスト済み** — 142 件の Swift Testing テストがあり、そのうち 10 件は Security Rules 付きの Authentication と Firestore エミュレータに対して実行されます。さらに、サンプルアプリの UI テストがシミュレータ上で 5 件実行されます。
 
 ## クイックスタート
 

@@ -46,7 +46,7 @@ dependencies outside Apple's SDK.
 - **Logs without secrets** — tokens, e-mail addresses, request bodies, query values, ID-like
   path segments and the server's messages are left out of what `print`, `dump`, logs and the
   debugger show; see [What logs show](#what-logs-show).
-- **Tested end to end** — 139 Swift Testing tests, 10 of them against the Authentication and
+- **Tested end to end** — 142 Swift Testing tests, 10 of them against the Authentication and
   Firestore emulators with Security Rules, and five UI tests of the example app on a simulator.
 
 ## Quick start

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d129bb0a18c40a2fac23059d3da5c2523967051e status=reviewed -->
+<!-- i18n-source: README.md@9444151db75676a7995e80b9caace05a8fecbc34 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -50,7 +50,7 @@ iOSFirebaseTools — это Swift-пакет для Firebase Authentication и C
 - **Логи без секретов** — токены, адреса e-mail, тела запросов, значения параметров запросов,
   сегменты пути, похожие на идентификаторы, и сообщения сервера не попадают в то, что показывают
   `print`, `dump`, логи и отладчик; см. [Что показывают логи](#что-показывают-логи).
-- **Сквозное тестирование** — 139 тестов на Swift Testing, 10 из них идут против эмуляторов
+- **Сквозное тестирование** — 142 тестов на Swift Testing, 10 из них идут против эмуляторов
   Authentication и Firestore с Security Rules, плюс пять UI-тестов примера приложения на симуляторе.
 
 ## Быстрый старт
