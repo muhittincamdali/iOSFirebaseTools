@@ -91,6 +91,31 @@ struct FirestoreTransactionTests {
         #expect(!transport.requests.contains { $0.url.absoluteString.hasSuffix(":rollback") })
     }
 
+    @Test("A failed read is not sent again with its transaction ID; the transaction starts again", arguments: [
+        (409, "ABORTED"), (503, "UNAVAILABLE"),
+    ])
+    func retriesFailedRead(_ status: Int, _ code: String) async throws {
+        let reads = RunCounter()
+        let ids = BeginState(ids: ["dHgx", "dHgy"])
+        let transport = MockTransport { request, _ in
+            let url = request.url.absoluteString
+            if url.hasSuffix(":beginTransaction") { return .json(#"{"transaction":"\#(ids.next())"}"#) }
+            if url.hasSuffix(":rollback") { return .json("{}") }
+            if url.hasSuffix(":commit") { return .json(#"{"commitTime":"2026-10-21T08:00:00Z"}"#) }
+            reads.increment()
+            return reads.value == 1 ? .googleError(status, message: "Transaction lock timeout.", code: code)
+                : .json(#"[{"found":\#(Self.counterJSON(41)),"readTime":"2026-10-21T08:00:00Z"}]"#)
+        }
+        let count = try await client(transport).runTransaction { transaction in
+            try await transaction.document("counters/c", as: Counter.self)?.data.count
+        }
+        #expect(count == 41)
+        let readIDs = transport.requests.filter { $0.url.absoluteString.hasSuffix(":batchGet") }.map { $0.jsonBody["transaction"] as? String }
+        #expect(readIDs == ["dHgx", "dHgy"])
+        let rollbacks = transport.requests.filter { $0.url.absoluteString.hasSuffix(":rollback") }
+        #expect(rollbacks.map { $0.jsonBody["transaction"] as? String } == ["dHgx"])
+    }
+
     @Test("After maxAttempts aborted commits the abort is thrown")
     func givesUp() async throws {
         let transport = transport(commits: [409, 409, 409])

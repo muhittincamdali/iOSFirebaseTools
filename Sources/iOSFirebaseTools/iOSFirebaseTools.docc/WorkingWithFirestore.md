@@ -131,6 +131,8 @@ func togglePin(at path: String, in firestore: FirestoreClient) async throws -> B
 - When Firestore aborts the commit because of a concurrent write, the closure runs again from
   the start, up to `maxAttempts` times (5 by default, at most 10). Keep it free of side effects
   outside the transaction, such as updating the UI.
+- Reads in a transaction are not retried on their own. A read that fails with `ABORTED` or a
+  transient error such as `UNAVAILABLE` rolls the transaction back and starts a new attempt.
 - An error thrown by the closure rolls the transaction back and is rethrown; nothing is written.
 - Security Rules apply to every read and write in the transaction, as for single requests.
 

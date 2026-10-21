@@ -25,7 +25,9 @@ public struct FirestoreTransaction: Sendable {
         // batchGet carries the transaction in the body, as the Firebase SDKs send it; the
         // emulator cannot read a transaction ID from a GET's query string.
         let body = try JSONBody.encode(BatchGetBody(documents: [name], transaction: id))
-        let response = try await client.send(method: "POST", url: try client.url(for: [], suffix: ":batchGet"), body: body, idempotent: true)
+        // Not retried here: an aborted transaction ID cannot be used again, so a failed read
+        // ends the attempt and runTransaction starts a new one.
+        let response = try await client.send(method: "POST", url: try client.url(for: [], suffix: ":batchGet"), body: body, idempotent: false)
         let results = try JSONBody.decode([BatchGetResult].self, from: response)
         guard let result = results.first(where: { $0.found != nil || $0.missing != nil }) else {
             throw MalformedResponseError(statusCode: response.statusCode, reason: "batchGet returned neither found nor missing")
@@ -39,7 +41,7 @@ public struct FirestoreTransaction: Sendable {
         let (parent, collectionID) = try query.target()
         let body = try JSONBody.encode(QueryBody(structuredQuery: try query.structuredQuery(collectionID: collectionID), transaction: id))
         let url = try client.url(for: parent?.segments ?? [], suffix: ":runQuery")
-        let response = try await client.send(method: "POST", url: url, body: body, idempotent: true)
+        let response = try await client.send(method: "POST", url: url, body: body, idempotent: false)
         let results = try JSONBody.decode([QueryResult].self, from: response)
         return try results.compactMap(\.document).map { try $0.decoded(as: type, root: client.project.documentsRoot) }
     }
@@ -90,8 +92,9 @@ extension FirestoreClient {
     ///
     /// When another write touched a document the transaction read, Firestore aborts the
     /// commit and `body` runs again from the start, up to `maxAttempts` times in all, so it
-    /// should have no side effects outside the transaction. An error thrown by `body` rolls
-    /// the transaction back and is rethrown.
+    /// should have no side effects outside the transaction. A read that fails with `ABORTED`
+    /// or a transient error such as `UNAVAILABLE` also starts a new attempt. Any other error
+    /// thrown by `body` rolls the transaction back and is rethrown.
     ///
     /// - Parameters:
     ///   - maxAttempts: 1 to ``maxTransactionAttempts``; Firebase's SDKs use 5.
@@ -110,16 +113,14 @@ extension FirestoreClient {
             let id = try await beginTransaction(retrying: previousID)
             previousID = id
             var transaction = FirestoreTransaction(client: self, id: id)
-            let isRetryable = { (error: any Error) in
-                (error as? FirestoreError)?.code == .aborted && attempt < maxAttempts
-            }
             let result: Result
             do {
                 result = try await body(&transaction)
             } catch {
                 // A read can be aborted by contention; the transaction still holds its locks.
+                // Reads are not retried on their own, so a transient read error retries here.
                 await rollback(id)
-                guard isRetryable(error) else { throw error }
+                guard (error as? FirestoreError)?.code.isTransient == true, attempt < maxAttempts else { throw error }
                 try await retryDelay(min(attempt, 2))
                 attempt += 1
                 continue
@@ -129,7 +130,8 @@ extension FirestoreClient {
                 return result
             } catch {
                 // A commit that failed has ended the transaction: there is nothing to roll back.
-                guard isRetryable(error) else { throw error }
+                // Only ABORTED is retried; another error may have come after the commit applied.
+                guard (error as? FirestoreError)?.code == .aborted, attempt < maxAttempts else { throw error }
                 try await retryDelay(min(attempt, 2))
                 attempt += 1
             }
