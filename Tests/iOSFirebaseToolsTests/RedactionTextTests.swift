@@ -46,6 +46,28 @@ struct RedactionTextTests {
         #expect(firestore.description == "FirestoreError(permissionDenied, HTTP 403)")
     }
 
+    @Test("dump, debugPrint and Mirror show the errors' text forms, not the server's text or the token's values")
+    func errorsInDumpAndDebugger() {
+        let auth = AuthError.from(.googleError(400, message: "WEAK_PASSWORD : hunter2 for ada@example.com"))
+        let odd = AuthError.from(.googleError(400, message: "token eyJhbGciOi.e30.x for ada@example.com"))
+        let firestore = FirestoreError.from(.googleError(403, message: "denied for ada@example.com, key AIzaSyA-0123456789abcdefghijklmnopqrstu", code: "hunter2 ada@example.com"))
+        let token = TokenError.wrongIssuer("https://evil.example/ada@example.com")
+        let values: [Any] = [auth, odd, odd.code, firestore, firestore.code, token, TokenError.unknownKey("eyJhbGciOiJSUzI1NiJ9.e30.c2ln")]
+        for value in values {
+            var dumped = ""
+            dump(value, to: &dumped)
+            let children = Mirror(reflecting: value).children.map { "\($0.label ?? ""): \($0.value)" }.joined(separator: ", ")
+            for text in [dumped, String(reflecting: value), children] {
+                for secret in ["hunter2", "ada@example.com", "eyJhbGciOi", "AIzaSy"] {
+                    #expect(!text.contains(secret), "\(text)")
+                }
+            }
+        }
+        #expect(String(reflecting: auth) == "AuthError(weakPassword, HTTP 400)")
+        #expect(String(reflecting: firestore.code) == "other(<redacted, 23 characters>)")
+        #expect(String(reflecting: token) == "The token was issued by <redacted, 36 characters>")
+    }
+
     @Test("Unreadable responses name the field, not the value")
     func malformedResponses() throws {
         enum Kind: String, Decodable { case a }

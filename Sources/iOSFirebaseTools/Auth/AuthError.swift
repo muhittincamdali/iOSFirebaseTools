@@ -80,8 +80,7 @@ public struct AuthError: Error, Sendable, Hashable, CustomStringConvertible {
     /// The code and HTTP status, such as `AuthError(weakPassword, HTTP 400)`, without the
     /// server's message.
     public var description: String {
-        let code = if case let .other(serverCode) = code { "other(\(ErrorCodeText.render(serverCode)))" } else { "\(code)" }
-        return "AuthError(\(code)" + (statusCode.map { ", HTTP \($0))" } ?? ")")
+        "AuthError(\(code)" + (statusCode.map { ", HTTP \($0))" } ?? ")")
     }
 
     /// Reads the error body of a failed Identity Toolkit or Secure Token response.
@@ -94,4 +93,44 @@ public struct AuthError: Error, Sendable, Hashable, CustomStringConvertible {
             .trimmingCharacters(in: .whitespaces) ?? message
         return AuthError(code: Code(serverCode: serverCode), message: message, statusCode: response.statusCode)
     }
+}
+
+// The message and an unknown code are the server's free text, which can repeat what the user
+// typed. `dump`, `debugPrint` and the debugger see the same fields as `description`.
+extension AuthError: CustomDebugStringConvertible, CustomReflectable {
+    public var debugDescription: String { description }
+
+    public var customMirror: Mirror {
+        Mirror(self, children: ["code": code.description, "statusCode": statusCode as Any], displayStyle: .struct)
+    }
+}
+
+extension AuthError.Code: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    /// The case name, such as `weakPassword`. An ``other(_:)`` code is shown only when it looks
+    /// like a server code such as `QUOTA_EXCEEDED`, and hidden with its length otherwise.
+    public var description: String {
+        switch self {
+        case .emailExists: "emailExists"
+        case .invalidEmail: "invalidEmail"
+        case .weakPassword: "weakPassword"
+        case .invalidLoginCredentials: "invalidLoginCredentials"
+        case .emailNotFound: "emailNotFound"
+        case .invalidPassword: "invalidPassword"
+        case .userDisabled: "userDisabled"
+        case .userNotFound: "userNotFound"
+        case .tooManyAttempts: "tooManyAttempts"
+        case .operationNotAllowed: "operationNotAllowed"
+        case .tokenExpired: "tokenExpired"
+        case .invalidIDToken: "invalidIDToken"
+        case .invalidRefreshToken: "invalidRefreshToken"
+        case .invalidAPIKey: "invalidAPIKey"
+        case .projectNumberMismatch: "projectNumberMismatch"
+        case .notSignedIn: "notSignedIn"
+        case let .other(serverCode): "other(\(ErrorCodeText.render(serverCode)))"
+        }
+    }
+
+    public var debugDescription: String { description }
+
+    public var customMirror: Mirror { Mirror(self, children: [], displayStyle: .enum) }
 }

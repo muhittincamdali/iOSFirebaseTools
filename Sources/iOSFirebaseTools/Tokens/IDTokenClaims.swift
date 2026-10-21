@@ -95,3 +95,11 @@ public enum TokenError: Error, Sendable, Hashable, CustomStringConvertible {
         }
     }
 }
+
+// The payloads are what the token says, and anyone can write a token. `dump`, `debugPrint` and
+// the debugger see `description`, never the payload itself.
+extension TokenError: CustomDebugStringConvertible, CustomReflectable {
+    public var debugDescription: String { description }
+
+    public var customMirror: Mirror { Mirror(self, children: [], displayStyle: .enum) }
+}

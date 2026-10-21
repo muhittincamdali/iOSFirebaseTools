@@ -78,8 +78,7 @@ public struct FirestoreError: Error, Sendable, Hashable, CustomStringConvertible
     /// The code and HTTP status, such as `FirestoreError(permissionDenied, HTTP 403)`, without
     /// the server's message.
     public var description: String {
-        let code = if case let .other(status) = code { "other(\(ErrorCodeText.render(status)))" } else { "\(code)" }
-        return "FirestoreError(\(code), HTTP \(statusCode))"
+        "FirestoreError(\(code), HTTP \(statusCode))"
     }
 
     static func from(_ response: HTTPResponse) -> FirestoreError {
@@ -89,4 +88,39 @@ public struct FirestoreError: Error, Sendable, Hashable, CustomStringConvertible
         let message = String((detail?.message ?? "HTTP \(response.statusCode)").prefix(500))
         return FirestoreError(code: Code(status: detail?.status, httpStatus: response.statusCode), message: message, statusCode: response.statusCode)
     }
+}
+
+// The message and an unknown status are the server's free text, which can name documents and
+// values. `dump`, `debugPrint` and the debugger see the same fields as `description`.
+extension FirestoreError: CustomDebugStringConvertible, CustomReflectable {
+    public var debugDescription: String { description }
+
+    public var customMirror: Mirror {
+        Mirror(self, children: ["code": code.description, "statusCode": statusCode], displayStyle: .struct)
+    }
+}
+
+extension FirestoreError.Code: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    /// The case name, such as `permissionDenied`. An ``other(_:)`` status is shown only when it
+    /// looks like a status such as `CANCELLED` or `HTTP 418`, and hidden with its length otherwise.
+    public var description: String {
+        switch self {
+        case .invalidArgument: "invalidArgument"
+        case .notFound: "notFound"
+        case .alreadyExists: "alreadyExists"
+        case .permissionDenied: "permissionDenied"
+        case .unauthenticated: "unauthenticated"
+        case .failedPrecondition: "failedPrecondition"
+        case .aborted: "aborted"
+        case .resourceExhausted: "resourceExhausted"
+        case .unavailable: "unavailable"
+        case .deadlineExceeded: "deadlineExceeded"
+        case .internal: "internal"
+        case let .other(status): "other(\(ErrorCodeText.render(status)))"
+        }
+    }
+
+    public var debugDescription: String { description }
+
+    public var customMirror: Mirror { Mirror(self, children: [], displayStyle: .enum) }
 }
