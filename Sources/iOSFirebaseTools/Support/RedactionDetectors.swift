@@ -10,7 +10,7 @@ struct PathRedactor {
     static func renderURLPath(_ encodedPath: String) -> String? {
         guard !encodedPath.isEmpty else { return "" }
         let lowered = encodedPath.lowercased()
-        guard !["; ", ";", "%3b", "%2e", "%25", "\\", "%5c"].contains(where: lowered.contains) else { return nil }
+        guard ![";", "%3b", "%2e", "%25", "\\", "%5c"].contains(where: lowered.contains) else { return nil }
         let segments = Redaction.split(encodedPath, on: "/")
         guard segments.count <= Redaction.maxPathSegments, !segments.contains(where: { $0 == "." || $0 == ".." }) else {
             return nil
