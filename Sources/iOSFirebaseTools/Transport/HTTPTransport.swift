@@ -30,31 +30,53 @@ public struct HTTPResponse: Sendable, Hashable {
 }
 
 // Requests carry ID tokens, refresh tokens and passwords, and responses carry new tokens. A
-// transport that logs them must not leak those: the text forms show the method, URL, header names
-// and body size only.
+// transport that logs them must not leak those, so the text forms follow `RedactionPolicy`:
+// no body, no URL user info or fragment, query values and ID-like path segments hidden, and
+// header values kept for an allowlist only.
 extension HTTPRequest: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
-    public var description: String {
-        "HTTPRequest(\(method) \(url.absoluteString), headers: \(headers.keys.sorted()), body: \(body?.count ?? 0) bytes)"
+    /// The request as text for a log, with what ``RedactionPolicy`` hides replaced:
+    ///
+    /// ```text
+    /// HTTPRequest(POST https://securetoken.googleapis.com/v1/token?key=<redacted>,
+    ///   headers: [authorization: <redacted>, content-type: application/x-www-form-urlencoded],
+    ///   body: [body omitted: 112 bytes, application/x-www-form-urlencoded])
+    /// ```
+    public func redactedDescription(_ policy: RedactionPolicy = .default) -> String {
+        "HTTPRequest(\(Redaction.method(method)) \(Redaction.url(url, policy: policy)), "
+            + "headers: \(Redaction.headers(headers, policy: policy)), body: \(Redaction.body(body, headers: headers)))"
     }
+
+    public var description: String { redactedDescription() }
 
     public var debugDescription: String { description }
 
     public var customMirror: Mirror {
-        Mirror(self, children: ["method": method, "url": url, "headerNames": headers.keys.sorted(), "bodySize": body?.count ?? 0],
-               displayStyle: .struct)
+        Mirror(self, children: [
+            "method": Redaction.method(method),
+            "url": Redaction.url(url, policy: .default),
+            "headers": Redaction.headers(headers, policy: .default),
+            "body": Redaction.body(body, headers: headers),
+        ], displayStyle: .struct)
     }
 }
 
 extension HTTPResponse: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
-    public var description: String {
-        "HTTPResponse(\(statusCode), headers: \(headers.keys.sorted()), body: \(body.count) bytes)"
+    /// The response as text for a log; the body is never shown.
+    public func redactedDescription(_ policy: RedactionPolicy = .default) -> String {
+        "HTTPResponse(\(statusCode), headers: \(Redaction.headers(headers, policy: policy)), "
+            + "body: \(Redaction.body(body, headers: headers)))"
     }
+
+    public var description: String { redactedDescription() }
 
     public var debugDescription: String { description }
 
     public var customMirror: Mirror {
-        Mirror(self, children: ["statusCode": statusCode, "headerNames": headers.keys.sorted(), "bodySize": body.count],
-               displayStyle: .struct)
+        Mirror(self, children: [
+            "statusCode": statusCode,
+            "headers": Redaction.headers(headers, policy: .default),
+            "body": Redaction.body(body, headers: headers),
+        ], displayStyle: .struct)
     }
 }
 

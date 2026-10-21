@@ -63,8 +63,9 @@ struct RedactionTests {
                 #expect(!text.contains("c2VjcmV0") && !text.contains("refresh-token-value") && !text.contains("hunter2"), "\(text)")
             }
         }
-        #expect(request.description.contains("Authorization"))
-        #expect(response.description == "HTTPResponse(200, headers: [], body: \(response.body.count) bytes)")
+        #expect(request.description == "HTTPRequest(POST https://securetoken.googleapis.com/v1/token?key=<redacted>, "
+            + "headers: [authorization: <redacted>], body: [body omitted: \(request.body!.count) bytes, no content type])")
+        #expect(response.description == "HTTPResponse(200, headers: [], body: [body omitted: \(response.body.count) bytes, no content type])")
     }
 
     @Test("Codable keeps the full value for the keychain")
