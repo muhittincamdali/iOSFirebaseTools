@@ -55,7 +55,8 @@ print(request)
 - **Path segments** that look like identifiers become `:id`: UUIDs, segments with 6 or more
   digits, mixed letter and digit tokens of 16 characters or more (Firestore's document IDs and
   Firebase user IDs), e-mail addresses, JWTs and long base64 or hex runs. The segment after a
-  secret name (`/token/…`) or after a segment that is not plain ASCII becomes `:id` as well.
+  secret name becomes `:id` as well, including compound names (`/token/…`, `/resetToken/…`,
+  `/userpassword/…`), and so does the segment after one that is not plain ASCII.
 - **Paths that could be read two ways** keep scheme and host only: dot segments (`..`, `%2E`),
   `;` matrix parameters, double encoding (`%25`) and more than 32 segments. A host that names a
   secret (`myapp://pin/4831`) also keeps nothing after it, and a host that is not a plain DNS

@@ -58,6 +58,11 @@ enum Redaction {
     /// Fragments that make any header name secret.
     private static let secretHeaderParts = ["token", "secret", "key", "auth", "session", "signature", "cookie", "password"]
 
+    /// Fragments that make a path segment secret even written as one lowercase run
+    /// (`resettoken`). Shorter names such as `key` or `auth` are left out: they are parts of too
+    /// many ordinary words (`keyboard`, `authors`).
+    private static let secretWordParts = ["token", "secret", "password", "passwd", "apikey", "credential"]
+
     // MARK: - Names
 
     /// Percent-decodes, applies NFKC, folds case, and drops `_`, `-`, `.` and spaces.
@@ -82,6 +87,44 @@ enum Redaction {
         let folded = fold(name)
         guard isPlain(folded) else { return true }
         return secretNames.contains(folded) || (folded.hasSuffix("s") && secretNames.contains(String(folded.dropLast())))
+    }
+
+    /// Whether text names a secret: a word in it, or a camelCase or digit-separated part of a
+    /// word, is a secret name, as in `token`, `resetToken`, `userPassword` or `apiKey2`.
+    static func namesSecret(_ text: String) -> Bool {
+        words(text).contains { isSecretName($0) || nameParts($0).contains(where: isSecretName) }
+    }
+
+    /// Whether the folded text contains one of ``secretWordParts``. Only path segments use it:
+    /// an echoed value such as `https://securetoken.google.com/…` stays readable.
+    static func hasSecretFragment(_ text: String) -> Bool {
+        let folded = fold(text)
+        return secretWordParts.contains(where: folded.contains)
+    }
+
+    /// Splits an ASCII word where a lowercase letter meets an uppercase one, where an acronym
+    /// ends (`APIKey` → `API`, `Key`) and where letters meet digits.
+    static func nameParts(_ word: String) -> [String] {
+        let scalars = Array(word.unicodeScalars)
+        let isUpper = { (scalar: Unicode.Scalar) in ("A"..."Z").contains(scalar) }
+        let isDigit = { (scalar: Unicode.Scalar) in ("0"..."9").contains(scalar) }
+        var parts: [String] = []
+        var current = String.UnicodeScalarView()
+        for (index, scalar) in scalars.enumerated() {
+            if let previous = current.last {
+                let next = index + 1 < scalars.count ? scalars[index + 1] : nil
+                let startsWord = (isUpper(scalar) && !isUpper(previous))
+                    || (isUpper(scalar) && isUpper(previous) && next.map { !isUpper($0) && !isDigit($0) } == true)
+                    || isDigit(scalar) != isDigit(previous)
+                if startsWord {
+                    parts.append(String(current))
+                    current = String.UnicodeScalarView()
+                }
+            }
+            current.append(scalar)
+        }
+        if !current.isEmpty { parts.append(String(current)) }
+        return parts
     }
 
     static func isSecretHeader(_ name: String) -> Bool {
@@ -116,7 +159,7 @@ enum Redaction {
         let scalars = value.unicodeScalars
         let clean = scalars.count <= maxLabelLength
             && scalars.allSatisfy { $0.isASCII && ($0.properties.isAlphabetic || ("0"..."9").contains($0) || labelPunctuation.contains($0)) }
-            && !words(value).contains(where: isSecretName)
+            && !namesSecret(value)
             && !Detectors.matches(value)
         return clean ? "\"\(value)\"" : "<redacted, \(scalars.count) characters>"
     }

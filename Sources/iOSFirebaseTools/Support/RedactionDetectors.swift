@@ -31,7 +31,8 @@ struct PathRedactor {
     }
 
     /// Whether the segment is shown as `:id`. A segment that is not plain is a label: it is
-    /// hidden, and so is the one after it. A secret name is shown and the next one hidden.
+    /// hidden, and so is the one after it. A segment that names a secret (`token`, `resetToken`,
+    /// `userpassword`) is shown and the next one hidden.
     private mutating func isHidden(_ segment: String) -> Bool {
         if hideNext {
             hideNext = false
@@ -44,7 +45,7 @@ struct PathRedactor {
             hideNext = true
             return true
         }
-        if Redaction.words(segment).contains(where: Redaction.isSecretName) { hideNext = true }
+        if Redaction.namesSecret(segment) || Redaction.hasSecretFragment(segment) { hideNext = true }
         return false
     }
 

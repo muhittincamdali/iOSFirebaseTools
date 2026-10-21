@@ -97,6 +97,10 @@ struct RedactionTextTests {
         #expect(Redaction.label("demo-lab") == #""demo-lab""#)
         #expect(Redaction.label("2026-10-15T08:41:00+24:00") == #""2026-10-15T08:41:00+24:00""#)
         #expect(Redaction.label("[::1]:9099") == #""[::1]:9099""#)
+        #expect(Redaction.label("https://securetoken.google.com/demo-lab") == #""https://securetoken.google.com/demo-lab""#)
+        for compound in ["resetToken abc", "userPassword hunter2", "apiKey2 abc"] {
+            #expect(Redaction.label(compound).hasPrefix("<redacted, "), "\(compound)")
+        }
         for hidden in ["a\u{202E}b", "x=hunter2", "pass%3Dword", "a&#61;b", "a\\u0041", "tab\there", "my-token-x", "a\"b", "<b>x</b>"] {
             #expect(Redaction.label(hidden).hasPrefix("<redacted, "), "\(hidden)")
         }
