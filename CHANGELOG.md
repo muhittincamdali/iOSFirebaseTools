@@ -42,7 +42,8 @@ is gone; see "Removed".
   time checks with a bounded clock skew, and an emulator mode that accepts unsigned tokens only.
 - `FirestoreClient.runTransaction(maxAttempts:_:)` and `FirestoreTransaction`: read-write
   transactions whose reads see one state of the database and whose writes commit only if
-  nothing they read changed; an aborted commit runs the closure again, up to 5 attempts by
+  nothing they read changed; an aborted commit, or a read that fails with `ABORTED` or a
+  transient error, runs the closure again in a new transaction, up to 5 attempts by
   default. FirebaseLab pins notes with one.
 - `Secret`, which hides tokens from `print`, `dump`, `debugPrint` and `Mirror`, and redacted
   text forms for every value that can carry a credential or personal data: `AuthSession` (no
@@ -87,8 +88,10 @@ is gone; see "Removed".
   case folding, and a name that is still not plain ASCII is treated as secret; detectors hide
   e-mail addresses, bearer tokens, JWTs, long base64 or hex runs, Luhn card numbers and mod-97
   IBANs; and every step is bounded (8 KiB URLs, 32 path segments and query items, 64 headers,
-  256-character values), so a hostile value cannot slow down or crash logging. Error messages
-  no longer quote values from `JSONDecoder`, `EncodingError` or the token.
+  256-character values), so a hostile value cannot slow down or crash logging. Header names
+  pass the same checks as query names. Error messages no longer quote values from
+  `JSONDecoder`, `EncodingError` or the token, and `dump`, `debugPrint` and the debugger show
+  errors through the same text forms, not their stored server messages or token values.
 
 ## [1.0.0] - 2026-02-02
 
