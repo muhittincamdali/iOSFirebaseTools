@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2026-10-15
+## [2.0.0] - 2026-10-21
 
 A rebuild. 1.x wrapped the Firebase iOS SDK; 2.0 talks to Firebase Authentication and Cloud
 Firestore through their REST APIs, has no dependencies, and adds server-side ID token
@@ -40,8 +40,18 @@ is gone; see "Removed".
 - `IDTokenVerifier` for servers: RS256 signatures against Google's JSON Web Key Set (cached for
   `max-age`, refetched at most once a minute for unknown key IDs), audience, issuer, subject and
   time checks with a bounded clock skew, and an emulator mode that accepts unsigned tokens only.
-- `Secret`, which hides tokens from `print`, `dump`, `debugPrint` and `Mirror`; `AuthSession`,
-  provider credentials, `HTTPRequest` and `HTTPResponse` print without tokens or passwords.
+- `FirestoreClient.runTransaction(maxAttempts:_:)` and `FirestoreTransaction`: read-write
+  transactions whose reads see one state of the database and whose writes commit only if
+  nothing they read changed; an aborted commit runs the closure again, up to 5 attempts by
+  default. FirebaseLab pins notes with one.
+- `Secret`, which hides tokens from `print`, `dump`, `debugPrint` and `Mirror`, and redacted
+  text forms for every value that can carry a credential or personal data: `AuthSession` (no
+  tokens, no e-mail address), `HTTPRequest` and `HTTPResponse` (no bodies, user info, fragments,
+  query values or ID-like path segments; header values for an allowlist only), `AuthError` and
+  `FirestoreError` (code and status, not the server's message), `TokenError` and
+  `ValidationError` (only short printable values), and `FirebaseProject` and
+  `GoogleServiceInfo` (no API key). `RedactionPolicy` and `redactedDescription(_:)` let an app
+  allow more headers and query parameters in its own logs.
 - `HTTPTransport` with `URLSessionTransport`, which stops reading a response past 16 MiB.
 - tvOS 17, watchOS 10 and visionOS 1 support next to iOS 17 and macOS 14.
 - `Emulators/` with the emulator configuration and Security Rules, and end-to-end tests that run
@@ -49,7 +59,7 @@ is gone; see "Removed".
 - Example app `Examples/FirebaseLab` with five UI tests against the emulators (README screenshots
   from `scripts/capture-screenshots.sh`), and
   `Examples/ConfigCheck` (`fbcheck`) for plists and token verification.
-- A DocC catalog with five articles, published to GitHub Pages.
+- A DocC catalog with six articles, including Logging and Redaction, published to GitHub Pages.
 
 ### Changed
 
@@ -70,7 +80,14 @@ is gone; see "Removed".
   1–86400 decimal seconds, dates that are NaN or outside the years 0001–9999, `Cache-Control`
   values that would overflow, and NaN or infinite clock skews.
 - Document IDs are percent-encoded per URL segment, and provider IDs are checked, so neither can
-  change where a request goes or which fields a form carries.
+  change where a request goes or which fields a form carries. A `+` in a page token or
+  transaction ID is sent as `%2B`, so Google's servers do not read it as a space.
+- Text forms follow one default-safe rule: names are compared after percent-decoding, NFKC and
+  case folding, and a name that is still not plain ASCII is treated as secret; detectors hide
+  e-mail addresses, bearer tokens, JWTs, long base64 or hex runs, Luhn card numbers and mod-97
+  IBANs; and every step is bounded (8 KiB URLs, 32 path segments and query items, 64 headers,
+  256-character values), so a hostile value cannot slow down or crash logging. Error messages
+  no longer quote values from `JSONDecoder`, `EncodingError` or the token.
 
 ## [1.0.0] - 2026-02-02
 
