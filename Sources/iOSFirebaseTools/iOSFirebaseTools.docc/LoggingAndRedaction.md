@@ -22,6 +22,7 @@ the first place, and prefer structured logging such as `os.Logger` with `privacy
 | ``AuthSession``                          | the first 10 characters of the user ID, anonymous or not, expiry                                     | tokens, e-mail address                                                              |
 | ``HTTPRequest``, ``HTTPResponse``          | method, scheme, host, port, path, query names, allowlisted headers, status, body size and media type | body, user info, fragment, query values, ID-like path segments, other header values |
 | ``AuthError``, ``FirestoreError``          | the code and HTTP status                                                                             | the server's message                                                                |
+| ``TransportError``                       | the `URLError` code or the size limit                                                                | the request URL, its API key and IDs                                                |
 | ``TokenError``, ``ValidationError``        | short printable values you passed or the token holds, paths with IDs as `:id`                        | long, multi-line or token-like values                                               |
 | ``FirebaseProject``, ``GoogleServiceInfo`` | project ID, database, bundle ID, emulators                                                           | the API key                                                                         |
 

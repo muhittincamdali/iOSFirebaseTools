@@ -87,15 +87,25 @@ public protocol HTTPTransport: Sendable {
 }
 
 /// A transport failure that is not an answer from Firebase.
+///
+/// ``URLSessionTransport`` throws this instead of `URLError`: a `URLError` keeps the request URL
+/// in `failingURL` and its `userInfo`, and Firebase request URLs carry the API key (`?key=`) and
+/// document IDs, which `print(error)` and crash reports would show.
 public enum TransportError: Error, Sendable, Hashable {
     /// The response body was larger than the transport's limit.
     case responseTooLarge(limit: Int)
     /// The system returned something other than an HTTP response.
     case notHTTP
+    /// The request failed before Firebase answered: no connection, a timeout, a TLS failure.
+    /// The code is the `URLError` code, such as `.notConnectedToInternet` or `.cannotConnectToHost`.
+    case network(URLError.Code)
 }
 
 /// Sends requests with `URLSession` and stops reading a response that grows past a limit, so a
 /// misbehaving server or proxy cannot make the app hold an unbounded body in memory.
+///
+/// A failed connection throws ``TransportError/network(_:)`` with the `URLError` code, never
+/// the `URLError`, so the request URL and its API key stay out of the error.
 public struct URLSessionTransport: HTTPTransport {
     private let session: URLSession
     private let maxResponseBytes: Int
@@ -109,6 +119,15 @@ public struct URLSessionTransport: HTTPTransport {
     }
 
     public func send(_ request: HTTPRequest) async throws -> HTTPResponse {
+        do {
+            return try await load(request)
+        } catch let error as URLError {
+            // Only the code: the URLError itself holds the request URL with the API key.
+            throw TransportError.network(error.code)
+        }
+    }
+
+    private func load(_ request: HTTPRequest) async throws -> HTTPResponse {
         var urlRequest = URLRequest(url: request.url)
         urlRequest.httpMethod = request.method
         urlRequest.httpBody = request.body

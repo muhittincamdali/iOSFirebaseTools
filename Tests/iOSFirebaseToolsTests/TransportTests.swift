@@ -6,11 +6,16 @@ import Testing
 final class StubProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) static var body = Data()
     nonisolated(unsafe) static var contentLength: String?
+    nonisolated(unsafe) static var failure: URLError?
 
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
+        if let failure = Self.failure {
+            client?.urlProtocol(self, didFailWithError: failure)
+            return
+        }
         var headers = ["Content-Type": "application/json"]
         if let length = Self.contentLength { headers["Content-Length"] = length }
         let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: headers)!
@@ -47,6 +52,28 @@ struct TransportTests {
             StubProtocol.contentLength = length
             await #expect(throws: TransportError.responseTooLarge(limit: 1_024)) {
                 try await transport(limit: 1_024).send(HTTPRequest(method: "GET", url: URL(string: "https://example.com/b")!))
+            }
+        }
+    }
+
+    @Test("A connection failure throws the URLError code without the URL, its API key or IDs")
+    func networkFailureHidesURL() async throws {
+        let url = URL(string: "https://firestore.googleapis.com/v1/projects/demo/databases/(default)/documents/notes/K3vXq9TzPlm2RwYb8NaC?key=AIzaSyA-0123456789abcdefghijklmnopqrstu")!
+        StubProtocol.failure = URLError(.notConnectedToInternet, userInfo: [
+            NSURLErrorFailingURLErrorKey: url, NSURLErrorFailingURLStringErrorKey: url.absoluteString,
+        ])
+        defer { StubProtocol.failure = nil }
+        let error = try await #require(throws: TransportError.self) {
+            try await transport(limit: 1_024).send(HTTPRequest(method: "GET", url: url))
+        }
+        #expect(error == .network(.notConnectedToInternet))
+        var dumped = ""
+        dump(error, to: &dumped)
+        let nsError = error as NSError
+        for text in [String(describing: error), String(reflecting: error), error.localizedDescription, dumped,
+                     nsError.debugDescription, "\(nsError.userInfo)"] {
+            for secret in ["AIzaSy", "K3vXq9TzPlm2RwYb8NaC", "key="] {
+                #expect(!text.contains(secret), "\(text)")
             }
         }
     }

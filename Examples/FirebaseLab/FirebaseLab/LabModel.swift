@@ -172,7 +172,7 @@ final class LabModel {
             error.description
         case let error as FirestoreError:
             "Firestore: \(error.message)"
-        case let error as URLError where error.code == .cannotConnectToHost:
+        case TransportError.network(.cannotConnectToHost):
             "Cannot reach Firebase. Start the emulators with scripts/start-emulators.sh."
         default:
             error.localizedDescription
