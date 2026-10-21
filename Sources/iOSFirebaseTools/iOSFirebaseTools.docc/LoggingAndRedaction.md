@@ -71,7 +71,9 @@ purpose; the alternative, tables of look-alike letters, never ends.
 
 Values are also checked by detectors, whatever their name: e-mail addresses (Unicode local
 parts and domains included), bearer tokens, JWTs, base64 or hex runs of 32 characters or more,
-card numbers that pass the Luhn check, and IBANs that pass the mod-97 check.
+card numbers that pass the Luhn check, and IBANs that pass the mod-97 check. Header and query
+names go through the same checks: a name longer than 256 characters, or one a detector matches,
+is hidden together with its value.
 
 ## Your own allowlist
 

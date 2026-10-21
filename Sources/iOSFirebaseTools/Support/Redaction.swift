@@ -165,7 +165,8 @@ enum Redaction {
     static func headers(_ headers: [String: String], policy: RedactionPolicy) -> String {
         let entries = headers.map { name, value -> String in
             let lowered = name.lowercased()
-            guard isPlain(fold(name)), lowered.unicodeScalars.allSatisfy({ (0x21...0x7E).contains($0.value) }) else {
+            // Names pass the same checks as query names: a long or token-like name is hidden too.
+            guard isPlain(fold(name)), isClean(name), lowered.unicodeScalars.allSatisfy({ (0x21...0x7E).contains($0.value) }) else {
                 return "\(hidden): \(hidden)"
             }
             let keep = policy.allowedHeaders.contains(fold(name)) && !isSecretHeader(name) && isClean(value)

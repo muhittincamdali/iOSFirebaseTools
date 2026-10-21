@@ -67,7 +67,7 @@ struct RedactionHTTPTests {
         #expect(url(long) == Redaction.unparsedURL)
     }
 
-    @Test("Headers: values only for the allowlist; secret and non-ASCII names always hidden")
+    @Test("Headers: values only for the allowlist; secret, non-ASCII, token-like and long names always hidden")
     func headers() {
         let headers = [
             "Authorization": "Bearer x", "Cookie": "sid=1", "X-Api-Key": "k", "X-Goog-Session-Token": "t",
@@ -80,6 +80,8 @@ struct RedactionHTTPTests {
         let custom = RedactionPolicy(allowedHeaders: ["X-Request-ID", "Authorization"])
         #expect(Redaction.headers(["X-Request-Id": "r-1", "Authorization": "Bearer x"], policy: custom)
             == "[authorization: <redacted>, x-request-id: r-1]")
+        let odd = ["x-0123456789abcdef0123456789abcdef": "v", "x-" + String(repeating: "a", count: 300): "v", "X-Trace": "v"]
+        #expect(Redaction.headers(odd, policy: .default) == "[<redacted>: <redacted>, <redacted>: <redacted>, x-trace: <redacted>]")
     }
 
     @Test("Bodies are never shown; the content type is reduced to a clean media type", arguments: [
