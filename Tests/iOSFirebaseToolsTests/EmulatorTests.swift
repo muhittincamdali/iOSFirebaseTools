@@ -238,4 +238,36 @@ struct EmulatorTests {
         } while token != nil
         #expect(seen == (0..<5).map { "item-\($0)" })
     }
+
+    @Test("Concurrent transactions on one counter lose no increment, and a failed one writes nothing")
+    func transactions() async throws {
+        let (_, firestore, _) = try await newUser()
+        let path = "scratch/\(UUID().uuidString)/counters/total"
+        try await firestore.set(["count": 0], at: path)
+
+        try await withThrowingTaskGroup(of: Int.self) { group in
+            for _ in 0..<3 {
+                group.addTask {
+                    try await firestore.runTransaction(maxAttempts: FirestoreClient.maxTransactionAttempts) { transaction in
+                        let count = try await transaction.document(path, as: [String: Int].self)?.data["count"] ?? 0
+                        try transaction.set(["count": count + 1], at: path)
+                        return count + 1
+                    }
+                }
+            }
+            let results = try await group.reduce(into: []) { $0.append($1) }
+            #expect(results.sorted() == [1, 2, 3])
+        }
+        #expect(try await firestore.document(path, as: [String: Int].self)?.data["count"] == 3)
+
+        struct Stop: Error {}
+        await #expect(throws: Stop.self) {
+            try await firestore.runTransaction { transaction in
+                _ = try await transaction.document(path, as: [String: Int].self)
+                try transaction.set(["count": 100], at: path)
+                throw Stop()
+            }
+        }
+        #expect(try await firestore.document(path, as: [String: Int].self)?.data["count"] == 3)
+    }
 }

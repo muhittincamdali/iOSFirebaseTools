@@ -29,7 +29,7 @@ public struct FirestoreClient: Sendable {
     public let project: FirebaseProject
     private let credentials: Credentials
     private let transport: any HTTPTransport
-    private let retryDelay: @Sendable (Int) async throws -> Void
+    let retryDelay: @Sendable (Int) async throws -> Void
 
     /// Creates a client for a project's Firestore database.
     ///
@@ -37,7 +37,8 @@ public struct FirestoreClient: Sendable {
     ///   - project: The project and database, or the Firestore emulator.
     ///   - credentials: How requests are authorized; ``Credentials/user(_:)`` for app users.
     ///   - transport: Sends the requests; tests pass their own.
-    ///   - retryDelay: Waits before retry number 1 or 2 of a read; tests pass a function that
+    ///   - retryDelay: Waits before retry number 1 or 2 of a read, and before each new attempt
+    ///     of a transaction (with 2 from the second retry on); tests pass a function that
     ///     returns at once.
     public init(
         project: FirebaseProject,
@@ -175,7 +176,7 @@ extension FirestoreClient {
         return url
     }
 
-    private func send(method: String, url: URL, body: Data? = nil, idempotent: Bool) async throws -> HTTPResponse {
+    func send(method: String, url: URL, body: Data? = nil, idempotent: Bool) async throws -> HTTPResponse {
         if let body, body.count > Self.maxRequestBytes {
             throw ValidationError("request", "larger than Firestore's 10 MiB limit")
         }
