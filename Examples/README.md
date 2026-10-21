@@ -9,7 +9,7 @@ An iOS app for notes that belong to their author:
 - create an account, sign in with e-mail and password, or continue without an account;
 - stay signed in across launches (the session is in the keychain);
 - write, pin and delete notes in Cloud Firestore (swipe a row or long-press it for its menu),
-  with the creation time set by the server;
+  with the creation time set by the server and pinning done in a transaction;
 - see the user, the sign-in provider read from the ID token's claims, and the token itself only
   as `Secret(redacted, … characters)`.
 

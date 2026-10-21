@@ -119,7 +119,8 @@ final class LabModel {
 
     func togglePin(_ note: FirestoreDocument<Note>) async {
         await perform {
-            try await self.firestore.update(note.path.description, fields: ["pinned": .bool(!note.data.pinned)])
+            // A transaction, so taps on two devices cannot both read the old value.
+            _ = try await FirebaseLab.togglePin(at: note.path.description, in: self.firestore)
             try await self.reload()
         }
     }
