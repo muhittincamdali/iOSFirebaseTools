@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e58ec5fc64f013f130f40242c1352ea03fa05302 status=reviewed -->
+<!-- i18n-source: README.md@9c07e3e50654370118b00850bdfc999a3d191be3 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -38,18 +38,20 @@ verifica ID tokens en un servidor. No tiene dependencias fuera del SDK de Apple.
 - **Inicio de sesión que se mantiene** — correo y contraseña, anónimo, Sign in with Apple y Google;
   la sesión se guarda en el llavero y el ID token se renueva antes de que caduque, con una sola
   petición sin importar cuántos llamantes concurrentes haya.
-- **Firestore con tus propios tipos** — lee, consulta, escribe y agrupa en lotes modelos `Codable`;
-  `Date` se convierte en una marca de tiempo, y las marcas de tiempo del servidor y los
-  incrementos se indican con un solo argumento.
+- **Firestore con tus propios tipos** — lee, consulta, escribe, agrupa en lotes y ejecuta
+  transacciones con modelos `Codable`; `Date` se convierte en una marca de tiempo, y las marcas de
+  tiempo del servidor y los incrementos se indican con un solo argumento.
 - **Errores en lugar de fallos** — un entero que desborda `Int64`, un NaN en un campo `Int`, una
   fecha del año 10000 o una respuesta de 20 MB lanzan un error tipado; las rutas, los nombres de
   campo y los límites se comprueban con las reglas de Firebase antes de enviar una petición.
 - **ID tokens comprobados en tu servidor** — `IDTokenVerifier` aplica las reglas de Firebase para
   tokens RS256 con las claves publicadas por Google, algo que los SDK de administración ofrecen
   para otros lenguajes pero no para Swift.
-- **Los tokens nunca se imprimen** — las sesiones y los tokens solo muestran su longitud en
-  `print`, `dump`, los registros y el depurador.
-- **Probado de principio a fin** — 105 pruebas de Swift Testing, 9 de ellas contra los emuladores de
+- **Registros sin secretos** — los tokens, las direcciones de correo, los cuerpos de las peticiones,
+  los valores de las consultas, los segmentos de ruta que parecen ID y los mensajes del servidor no
+  aparecen en lo que muestran `print`, `dump`, los registros y el depurador; consulta
+  [Qué muestran los registros](#qué-muestran-los-registros).
+- **Probado de principio a fin** — 137 pruebas de Swift Testing, 10 de ellas contra los emuladores de
   Authentication y Firestore con Security Rules, y cinco pruebas de interfaz de la app de ejemplo
   en un simulador.
 
@@ -233,6 +235,22 @@ func moveNote(from oldPath: String, to newPath: String, in firestore: FirestoreC
 }
 ```
 
+### Leer y escribir en una transacción
+
+```swift
+/// Flips `pinned` even when two devices tap at once: the read and the write happen together.
+func togglePin(at path: String, in firestore: FirestoreClient) async throws -> Bool? {
+    try await firestore.runTransaction { transaction in
+        guard let note = try await transaction.document(path, as: Note.self) else { return nil }
+        try transaction.update(path, fields: ["pinned": .bool(!note.data.pinned)])
+        return !note.data.pinned
+    }
+}
+```
+
+Si otra escritura cambia la nota entre la lectura y el commit, Firestore anula el commit y el
+closure se ejecuta de nuevo, hasta cinco veces por defecto.
+
 ### Comprobar el token en tu servidor
 
 ```swift
@@ -283,6 +301,37 @@ Para probarlo tú mismo, ejecuta `scripts/start-emulators.sh`, abre `FirebaseLab
 [Examples/README.md](Examples/README.md) tiene los detalles, y la herramienta de línea de comandos
 `fbcheck` de [`Examples/ConfigCheck`](Examples/ConfigCheck) revisa plists y verifica tokens.
 
+## Qué muestran los registros
+
+Todo valor del paquete que pueda contener un token, una contraseña o datos personales se imprime en
+una forma censurada. Lo que el código no entiende del todo se oculta:
+
+| Valor                                  | Se muestra                                                                                             | Nunca se muestra                                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `Secret`                               | su longitud                                                                                            | el valor                                                                                           |
+| `AuthSession`                          | el principio del ID de usuario, si es anónimo o no, la caducidad                                       | tokens, dirección de correo                                                                        |
+| `HTTPRequest`, `HTTPResponse`          | método, host, ruta, nombres de los parámetros de consulta, cabeceras de la lista de permitidos, estado | cuerpos, información de usuario, fragmentos, valores de consulta, segmentos de ruta que parecen ID |
+| `AuthError`, `FirestoreError`          | código y estado HTTP                                                                                   | el mensaje del servidor (lee `message` en el código)                                               |
+| `FirebaseProject`, `GoogleServiceInfo` | ID del proyecto, base de datos, bundle ID                                                              | la clave de API                                                                                    |
+
+```text
+HTTPRequest(POST https://securetoken.googleapis.com/v1/token?key=<redacted>,
+  headers: [authorization: <redacted>, content-type: application/x-www-form-urlencoded],
+  body: [body omitted: 48 bytes, application/x-www-form-urlencoded])
+```
+
+Los nombres se comparan tras decodificar los porcentajes, aplicar NFKC y plegar mayúsculas y
+minúsculas; un nombre que aun así no sea ASCII simple, como `şifre` o un `password` con una letra
+cirílica, se trata como secreto. Los cuerpos nunca se analizan ni se muestran. `RedactionPolicy`
+enumera las cabeceras y los parámetros de consulta cuyos valores pueden mostrar tus propios
+registros.
+
+Es una red de seguridad, no una garantía: no puede censurar el texto que escribes tú mismo, y un
+secreto corto en la ruta de una URL puede parecer una palabra corriente. Mantén los secretos fuera
+de los registros y de las URL desde el principio. El artículo
+[Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction)
+recoge las reglas completas y sus límites.
+
 ## Documentación
 
 Referencia de la API y artículos:
@@ -304,7 +353,7 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
   — inicio de sesión con correo, anónimo, Apple y Google, errores, la sesión en el llavero y tokens vigentes
   ([código fuente](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/SigningIn.md)).
 - [Working with Firestore](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/workingwithfirestore)
-  — modelos, consultas, escrituras, transformaciones, lotes y los límites que comprueba el cliente
+  — modelos, consultas, escrituras, transformaciones, lotes, transacciones y los límites que comprueba el cliente
   ([código fuente](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/WorkingWithFirestore.md)).
 - [Verifying ID Tokens](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/verifyingidtokens)
   — las reglas de Firebase, la caché de claves, los claims y el desfase del reloj en un servidor Swift
@@ -312,6 +361,9 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
 - [Testing with the Emulators](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/testingwiththeemulators)
   — Local Emulator Suite, `emulators:exec` y pruebas unitarias con un transport de prueba
   ([código fuente](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/TestingWithTheEmulators.md)).
+- [Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction)
+  — lo que muestran en los registros las peticiones, las sesiones y los errores, la lista de permitidos y lo que no se detecta
+  ([código fuente](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/LoggingAndRedaction.md)).
 
 ## Requisitos
 
@@ -336,13 +388,15 @@ con Xcode 27. Las pruebas con emuladores necesitan la Firebase CLI y Java 21 o p
   `AuthSession` y el `SessionStore` donde se guarda (llavero o memoria); credenciales de los
   proveedores.
 - `Firestore/`: `FirestoreClient`, un struct `Sendable` sobre la API REST de Firestore;
-  `FirestoreValue` con su forma JSON, el codificador y el decodificador `Codable`, rutas,
-  consultas y `WriteBatch`. Todas las escrituras pasan por el endpoint `commit`, así que una
-  escritura individual y un lote se comportan igual.
+  `FirestoreValue` con su forma JSON, el codificador y el decodificador `Codable`, rutas, consultas,
+  `WriteBatch` y `FirestoreTransaction`. Todas las escrituras pasan por el endpoint `commit`, así
+  que una escritura individual, un lote y una transacción se comportan igual.
 - `Tokens/`: el análisis de `JSONWebToken`, `IDTokenClaims` e `IDTokenVerifier` con claves RSA del
   JSON Web Key Set de Google.
 - `Transport/`: el protocolo `HTTPTransport` y su implementación con `URLSession`, el único lugar
   que toca la red.
+- `Support/`: `Secret`, `ValidationError` y las reglas de censura compartidas por todas las
+  representaciones de texto.
 - Los datos que llegan de fuera del proceso tienen límites: cuerpos de respuesta (16 MiB), tokens
   (16 KiB), plists (64 KiB), profundidad de anidamiento, rangos numéricos antes de cualquier
   conversión y direcciones de emulador (solo `host:port`).
@@ -358,7 +412,6 @@ xcodebuild test -scheme iOSFirebaseTools -destination 'platform=iOS Simulator,na
 ## Hoja de ruta
 
 - Añadir el paquete al Swift Package Index; `.spi.yml` ya está en el repositorio.
-- Transacciones de Firestore (`beginTransaction` y un commit con la transacción).
 - Vincular proveedores a un usuario existente y verificación del correo electrónico.
 - Una versión de `IDTokenVerifier` para Linux sobre swift-crypto.
 

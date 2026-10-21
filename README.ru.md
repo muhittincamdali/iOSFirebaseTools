@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e58ec5fc64f013f130f40242c1352ea03fa05302 status=reviewed -->
+<!-- i18n-source: README.md@9c07e3e50654370118b00850bdfc999a3d191be3 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -38,18 +38,19 @@ iOSFirebaseTools — это Swift-пакет для Firebase Authentication и C
 - **Вход, который сохраняется** — e-mail и пароль, анонимный вход, Sign in with Apple и Google;
   сессия хранится в связке ключей, а ID-токен обновляется до истечения срока, причём одним запросом
   при любом числе одновременных вызовов.
-- **Firestore со своими типами** — чтение, запросы, запись и пакетная запись моделей `Codable`;
-  `Date` превращается в метку времени, а серверные метки времени и приращения задаются одним
-  аргументом.
+- **Firestore со своими типами** — чтение, запросы, запись, пакетная запись и транзакции для моделей
+  `Codable`; `Date` превращается в метку времени, а серверные метки времени и приращения задаются
+  одним аргументом.
 - **Ошибки вместо падений** — целое число, переполняющее `Int64`, NaN в поле `Int`, дата в 10000 году
   или ответ в 20 МБ приводят к типизированной ошибке; пути, имена полей и лимиты проверяются по
   правилам Firebase до отправки запроса.
 - **Проверка ID-токенов на вашем сервере** — `IDTokenVerifier` применяет правила Firebase для
   RS256-токенов с опубликованными Google ключами; Admin SDK делают это для других языков, но не для
   Swift.
-- **Токены не попадают в вывод** — сессии и токены показывают только свою длину в `print`, `dump`,
-  логах и отладчике.
-- **Сквозное тестирование** — 105 тестов на Swift Testing, 9 из них идут против эмуляторов
+- **Логи без секретов** — токены, адреса e-mail, тела запросов, значения параметров запросов,
+  сегменты пути, похожие на идентификаторы, и сообщения сервера не попадают в то, что показывают
+  `print`, `dump`, логи и отладчик; см. [Что показывают логи](#что-показывают-логи).
+- **Сквозное тестирование** — 137 тестов на Swift Testing, 10 из них идут против эмуляторов
   Authentication и Firestore с Security Rules, плюс пять UI-тестов примера приложения на симуляторе.
 
 ## Быстрый старт
@@ -229,6 +230,22 @@ func moveNote(from oldPath: String, to newPath: String, in firestore: FirestoreC
 }
 ```
 
+### Чтение и запись в транзакции
+
+```swift
+/// Flips `pinned` even when two devices tap at once: the read and the write happen together.
+func togglePin(at path: String, in firestore: FirestoreClient) async throws -> Bool? {
+    try await firestore.runTransaction { transaction in
+        guard let note = try await transaction.document(path, as: Note.self) else { return nil }
+        try transaction.update(path, fields: ["pinned": .bool(!note.data.pinned)])
+        return !note.data.pinned
+    }
+}
+```
+
+Если между чтением и фиксацией заметку изменит другая запись, Firestore отменяет commit, и замыкание
+выполняется снова — по умолчанию до пяти раз.
+
 ### Проверка токена на вашем сервере
 
 ```swift
@@ -279,6 +296,36 @@ Local Emulator Suite: тест регистрируется, записывае�
 нажмите **Run**. Подробности — в [Examples/README.md](Examples/README.md), а утилита командной строки
 `fbcheck` в [`Examples/ConfigCheck`](Examples/ConfigCheck) проверяет plist-файлы и токены.
 
+## Что показывают логи
+
+Каждое значение в пакете, которое может содержать токен, пароль или персональные данные, выводится в
+скрытом виде. То, что код понимает не полностью, скрывается:
+
+| Значение                               | Показывается                                                                         | Никогда не показывается                                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `Secret`                               | его длина                                                                            | значение                                                                                                        |
+| `AuthSession`                          | начало ID пользователя, анонимный он или нет, срок действия                          | токены, адрес e-mail                                                                                            |
+| `HTTPRequest`, `HTTPResponse`          | метод, хост, путь, имена параметров запроса, заголовки из списка разрешённых, статус | тела, сведения о пользователе, фрагменты, значения параметров запроса, сегменты пути, похожие на идентификаторы |
+| `AuthError`, `FirestoreError`          | код и HTTP-статус                                                                    | сообщение сервера (читайте `message` в коде)                                                                    |
+| `FirebaseProject`, `GoogleServiceInfo` | ID проекта, база данных, bundle ID                                                   | ключ API                                                                                                        |
+
+```text
+HTTPRequest(POST https://securetoken.googleapis.com/v1/token?key=<redacted>,
+  headers: [authorization: <redacted>, content-type: application/x-www-form-urlencoded],
+  body: [body omitted: 48 bytes, application/x-www-form-urlencoded])
+```
+
+Имена сравниваются после раскодирования процентных последовательностей, нормализации NFKC и свёртки
+регистра, а имя, которое всё равно не состоит из обычных ASCII-символов, например `şifre` или
+`password` с кириллической буквой, считается секретным. Тела никогда не разбираются и не
+показываются. `RedactionPolicy` перечисляет заголовки и параметры запроса, значения которых могут
+показывать ваши собственные логи.
+
+Это страховочная сетка, а не гарантия: она не может скрыть текст, который вы пишете сами, а короткий
+секрет в пути URL может выглядеть как обычное слово. Не допускайте секреты в логи и URL с самого
+начала. Полные правила и ограничения описаны в статье
+[Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction).
+
 ## Документация
 
 Справочник API и статьи:
@@ -301,7 +348,7 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
   — вход по e-mail, анонимный, через Apple и Google, ошибки, сессия в связке ключей и актуальные токены
   ([исходник](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/SigningIn.md)).
 - [Working with Firestore](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/workingwithfirestore)
-  — модели, запросы, записи, трансформации, пакеты и лимиты, которые проверяет клиент
+  — модели, запросы, записи, трансформации, пакеты, транзакции и лимиты, которые проверяет клиент
   ([исходник](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/WorkingWithFirestore.md)).
 - [Verifying ID Tokens](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/verifyingidtokens)
   — правила Firebase, кеширование ключей, claims и расхождение часов на Swift-сервере
@@ -309,6 +356,9 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
 - [Testing with the Emulators](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/testingwiththeemulators)
   — Local Emulator Suite, `emulators:exec` и модульные тесты с тестовым transport
   ([исходник](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/TestingWithTheEmulators.md)).
+- [Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction)
+  — что запросы, сессии и ошибки показывают в логах, список разрешённого и что остаётся необнаруженным
+  ([исходник](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/LoggingAndRedaction.md)).
 
 ## Требования
 
@@ -332,14 +382,16 @@ Xcode 27. Для тестов с эмуляторами нужны Firebase CLI 
 - `Auth/`: `FirebaseAuthClient` — actor поверх REST API Identity Toolkit и Secure Token;
   `AuthSession` и `SessionStore`, в котором она хранится (связка ключей или память); учётные данные
   провайдеров.
-- `Firestore/`: `FirestoreClient` — `Sendable`-структура поверх REST API Firestore;
-  `FirestoreValue` с его JSON-представлением, кодировщик и декодировщик `Codable`, пути, запросы и
-  `WriteBatch`. Все записи идут через endpoint `commit`, поэтому одиночная запись и пакет ведут себя
-  одинаково.
+- `Firestore/`: `FirestoreClient` — `Sendable`-структура поверх REST API Firestore; `FirestoreValue`
+  с его JSON-представлением, кодировщик и декодировщик `Codable`, пути, запросы, `WriteBatch` и
+  `FirestoreTransaction`. Все записи идут через endpoint `commit`, поэтому одиночная запись, пакет и
+  транзакция ведут себя одинаково.
 - `Tokens/`: разбор `JSONWebToken`, `IDTokenClaims` и `IDTokenVerifier` с RSA-ключами из JSON Web
   Key Set Google.
 - `Transport/`: протокол `HTTPTransport` и его реализация на `URLSession` — единственное место,
   которое обращается к сети.
+- `Support/`: `Secret`, `ValidationError` и правила скрытия данных, общие для всех текстовых
+  представлений.
 - Входные данные извне процесса ограничены: тела ответов (16 MiB), токены (16 KiB), plist-файлы
   (64 KiB), глубина вложенности, диапазоны чисел до любого преобразования и адреса эмуляторов (только
   `host:port`).
@@ -355,7 +407,6 @@ xcodebuild test -scheme iOSFirebaseTools -destination 'platform=iOS Simulator,na
 ## План развития
 
 - Добавить пакет в Swift Package Index; файл `.spi.yml` уже есть в репозитории.
-- Транзакции Firestore (`beginTransaction` и commit с транзакцией).
 - Привязка провайдеров к существующему пользователю и подтверждение e-mail.
 - Сборка `IDTokenVerifier` под Linux на swift-crypto.
 

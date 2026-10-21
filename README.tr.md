@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e58ec5fc64f013f130f40242c1352ea03fa05302 status=reviewed -->
+<!-- i18n-source: README.md@9c07e3e50654370118b00850bdfc999a3d191be3 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -39,17 +39,19 @@ bağımlılığı yoktur.
 - **Oturumu açık kalan giriş** — e-posta ve parola, anonim, Sign in with Apple ve Google; oturum
   Keychain'de saklanır ve ID token süresi dolmadan yenilenir; kaç eşzamanlı çağıran olursa olsun
   tek bir istek gönderilir.
-- **Kendi türlerinizle Firestore** — `Codable` modellerini okuyun, sorgulayın, yazın ve toplu
-  yazın; `Date` zaman damgasına dönüşür, sunucu zaman damgaları ve artırımlar tek bir argümandır.
+- **Kendi türlerinizle Firestore** — `Codable` modellerini okuyun, sorgulayın, yazın, toplu yazın ve
+  bir işlem (transaction) içinde okuyup yazın; `Date` zaman damgasına dönüşür, sunucu zaman
+  damgaları ve artırımlar tek bir argümandır.
 - **Çökme yerine hata** — `Int64`'ü aşan bir tamsayı, `Int` alanındaki bir NaN, 10000. yıldaki
   bir tarih ya da 20 MB'lık bir yanıt, türü belli bir hata fırlatır; yollar, alan adları ve
   sınırlar istek gönderilmeden önce Firebase'in kurallarına göre denetlenir.
 - **ID token'lar sunucunuzda doğrulanır** — `IDTokenVerifier`, Google'ın yayımladığı anahtarlarla
   RS256 token'lar için Firebase'in kurallarını uygular; Admin SDK'lar bunu diğer diller için
   yapar, ancak Swift için yapmaz.
-- **Token'lar asla yazdırılmaz** — oturumlar ve token'lar `print`, `dump`, günlüklerde ve
-  hata ayıklayıcıda yalnızca uzunluklarını gösterir.
-- **Uçtan uca test edilmiş** — 105 Swift Testing testi; bunların 9'u Security Rules ile
+- **Günlüklerde sır yok** — token'lar, e-posta adresleri, istek gövdeleri, sorgu değerleri, kimliğe
+  benzeyen yol parçaları ve sunucunun mesajları `print`, `dump`, günlüklerin ve hata ayıklayıcının
+  gösterdiği çıktıya girmez; bkz. [Günlüklerde neler görünür](#günlüklerde-neler-görünür).
+- **Uçtan uca test edilmiş** — 137 Swift Testing testi; bunların 10'u Security Rules ile
   Authentication ve Firestore emülatörlerine karşı çalışır; ayrıca örnek uygulamanın bir
   simülatörde çalışan beş arayüz testi vardır.
 
@@ -233,6 +235,22 @@ func moveNote(from oldPath: String, to newPath: String, in firestore: FirestoreC
 }
 ```
 
+### Bir işlem içinde okuma ve yazma
+
+```swift
+/// Flips `pinned` even when two devices tap at once: the read and the write happen together.
+func togglePin(at path: String, in firestore: FirestoreClient) async throws -> Bool? {
+    try await firestore.runTransaction { transaction in
+        guard let note = try await transaction.document(path, as: Note.self) else { return nil }
+        try transaction.update(path, fields: ["pinned": .bool(!note.data.pinned)])
+        return !note.data.pinned
+    }
+}
+```
+
+Not, okuma ile commit arasında başka bir yazma tarafından değiştirilirse Firestore commit'i iptal
+eder ve closure yeniden çalışır; varsayılan olarak en fazla beş kez.
+
 ### Token'ı sunucunuzda doğrulama
 
 ```swift
@@ -284,6 +302,37 @@ bir iPhone simülatörü seçin ve **Run**'a basın. Ayrıntılar [Examples/READ
 dosyasındadır; [`Examples/ConfigCheck`](Examples/ConfigCheck) içindeki `fbcheck` komut satırı aracı
 ise plist dosyalarını denetler ve token'ları doğrular.
 
+## Günlüklerde neler görünür
+
+Pakette bir token, parola ya da kişisel veri tutabilen her değer, gizlenmiş bir biçimde yazdırılır.
+Kodun tam olarak anlamadığı şey gizlenir:
+
+| Değer                                  | Gösterilen                                                           | Asla gösterilmeyen                                                                         |
+| -------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `Secret`                               | uzunluğu                                                             | değeri                                                                                     |
+| `AuthSession`                          | kullanıcı kimliğinin başı, anonim olup olmadığı, son kullanma zamanı | token'lar, e-posta adresi                                                                  |
+| `HTTPRequest`, `HTTPResponse`          | metot, ana makine, yol, sorgu adları, izin verilen başlıklar, durum  | gövdeler, kullanıcı bilgisi, fragment'ler, sorgu değerleri, kimliğe benzeyen yol parçaları |
+| `AuthError`, `FirestoreError`          | kod ve HTTP durumu                                                   | sunucunun mesajı (kodda `message` okunur)                                                  |
+| `FirebaseProject`, `GoogleServiceInfo` | proje kimliği, veritabanı, bundle ID                                 | API anahtarı                                                                               |
+
+```text
+HTTPRequest(POST https://securetoken.googleapis.com/v1/token?key=<redacted>,
+  headers: [authorization: <redacted>, content-type: application/x-www-form-urlencoded],
+  body: [body omitted: 48 bytes, application/x-www-form-urlencoded])
+```
+
+Adlar, yüzde kodlaması çözüldükten, NFKC uygulandıktan ve büyük/küçük harf farkı kaldırıldıktan
+sonra karşılaştırılır; hâlâ düz ASCII olmayan bir ad, örneğin `şifre` ya da Kiril harfi içeren bir
+`password`, gizli kabul edilir. Gövdeler hiçbir zaman ayrıştırılmaz ya da gösterilmez.
+`RedactionPolicy`, değerleri kendi günlüklerinizde görünebilecek başlıkları ve sorgu parametrelerini
+listeler.
+
+Bu bir güvenlik ağıdır, garanti değildir: kendi yazdığınız metni gizleyemez ve bir URL yolundaki
+kısa bir sır sıradan bir kelimeye benzeyebilir. Sırları en baştan günlüklerin ve URL'lerin dışında
+tutun. Tüm kurallar ve sınırlar için
+[Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction)
+makalesine bakın.
+
 ## Dokümantasyon
 
 API başvuru belgeleri ve makaleler:
@@ -305,7 +354,7 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
   — e-posta, anonim, Apple ve Google ile giriş, hatalar, Keychain oturumu ve güncel token'lar
   ([kaynak](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/SigningIn.md)).
 - [Working with Firestore](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/workingwithfirestore)
-  — modeller, sorgular, yazma işlemleri, dönüşümler, toplu yazmalar ve istemcinin denetlediği sınırlar
+  — modeller, sorgular, yazma işlemleri, dönüşümler, toplu yazmalar, işlemler ve istemcinin denetlediği sınırlar
   ([kaynak](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/WorkingWithFirestore.md)).
 - [Verifying ID Tokens](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/verifyingidtokens)
   — bir Swift sunucusunda Firebase'in kuralları, anahtar önbelleği, claim'ler ve saat farkı toleransı
@@ -313,6 +362,9 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
 - [Testing with the Emulators](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/testingwiththeemulators)
   — Local Emulator Suite, `emulators:exec` ve test amaçlı bir transport ile birim testleri
   ([kaynak](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/TestingWithTheEmulators.md)).
+- [Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction)
+  — istek, oturum ve hataların günlüklerde ne gösterdiği, izin listesi ve nelerin bulunamadığı
+  ([kaynak](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/LoggingAndRedaction.md)).
 
 ## Gereksinimler
 
@@ -336,14 +388,15 @@ Emülatör testleri için Firebase CLI ve Java 21 veya üstü gerekir.
 - `Auth/`: Identity Toolkit ve Secure Token REST API'leri üzerinde çalışan bir actor olan
   `FirebaseAuthClient`; `AuthSession` ve kaydedildiği `SessionStore` (Keychain veya bellek);
   sağlayıcı kimlik bilgileri.
-- `Firestore/`: Firestore REST API'si üzerinde çalışan `Sendable` bir struct olan
-  `FirestoreClient`; JSON biçimiyle `FirestoreValue`, `Codable` encoder ve decoder, yollar,
-  sorgular ve `WriteBatch`. Tüm yazma işlemleri `commit` uç noktasından geçer; bu yüzden tek bir
-  yazma ile toplu yazma aynı şekilde davranır.
+- `Firestore/`: Firestore REST API'si üzerinde çalışan `Sendable` bir struct olan `FirestoreClient`;
+  JSON biçimiyle `FirestoreValue`, `Codable` encoder ve decoder, yollar, sorgular, `WriteBatch` ve
+  `FirestoreTransaction`. Tüm yazma işlemleri `commit` uç noktasından geçer; bu yüzden tek bir
+  yazma, toplu yazma ve işlem aynı şekilde davranır.
 - `Tokens/`: `JSONWebToken` ayrıştırma, `IDTokenClaims` ve Google'ın JSON Web Key Set'indeki RSA
   anahtarlarını kullanan `IDTokenVerifier`.
 - `Transport/`: `HTTPTransport` protokolü ve onun `URLSession` gerçeklemesi; ağa dokunan tek yer
   burasıdır.
+- `Support/`: `Secret`, `ValidationError` ve her metin biçiminin paylaştığı gizleme kuralları.
 - Süreç dışından gelen girdi sınırlıdır: yanıt gövdeleri (16 MiB), token'lar (16 KiB), plist
   dosyaları (64 KiB), iç içe geçme derinliği, dönüştürmeden önce sayı aralıkları ve emülatör
   adresleri (yalnızca `host:port`).
@@ -359,7 +412,6 @@ xcodebuild test -scheme iOSFirebaseTools -destination 'platform=iOS Simulator,na
 ## Yol haritası
 
 - Paketi Swift Package Index'e eklemek; `.spi.yml` depoda zaten var.
-- Firestore işlemleri (`beginTransaction` ve işlemle birlikte bir commit).
 - Sağlayıcıları var olan bir kullanıcıya bağlama ve e-posta doğrulama.
 - `IDTokenVerifier`'ın swift-crypto üzerinde bir Linux sürümü.
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e58ec5fc64f013f130f40242c1352ea03fa05302 status=reviewed -->
+<!-- i18n-source: README.md@9c07e3e50654370118b00850bdfc999a3d191be3 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -30,11 +30,11 @@ iOSFirebaseTools 是一个用于 Firebase Authentication 和 Cloud Firestore 的
 ## 亮点
 
 - **登录后保持登录状态** — 支持邮箱和密码、匿名、Sign in with Apple 以及 Google；会话保存在钥匙串中，ID 令牌会在过期前刷新，无论有多少并发调用方，都只发出一次请求。
-- **用你自己的类型读写 Firestore** — 读取、查询、写入和批量写入 `Codable` 模型；`Date` 会转换为时间戳，服务器时间戳和自增只需一个参数。
+- **用你自己的类型读写 Firestore** — 读取、查询、写入、批量写入 `Codable` 模型，并在事务中执行读写；`Date` 会转换为时间戳，服务器时间戳和自增只需一个参数。
 - **抛出错误，而不是崩溃** — 超出 `Int64` 范围的整数、`Int` 字段中的 NaN、10000 年的日期或 20 MB 的响应都会抛出带类型的错误；路径、字段名和限制会在发出请求之前按 Firebase 的规则检查。
 - **在你的服务器上校验 ID 令牌** — `IDTokenVerifier` 使用 Google 公布的密钥，按 Firebase 的规则校验 RS256 令牌；Admin SDK 为其他语言提供了这一能力，但没有提供 Swift 版本。
-- **令牌不会被打印** — 会话和令牌在 `print`、`dump`、日志和调试器中只显示长度。
-- **端到端测试** — 105 个 Swift Testing 测试，其中 9 个针对启用 Security Rules 的 Authentication 和 Firestore 模拟器运行，另有 5 个在模拟器上运行的示例应用 UI 测试。
+- **日志中没有机密** — 令牌、邮箱地址、请求体、查询值、形似 ID 的路径片段以及服务器返回的消息，都不会出现在 `print`、`dump`、日志和调试器显示的内容中；参见[日志会显示什么](#日志会显示什么)。
+- **端到端测试** — 137 个 Swift Testing 测试，其中 10 个针对启用 Security Rules 的 Authentication 和 Firestore 模拟器运行，另有 5 个在模拟器上运行的示例应用 UI 测试。
 
 ## 快速开始
 
@@ -203,6 +203,21 @@ func moveNote(from oldPath: String, to newPath: String, in firestore: FirestoreC
 }
 ```
 
+### 在事务中读取和写入
+
+```swift
+/// Flips `pinned` even when two devices tap at once: the read and the write happen together.
+func togglePin(at path: String, in firestore: FirestoreClient) async throws -> Bool? {
+    try await firestore.runTransaction { transaction in
+        guard let note = try await transaction.document(path, as: Note.self) else { return nil }
+        try transaction.update(path, fields: ["pinned": .bool(!note.data.pinned)])
+        return !note.data.pinned
+    }
+}
+```
+
+如果在读取和提交之间有其他写入修改了这条笔记，Firestore 会中止这次提交，闭包会再次运行，默认最多五次。
+
 ### 在服务器上校验令牌
 
 ```swift
@@ -241,6 +256,28 @@ func makeEmulatorClients() throws -> (FirebaseAuthClient, FirestoreClient) {
 
 想自己试一试，请运行 `scripts/start-emulators.sh`，在 [`Examples/FirebaseLab`](Examples/FirebaseLab) 中打开 `FirebaseLab.xcodeproj`，选择一个 iPhone 模拟器并点击 **Run**。详细说明见 [Examples/README.md](Examples/README.md)；[`Examples/ConfigCheck`](Examples/ConfigCheck) 中的命令行工具 `fbcheck` 可以检查 plist 并验证令牌。
 
+## 日志会显示什么
+
+软件包中每个可能包含令牌、密码或个人数据的值，打印时都是脱敏后的形式。代码无法完全理解的内容会被隐藏：
+
+| 值                                     | 显示                                                   | 绝不显示                                               |
+| -------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+| `Secret`                               | 它的长度                                               | 值本身                                                 |
+| `AuthSession`                          | 用户 ID 的开头、是否匿名、过期时间                     | 令牌、邮箱地址                                         |
+| `HTTPRequest`, `HTTPResponse`          | 方法、主机、路径、查询参数名、允许列表中的请求头、状态 | 请求体、用户信息、片段、查询参数值、形似 ID 的路径片段 |
+| `AuthError`, `FirestoreError`          | 错误码和 HTTP 状态                                     | 服务器返回的消息（请在代码中读取 `message`）           |
+| `FirebaseProject`, `GoogleServiceInfo` | 项目 ID、数据库、bundle ID                             | API 密钥                                               |
+
+```text
+HTTPRequest(POST https://securetoken.googleapis.com/v1/token?key=<redacted>,
+  headers: [authorization: <redacted>, content-type: application/x-www-form-urlencoded],
+  body: [body omitted: 48 bytes, application/x-www-form-urlencoded])
+```
+
+名称会在经过百分号解码、NFKC 规范化和大小写折叠之后再比较；如果名称此时仍不是纯 ASCII，例如 `şifre`，或包含西里尔字母的 `password`，则按机密处理。请求体绝不会被解析或显示。`RedactionPolicy` 列出了其值可以出现在你自己日志中的请求头和查询参数。
+
+这只是一道安全网，而不是保证：它无法对你自己写出的文本脱敏，而且 URL 路径中较短的机密可能看起来就像一个普通单词。请从一开始就不要把机密放进日志和 URL。完整的规则与限制见 [Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction) 这篇文章。
+
 ## 文档
 
 API 参考文档与文章：
@@ -256,9 +293,10 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
 
 - [Getting Started](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/gettingstarted) — 添加软件包、准备 Firebase 项目、登录并保存一个文档（[源文件](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/GettingStarted.md)）。
 - [Signing In](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/signingin) — 邮箱、匿名、Apple 和 Google 登录，错误处理，钥匙串中的会话以及保持令牌有效（[源文件](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/SigningIn.md)）。
-- [Working with Firestore](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/workingwithfirestore) — 模型、查询、写入、转换、批量写入，以及客户端会检查的限制（[源文件](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/WorkingWithFirestore.md)）。
+- [Working with Firestore](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/workingwithfirestore) — 模型、查询、写入、转换、批量写入、事务，以及客户端会检查的限制（[源文件](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/WorkingWithFirestore.md)）。
 - [Verifying ID Tokens](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/verifyingidtokens) — 在 Swift 服务器上应用 Firebase 的规则、密钥缓存、claims 和时钟偏差（[源文件](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/VerifyingIDTokens.md)）。
 - [Testing with the Emulators](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/testingwiththeemulators) — Local Emulator Suite、`emulators:exec`，以及使用测试用 transport 的单元测试（[源文件](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/TestingWithTheEmulators.md)）。
+- [Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction) — 请求、会话和错误在日志中显示什么、允许列表，以及哪些内容不会被发现（[源文件](Sources/iOSFirebaseTools/iOSFirebaseTools.docc/LoggingAndRedaction.md)）。
 
 ## 系统要求
 
@@ -277,9 +315,10 @@ xcodebuild docbuild -scheme iOSFirebaseTools -destination 'generic/platform=macO
 
 - `Project/`：`FirebaseProject`（项目 ID、API 密钥、数据库、模拟器）和用于读取并检查 plist 的 `GoogleServiceInfo`。
 - `Auth/`：`FirebaseAuthClient`，一个基于 Identity Toolkit 和 Secure Token REST API 的 actor；`AuthSession` 以及保存它的 `SessionStore`（钥匙串或内存）；各登录提供方的凭据。
-- `Firestore/`：`FirestoreClient`，一个基于 Firestore REST API 的 `Sendable` 结构体；`FirestoreValue` 及其 JSON 形式、`Codable` 编码器和解码器、路径、查询和 `WriteBatch`。所有写入都经过 `commit` 端点，因此单次写入和批量写入的行为一致。
+- `Firestore/`：`FirestoreClient`，一个基于 Firestore REST API 的 `Sendable` 结构体；`FirestoreValue` 及其 JSON 形式、`Codable` 编码器和解码器、路径、查询，以及 `WriteBatch` 和 `FirestoreTransaction`。所有写入都经过 `commit` 端点，因此单次写入、批量写入和事务的行为一致。
 - `Tokens/`：`JSONWebToken` 解析、`IDTokenClaims`，以及使用 Google JSON Web Key Set 中 RSA 密钥的 `IDTokenVerifier`。
 - `Transport/`：`HTTPTransport` 协议及其 `URLSession` 实现，也是唯一接触网络的地方。
+- `Support/`：`Secret`、`ValidationError`，以及所有文本形式共用的脱敏规则。
 - 来自进程外部的输入都有上限：响应体（16 MiB）、令牌（16 KiB）、plist（64 KiB）、嵌套深度、转换前的数值范围，以及模拟器地址（仅限 `host:port`）。
 
 在本地运行测试：
@@ -293,7 +332,6 @@ xcodebuild test -scheme iOSFirebaseTools -destination 'platform=iOS Simulator,na
 ## 路线图
 
 - 把软件包加入 Swift Package Index；仓库中已经有 `.spi.yml`。
-- Firestore 事务（`beginTransaction`，以及带事务的 commit）。
 - 把登录提供方关联到已有用户，以及邮箱验证。
 - 基于 swift-crypto 的 `IDTokenVerifier` Linux 版本。
 
