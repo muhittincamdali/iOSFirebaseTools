@@ -49,7 +49,9 @@ project in the emulators.
    tokens, IDs with `/`, `?`, `#`, `:` and `%`, and concurrent calls.
 6. Public functions validate their input and throw a typed error; they do not crash. Every loop
    and allocation whose size depends on input is bounded. Types that hold a token keep it in a
-   `Secret`.
+   `Secret`, and a new type that can hold a credential or personal data gets a redacted
+   `description` and `customMirror` built from the helpers in `Support/Redaction.swift`, with a
+   test that the value never appears in `print`, `dump` or `Mirror`.
 7. If you change a README code sample, change the copy in
    `Examples/FirebaseLab/FirebaseLab/ReadmeSamples.swift` as well. That file is what gets
    compiled: by the example app, and by `swift test` through the symlink

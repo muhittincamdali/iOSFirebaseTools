@@ -17,6 +17,11 @@ emulator addresses from the environment. Please report privately anything that m
 - reveal a token or refresh token: in a `description`, `dump`, a log line, an error message, a
   file other than the session store, or a request to a host other than Firebase or the
   configured emulator;
+- let a password, an e-mail address, a request body, a query value or an ID-like path segment
+  through the text form of a value the package defines, against the rules in the
+  [Logging and Redaction](https://muhittincamdali.github.io/iOSFirebaseTools/documentation/iosfirebasetools/loggingandredaction)
+  article (text you log yourself, and short secrets that look like words in a URL path, are
+  outside them);
 - send a request somewhere unexpected, for example through a document ID, a field path, an
   emulator address or a provider ID that escapes its place in the URL or form body;
 - keep a session the user signed out of, or bring it back;
