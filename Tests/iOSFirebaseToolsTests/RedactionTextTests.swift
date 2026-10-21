@@ -73,7 +73,11 @@ struct RedactionTextTests {
         let address = try #require(throws: ValidationError.self) { try EmulatorHost("ada:hunter2@127.0.0.1:x") }
         #expect(!address.description.contains("hunter2"), "\(address)")
         #expect(Redaction.label("demo-lab") == #""demo-lab""#)
-        #expect(Redaction.label("a\u{202E}b") == "<redacted, 3 characters>")
+        #expect(Redaction.label("2026-10-15T08:41:00+24:00") == #""2026-10-15T08:41:00+24:00""#)
+        #expect(Redaction.label("[::1]:9099") == #""[::1]:9099""#)
+        for hidden in ["a\u{202E}b", "x=hunter2", "pass%3Dword", "a&#61;b", "a\\u0041", "tab\there", "my-token-x", "a\"b", "<b>x</b>"] {
+            #expect(Redaction.label(hidden).hasPrefix("<redacted, "), "\(hidden)")
+        }
     }
 
     @Test("Projects and plists print without the API key")

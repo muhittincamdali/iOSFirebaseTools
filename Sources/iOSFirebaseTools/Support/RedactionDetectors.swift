@@ -11,7 +11,7 @@ struct PathRedactor {
         guard !encodedPath.isEmpty else { return "" }
         let lowered = encodedPath.lowercased()
         guard !["; ", ";", "%3b", "%2e", "%25", "\\", "%5c"].contains(where: lowered.contains) else { return nil }
-        let segments = encodedPath.split(separator: "/", omittingEmptySubsequences: false).map(String.init)
+        let segments = Redaction.split(encodedPath, on: "/")
         guard segments.count <= Redaction.maxPathSegments, !segments.contains(where: { $0 == "." || $0 == ".." }) else {
             return nil
         }
@@ -44,8 +44,7 @@ struct PathRedactor {
             hideNext = true
             return true
         }
-        let words = segment.split { !$0.isASCII || !($0.isLetter || $0.isNumber) }
-        if words.contains(where: { Redaction.isSecretName(String($0)) }) { hideNext = true }
+        if Redaction.words(segment).contains(where: Redaction.isSecretName) { hideNext = true }
         return false
     }
 

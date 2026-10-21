@@ -106,6 +106,48 @@ struct RedactionHTTPTests {
         #expect(HTTPRequest(method: "G\u{0}ET", url: URL(string: "https://a.example")!).description.hasPrefix("HTTPRequest(<redacted> "))
     }
 
+    @Test("Bypass classes in header and query names: confusables, Cf characters, combining marks", arguments: [
+        "\u{1D429}\u{1D41A}\u{1D42C}\u{1D42C}\u{1D430}\u{1D428}\u{1D42B}\u{1D41D}", // mathematical bold
+        "\u{24DF}\u{24D0}\u{24E2}\u{24E2}\u{24E6}\u{24DE}\u{24E1}\u{24D3}", // circled
+        "p\u{3B1}ssword", // Greek alpha
+        "pass\u{200C}word", "pass\u{AD}word", "to\u{301}ken", "\u{FF54}\u{FF4F}\u{FF4B}\u{FF45}\u{FF4E}", // ZWNJ, soft hyphen, combining, full-width
+    ])
+    func bypassNames(_ name: String) {
+        let request = HTTPRequest(method: "GET", url: URL(string: "https://example.com/a")!, headers: [name: "abcdefghijkl"])
+        #expect(!request.redactedDescription(RedactionPolicy(allowedHeaders: [name])).contains("abcdefghijkl"), "\(name)")
+        let encoded = name.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
+        let query = url("https://example.com/a?\(encoded)=abcdefghijkl", RedactionPolicy(allowedQueryParameters: [name]))
+        #expect(!query.contains("abcdefghijkl"), "\(query)")
+    }
+
+    @Test("Every occurrence of a duplicate name is hidden")
+    func duplicates() {
+        #expect(url("https://example.com/a?key=one&key=two&key") == "https://example.com/a?key=<redacted>&key=<redacted>&key")
+    }
+
+    @Test("A combining mark after a slash does not join two path segments", arguments: [
+        "/a/\u{301}6kkpCpjp8ZoLQh5pxcKdIGVzJWfr", "/token\u{301}/hunter2",
+    ])
+    func combiningMarkInPath(_ path: String) {
+        let encoded = path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
+        let text = url("https://example.com\(encoded)")
+        #expect(!text.contains("hunter2") && !text.contains("6kkpCpjp8Z"), "\(text)")
+    }
+
+    @Test("Bodies of every kind are omitted, never parsed", arguments: [
+        ("application/json", #"{"a":"{\"password\":\"hunter2\"}"}"#),
+        ("application/x-www-form-urlencoded", "x=1&password=hunter2&data=%7B%22pin%22%3A1%7D"),
+        ("multipart/form-data; boundary=b", "--b\r\nContent-Disposition: form-data; name=\"pin\"\r\n\r\nhunter2\r\n--b--"),
+        ("application/json", "{not json: hunter2"),
+        ("text/plain", String(repeating: "hunter2 ", count: 300_000)),
+    ])
+    func bodiesOmitted(_ contentType: String, _ body: String) {
+        let request = HTTPRequest(method: "POST", url: URL(string: "https://example.com/a")!,
+                                  headers: ["Content-Type": contentType], body: Data(body.utf8))
+        #expect(!request.description.contains("hunter2"))
+        #expect(request.description.contains("[body omitted: \(body.utf8.count) bytes, "))
+    }
+
     @Test("Property: obfuscated secret names never let their value through")
     func obfuscationProperty() {
         var generator = SystemRandomNumberGenerator()

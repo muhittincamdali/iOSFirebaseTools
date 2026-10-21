@@ -95,18 +95,58 @@ enum Redaction {
         return !Detectors.matches(value)
     }
 
-    /// A value the developer passed, echoed in an error: quoted when clean, otherwise hidden
-    /// with its length.
+    private static let labelPunctuation = Set(" _.:/()[]+-".unicodeScalars)
+
+    /// A value the developer passed or a token holds, echoed in an error: quoted when it is at
+    /// most 120 ASCII letters, digits and ` _.:/()[]+-`, names no secret and matches no
+    /// detector; otherwise hidden with its length. Escapes, `=`, quotes and line breaks all
+    /// hide the value.
     static func label(_ value: String) -> String {
-        let clean = value.unicodeScalars.count <= maxLabelLength && isClean(value)
-            && !value.unicodeScalars.contains { "\"\\`".unicodeScalars.contains($0) }
-        return clean ? "\"\(value)\"" : "<redacted, \(value.unicodeScalars.count) characters>"
+        let scalars = value.unicodeScalars
+        let clean = scalars.count <= maxLabelLength
+            && scalars.allSatisfy { $0.isASCII && ($0.properties.isAlphabetic || ("0"..."9").contains($0) || labelPunctuation.contains($0)) }
+            && !words(value).contains(where: isSecretName)
+            && !Detectors.matches(value)
+        return clean ? "\"\(value)\"" : "<redacted, \(scalars.count) characters>"
+    }
+
+    /// Runs of ASCII letters and digits.
+    static func words(_ text: String) -> [String] {
+        var words: [String] = []
+        var current = String.UnicodeScalarView()
+        for scalar in text.unicodeScalars {
+            if scalar.isASCII, scalar.properties.isAlphabetic || ("0"..."9").contains(scalar) {
+                current.append(scalar)
+            } else if !current.isEmpty {
+                words.append(String(current))
+                current = String.UnicodeScalarView()
+            }
+        }
+        if !current.isEmpty { words.append(String(current)) }
+        return words
+    }
+
+    /// Splits on one Unicode scalar, keeping empty parts. Splitting on `Character` would merge
+    /// a delimiter with a combining mark that follows it.
+    static func split(_ text: String, on separator: Unicode.Scalar) -> [String] {
+        var parts: [String] = []
+        var current = String.UnicodeScalarView()
+        for scalar in text.unicodeScalars {
+            if scalar == separator {
+                parts.append(String(current))
+                current = String.UnicodeScalarView()
+            } else {
+                current.append(scalar)
+            }
+        }
+        parts.append(String(current))
+        return parts
     }
 
     /// A Firestore path echoed in an error, with ID-like segments as `:id`.
     static func path(_ path: String) -> String {
         guard path.utf8.count <= maxURLBytes else { return "<redacted, \(path.utf8.count) bytes>" }
-        let segments = path.split(separator: "/", omittingEmptySubsequences: false).map(String.init)
+        let segments = split(path, on: "/")
         guard segments.count <= maxPathSegments * 4 else { return "<redacted, \(segments.count) segments>" }
         return "\"\(PathRedactor().render(segments))\""
     }
@@ -140,14 +180,13 @@ enum Redaction {
 
     private static func mediaType(_ contentType: String?) -> String {
         guard let contentType else { return "no content type" }
-        let type = contentType.split(separator: ";", maxSplits: 1).first.map {
-            $0.trimmingCharacters(in: .whitespaces).lowercased()
-        } ?? ""
-        let token = { (part: Substring) in
+        guard contentType.unicodeScalars.count <= 1_024 else { return "unknown content type" }
+        let type = split(contentType, on: ";")[0].trimmingCharacters(in: .whitespaces).lowercased()
+        let token = { (part: String) in
             !part.isEmpty && part.unicodeScalars.allSatisfy { ("a"..."z").contains($0) || ("0"..."9").contains($0) || "!#$&^_.+-".unicodeScalars.contains($0) }
         }
-        let parts = type.split(separator: "/", omittingEmptySubsequences: false)
-        guard type.count <= 100, parts.count == 2, token(parts[0]), token(parts[1]) else { return "unknown content type" }
+        let parts = split(type, on: "/")
+        guard type.unicodeScalars.count <= 100, parts.count == 2, token(parts[0]), token(parts[1]) else { return "unknown content type" }
         return type
     }
 
@@ -163,7 +202,7 @@ enum Redaction {
         guard isHostName(host) else { return "\(scheme)://\(hidden)" }
         let origin = "\(scheme)://\(host.lowercased())" + (components.port.map { ":\($0)" } ?? "")
         // A host that names a secret (`myapp://pin/4831`) keeps nothing after it.
-        if !host.hasPrefix("["), host.split(separator: ".").contains(where: { isSecretName(String($0)) }) {
+        if !host.hasPrefix("["), split(host, on: ".").contains(where: isSecretName) {
             return origin
         }
         guard let path = PathRedactor.renderURLPath(components.percentEncodedPath) else { return origin }
