@@ -34,7 +34,7 @@ struct RawDocument: Codable {
     func decoded<Model: Decodable & Sendable>(as type: Model.Type, root: String) throws -> FirestoreDocument<Model> {
         let prefix = root + "/"
         guard name.hasPrefix(prefix) else {
-            throw MalformedResponseError(statusCode: 200, reason: "the document \(name.prefix(120)) is not in this database")
+            throw MalformedResponseError(statusCode: 200, reason: "the document \(Redaction.path(name)) is not in this database")
         }
         return FirestoreDocument(
             path: try DocumentPath(String(name.dropFirst(prefix.count))),
@@ -69,7 +69,7 @@ public enum FieldTransform: Sendable, Hashable {
             case let .double(amount) where amount.isFinite:
                 body.increment = value
             default:
-                throw ValidationError("increment of \(field)", "the amount must be an integer or a finite double")
+                throw ValidationError("increment of \(Redaction.label(field.encoded))", "the amount must be an integer or a finite double")
             }
         case let .arrayUnion(values):
             try FirestoreValue.array(values).validate()

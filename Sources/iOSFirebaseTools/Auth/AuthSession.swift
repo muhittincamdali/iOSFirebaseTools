@@ -2,10 +2,11 @@ import Foundation
 
 /// A signed-in user: who it is and the tokens that prove it.
 ///
-/// Printing a session shows the user and expiry, never the tokens:
+/// Printing a session shows the start of the user ID and the expiry, never the tokens or the
+/// e-mail address:
 ///
 /// ```text
-/// AuthSession(user: 6kkpCpjp8Z…, email: ada@example.com, anonymous: false, expires: 2026-10-15 10:41:00 +0000)
+/// AuthSession(user: 6kkpCpjp8Z…, email: <redacted>, anonymous: false, expires: 2026-10-15 10:41:00 +0000)
 /// ```
 public struct AuthSession: Sendable, Hashable, Codable {
     /// The user's ID (`localId`), the `request.auth.uid` of Security Rules.
@@ -43,13 +44,25 @@ public struct AuthSession: Sendable, Hashable, Codable {
     }
 }
 
-extension AuthSession: CustomStringConvertible, CustomDebugStringConvertible {
+extension AuthSession: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    private var shortUserID: String {
+        guard Redaction.isClean(userID) else { return Redaction.hidden }
+        return userID.count > 10 ? "\(userID.prefix(10))…" : userID
+    }
+
+    private var redactedEmail: String { email == nil ? "none" : Redaction.hidden }
+
     public var description: String {
-        let user = userID.count > 10 ? "\(userID.prefix(10))…" : userID
-        return "AuthSession(user: \(user), email: \(email ?? "none"), anonymous: \(isAnonymous), expires: \(expiresAt))"
+        "AuthSession(user: \(shortUserID), email: \(redactedEmail), anonymous: \(isAnonymous), expires: \(expiresAt))"
     }
 
     public var debugDescription: String { description }
+
+    /// `dump` and the debugger see the same fields as ``description``.
+    public var customMirror: Mirror {
+        Mirror(self, children: ["user": shortUserID, "email": redactedEmail, "anonymous": isAnonymous, "expires": expiresAt],
+               displayStyle: .struct)
+    }
 }
 
 /// Keeps the session between launches. ``KeychainSessionStore`` is the one for apps;

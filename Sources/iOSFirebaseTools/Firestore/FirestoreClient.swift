@@ -163,10 +163,10 @@ extension FirestoreClient {
         let base = project.firestoreEmulator.map { "\($0.baseURL)/v1/" } ?? "https://firestore.googleapis.com/v1/"
         let path = ([project.documentsRoot] + segments.map(PathRules.urlSegment)).joined(separator: "/")
         guard var components = URLComponents(string: base + path + suffix) else {
-            throw ValidationError("Firestore URL", path)
+            throw ValidationError("Firestore URL", Redaction.path(path))
         }
         if !query.isEmpty { components.queryItems = query }
-        guard let url = components.url else { throw ValidationError("Firestore URL", path) }
+        guard let url = components.url else { throw ValidationError("Firestore URL", Redaction.path(path)) }
         return url
     }
 

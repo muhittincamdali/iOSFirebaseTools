@@ -19,6 +19,17 @@ public struct ValidationError: Error, Sendable, Hashable, CustomStringConvertibl
     public var description: String { "Invalid \(subject): \(reason)" }
 }
 
+/// Server error codes such as `WEAK_PASSWORD` or `HTTP 418` are shown; anything else the
+/// server put in their place is hidden with its length.
+enum ErrorCodeText {
+    static func render(_ code: String) -> String {
+        let scalars = code.unicodeScalars
+        let isCode = (1...64).contains(scalars.count)
+            && scalars.allSatisfy { ("A"..."Z").contains($0) || ("0"..."9").contains($0) || $0 == "_" || $0 == " " }
+        return isCode ? code : "<redacted, \(scalars.count) characters>"
+    }
+}
+
 /// Firebase limits the package enforces, from the Firestore and Authentication documentation.
 enum Limits {
     /// Firestore: maximum size of a document ID, collection ID or field name.

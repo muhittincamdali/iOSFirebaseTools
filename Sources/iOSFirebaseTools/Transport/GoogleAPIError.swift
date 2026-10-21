@@ -27,8 +27,35 @@ enum JSONBody {
         do {
             return try JSONDecoder().decode(T.self, from: response.body)
         } catch {
-            throw MalformedResponseError(statusCode: response.statusCode, reason: String(describing: error))
+            throw MalformedResponseError(statusCode: response.statusCode, reason: reason(for: error))
         }
+    }
+
+    /// What failed and where, without the values: `JSONDecoder`'s own messages quote them.
+    static func reason(for error: any Error) -> String {
+        guard let error = error as? DecodingError else { return "the body is not the expected JSON" }
+        let summary: String
+        let context: DecodingError.Context
+        switch error {
+        case let .typeMismatch(_, errorContext):
+            (summary, context) = ("a value has the wrong type", errorContext)
+        case let .valueNotFound(_, errorContext):
+            (summary, context) = ("a value is null", errorContext)
+        case let .keyNotFound(key, errorContext):
+            (summary, context) = ("the field \(codingKeyText(key)) is missing", errorContext)
+        case let .dataCorrupted(errorContext):
+            (summary, context) = ("the body is not valid JSON or a value is invalid", errorContext)
+        @unknown default:
+            return "the body is not the expected JSON"
+        }
+        guard !context.codingPath.isEmpty else { return summary }
+        return summary + " at " + context.codingPath.prefix(16).map(codingKeyText).joined(separator: ".")
+    }
+
+    private static func codingKeyText(_ key: any CodingKey) -> String {
+        if let index = key.intValue { return String(index) }
+        let name = key.stringValue
+        return Redaction.isPlain(Redaction.fold(name)) && name.unicodeScalars.count <= 64 && Redaction.isClean(name) ? name : Redaction.hidden
     }
 }
 

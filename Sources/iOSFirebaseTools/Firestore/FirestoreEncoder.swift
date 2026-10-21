@@ -90,7 +90,7 @@ final class EncodingBox {
 
     static func integer<T: BinaryInteger>(_ value: T, codingPath: [any CodingKey]) throws -> FirestoreValue {
         guard let exact = Int64(exactly: value) else {
-            throw EncodingError.invalidValue(value, .init(codingPath: codingPath, debugDescription: "\(value) does not fit in Firestore's 64-bit integers"))
+            throw EncodingError.invalidValue(value, .init(codingPath: codingPath, debugDescription: "The value does not fit in Firestore's 64-bit integers"))
         }
         return .integer(exact)
     }
@@ -238,4 +238,16 @@ struct IndexKey: CodingKey {
     init(_ index: Int) { intValue = index }
     init?(stringValue: String) { return nil }
     init?(intValue: Int) { self.intValue = intValue }
+}
+
+/// The reason of an encoding error without the value: `EncodingError`'s own description
+/// prints the value that failed.
+enum EncodingErrorText {
+    static func reason(_ error: any Error) -> String {
+        switch error {
+        case let EncodingError.invalidValue(_, context): context.debugDescription
+        case let error as ValidationError: error.description
+        default: "the value is not supported"
+        }
+    }
 }

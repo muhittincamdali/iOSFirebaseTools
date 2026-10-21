@@ -72,7 +72,7 @@ public struct FirestoreQuery: Sendable {
         do {
             copy.filters.append(Filter(field: field, op: op, value: try FirestoreValue(encoding: value)))
         } catch {
-            copy.problems.append("the value for \(field) cannot be encoded: \(error)")
+            copy.problems.append("the value for \(Redaction.label(field.encoded)) cannot be encoded: \(EncodingErrorText.reason(error))")
         }
         return copy
     }
@@ -100,7 +100,7 @@ extension FirestoreQuery {
         if allDescendants {
             _ = try CollectionPath(collectionPath)
             guard !collectionPath.contains("/") else {
-                throw ValidationError("collection group \"\(collectionPath.prefix(80))\"", "a collection group is one collection ID")
+                throw ValidationError("collection group \(Redaction.path(collectionPath))", "a collection group is one collection ID")
             }
             return (nil, collectionPath)
         }
@@ -136,7 +136,7 @@ extension FirestoreQuery {
             switch filter.op {
             case .equal: return .init(unaryFilter: .init(op: isNull ? "IS_NULL" : "IS_NAN", field: field))
             case .notEqual: return .init(unaryFilter: .init(op: isNull ? "IS_NOT_NULL" : "IS_NOT_NAN", field: field))
-            default: throw ValidationError("filter on \(filter.field)", "null and NaN can only be compared with .equal or .notEqual")
+            default: throw ValidationError("filter on \(Redaction.label(filter.field.encoded))", "null and NaN can only be compared with .equal or .notEqual")
             }
         }
         try checkListOperand(filter)
@@ -151,7 +151,7 @@ extension FirestoreQuery {
         default: return
         }
         guard case let .array(values) = filter.value, (1...maximum).contains(values.count) else {
-            throw ValidationError("filter on \(filter.field)", "\(filter.op.rawValue) needs an array of 1–\(maximum) values")
+            throw ValidationError("filter on \(Redaction.label(filter.field.encoded))", "\(filter.op.rawValue) needs an array of 1–\(maximum) values")
         }
     }
 }

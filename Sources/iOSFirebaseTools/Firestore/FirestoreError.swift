@@ -63,6 +63,9 @@ public struct FirestoreError: Error, Sendable, Hashable, CustomStringConvertible
     }
 
     public let code: Code
+    /// The server's message. For ``Code/failedPrecondition`` it often holds the link that
+    /// creates a missing index. It is the server's free text and is not redacted, so
+    /// ``description`` leaves it out.
     public let message: String
     public let statusCode: Int
 
@@ -72,7 +75,12 @@ public struct FirestoreError: Error, Sendable, Hashable, CustomStringConvertible
         self.statusCode = statusCode
     }
 
-    public var description: String { "FirestoreError(\(code)): \(message)" }
+    /// The code and HTTP status, such as `FirestoreError(permissionDenied, HTTP 403)`, without
+    /// the server's message.
+    public var description: String {
+        let code = if case let .other(status) = code { "other(\(ErrorCodeText.render(status)))" } else { "\(code)" }
+        return "FirestoreError(\(code), HTTP \(statusCode))"
+    }
 
     static func from(_ response: HTTPResponse) -> FirestoreError {
         // runQuery reports errors inside a one-element array.

@@ -78,16 +78,18 @@ public enum TokenError: Error, Sendable, Hashable, CustomStringConvertible {
     /// Google's public keys could not be fetched or read.
     case keysUnavailable(String)
 
+    /// Values taken from the token, which anyone can write, are quoted when they are short
+    /// printable ASCII and hidden otherwise.
     public var description: String {
         switch self {
         case let .malformed(reason): "Malformed token: \(reason)"
-        case let .unsupportedAlgorithm(alg): "Unsupported token algorithm \(alg)"
-        case let .unknownKey(kid): "No public key with kid \(kid ?? "(none)")"
+        case let .unsupportedAlgorithm(alg): "Unsupported token algorithm \(Redaction.label(alg))"
+        case let .unknownKey(kid): "No public key with kid \(kid.map(Redaction.label) ?? "(none)")"
         case .invalidSignature: "The token signature is not valid"
         case let .expired(date): "The token expired at \(date)"
         case .notYetValid: "The token was issued in the future"
-        case let .wrongAudience(aud): "The token is for project \(aud)"
-        case let .wrongIssuer(iss): "The token was issued by \(iss)"
+        case let .wrongAudience(aud): "The token is for project \(Redaction.label(aud))"
+        case let .wrongIssuer(iss): "The token was issued by \(Redaction.label(iss))"
         case .emptySubject: "The token has no user ID"
         case let .keysUnavailable(reason): "Public keys unavailable: \(reason)"
         }

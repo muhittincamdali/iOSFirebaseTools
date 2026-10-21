@@ -83,15 +83,15 @@ extension GoogleServiceInfo {
         public var description: String {
             switch self {
             case let .bundleIDMismatch(file, app):
-                "BUNDLE_ID is \(file) but the app is \(app): download the plist for this app"
+                "BUNDLE_ID is \(Redaction.label(file)) but the app is \(Redaction.label(app)): download the plist for this app"
             case .malformedAPIKey:
                 "API_KEY is not a Google API key"
             case let .malformedAppID(id):
-                "GOOGLE_APP_ID \(id) is not an iOS app ID (1:<project number>:ios:<hex>)"
+                "GOOGLE_APP_ID \(Redaction.label(id)) is not an iOS app ID (1:<project number>:ios:<hex>)"
             case let .senderIDMismatch(sender, appID):
-                "GCM_SENDER_ID \(sender) does not match the project number in GOOGLE_APP_ID \(appID)"
+                "GCM_SENDER_ID \(Redaction.label(sender)) does not match the project number in GOOGLE_APP_ID \(Redaction.label(appID))"
             case let .malformedProjectID(id):
-                "PROJECT_ID \(id) is not a valid project ID"
+                "PROJECT_ID \(Redaction.label(id)) is not a valid project ID"
             }
         }
     }
@@ -132,5 +132,17 @@ extension GoogleServiceInfo {
             return nil
         }
         return String(parts[1])
+    }
+}
+
+// The API key is not a secret, but it is a credential name, so text forms leave it out.
+extension GoogleServiceInfo: CustomStringConvertible, CustomReflectable {
+    public var description: String {
+        "GoogleServiceInfo(project: \(Redaction.label(projectID)), bundle: \(Redaction.label(bundleID)), apiKey: \(Redaction.hidden))"
+    }
+
+    public var customMirror: Mirror {
+        Mirror(self, children: ["projectID": projectID, "bundleID": bundleID, "googleAppID": googleAppID, "apiKey": Redaction.hidden],
+               displayStyle: .struct)
     }
 }

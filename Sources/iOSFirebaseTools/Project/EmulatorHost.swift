@@ -14,7 +14,7 @@ public struct EmulatorHost: Sendable, Hashable, CustomStringConvertible {
 
     /// Parses `host:port`.
     public init(_ address: String) throws {
-        let invalid = { (reason: String) in ValidationError("emulator address \"\(address)\"", reason) }
+        let invalid = { (reason: String) in ValidationError("emulator address \(Redaction.label(address))", reason) }
         guard let colon = address.lastIndex(of: ":") else { throw invalid("expected host:port") }
         var hostPart = String(address[..<colon])
         let portPart = address[address.index(after: colon)...]

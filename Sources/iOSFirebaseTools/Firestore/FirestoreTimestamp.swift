@@ -70,7 +70,7 @@ public struct FirestoreTimestamp: Sendable, Hashable, Comparable, Codable {
 
     /// Parses RFC 3339, `2026-10-15T08:41:00.123456Z` or with an offset such as `+03:00`.
     public init(rfc3339 text: String) throws {
-        let invalid = ValidationError("timestamp \"\(text.prefix(40))\"", "not an RFC 3339 date and time")
+        let invalid = ValidationError("timestamp \(Redaction.label(String(text.prefix(40))))", "not an RFC 3339 date and time")
         var parser = RFC3339Parser(text)
         guard let parsed = parser.parse(), (1...12).contains(parsed.month) else { throw invalid }
         let monthLength = Self.daysIn(month: parsed.month, year: parsed.year)

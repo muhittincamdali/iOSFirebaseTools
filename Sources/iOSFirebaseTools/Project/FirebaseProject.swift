@@ -98,7 +98,7 @@ public struct FirebaseProject: Sendable, Hashable {
               characters.allSatisfy({ ($0.isASCIILetterOrDigit && !$0.isUppercase) || $0 == "-" }),
               characters.first?.isLetter == true, characters.last != "-" else {
             throw ValidationError(
-                "projectID \"\(value)\"",
+                "projectID \(Redaction.label(value))",
                 "use 6–30 lowercase letters, digits and hyphens, starting with a letter"
             )
         }
@@ -119,7 +119,23 @@ public struct FirebaseProject: Sendable, Hashable {
         guard (4...63).contains(characters.count),
               characters.allSatisfy({ ($0.isASCIILetterOrDigit && !$0.isUppercase) || $0 == "-" }),
               characters.first?.isLetter == true, characters.last != "-" else {
-            throw ValidationError("databaseID \"\(value)\"", "use 4–63 lowercase letters, digits and hyphens")
+            throw ValidationError("databaseID \(Redaction.label(value))", "use 4–63 lowercase letters, digits and hyphens")
         }
+    }
+}
+
+extension FirebaseProject: CustomStringConvertible, CustomReflectable {
+    public var description: String {
+        var text = "FirebaseProject(\(projectID), database: \(databaseID), apiKey: \(Redaction.hidden)"
+        if let authEmulator { text += ", auth emulator: \(authEmulator)" }
+        if let firestoreEmulator { text += ", Firestore emulator: \(firestoreEmulator)" }
+        return text + ")"
+    }
+
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "projectID": projectID, "databaseID": databaseID, "apiKey": Redaction.hidden, "bundleID": bundleID as Any,
+            "authEmulator": authEmulator as Any, "firestoreEmulator": firestoreEmulator as Any,
+        ], displayStyle: .struct)
     }
 }

@@ -89,7 +89,7 @@ enum AuthBodies {
     static func lifetime(_ expiresIn: String, statusCode: Int) throws -> TimeInterval {
         guard (1...6).contains(expiresIn.count), expiresIn.allSatisfy(\.isASCIIDigit),
               let seconds = Int(expiresIn), (1...86_400).contains(seconds) else {
-            throw MalformedResponseError(statusCode: statusCode, reason: "expiresIn \"\(expiresIn.prefix(20))\" is not 1–86400 seconds")
+            throw MalformedResponseError(statusCode: statusCode, reason: "expiresIn \(Redaction.label(String(expiresIn.prefix(20)))) is not 1–86400 seconds")
         }
         return TimeInterval(seconds)
     }

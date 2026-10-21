@@ -9,7 +9,7 @@ public struct DocumentPath: Sendable, Hashable, CustomStringConvertible {
     public init(_ path: String) throws {
         let segments = try PathRules.split(path, what: "document path")
         guard segments.count.isMultiple(of: 2) else {
-            throw ValidationError("document path \"\(path.prefix(80))\"", "a document path has an even number of segments")
+            throw ValidationError("document path \(Redaction.path(path))", "a document path has an even number of segments")
         }
         self.segments = segments
     }
@@ -39,7 +39,7 @@ public struct CollectionPath: Sendable, Hashable, CustomStringConvertible {
     public init(_ path: String) throws {
         let segments = try PathRules.split(path, what: "collection path")
         guard !segments.count.isMultiple(of: 2) else {
-            throw ValidationError("collection path \"\(path.prefix(80))\"", "a collection path has an odd number of segments")
+            throw ValidationError("collection path \(Redaction.path(path))", "a collection path has an odd number of segments")
         }
         self.segments = segments
     }
@@ -66,7 +66,7 @@ public struct CollectionPath: Sendable, Hashable, CustomStringConvertible {
 
 enum PathRules {
     static func split(_ path: String, what: String) throws -> [String] {
-        let invalid = { (reason: String) in ValidationError("\(what) \"\(path.prefix(80))\"", reason) }
+        let invalid = { (reason: String) in ValidationError("\(what) \(Redaction.path(path))", reason) }
         guard path.utf8Count <= Limits.maxDocumentNameBytes else { throw invalid("longer than 6 KiB") }
         let segments = path.split(separator: "/", omittingEmptySubsequences: false).map(String.init)
         guard segments.count <= Limits.maxCollectionDepth * 2 else { throw invalid("deeper than 100 collections") }
@@ -145,7 +145,7 @@ public struct FieldPath: Sendable, Hashable, CustomStringConvertible, Expressibl
         guard !name.isEmpty else { throw ValidationError("field name", "it is empty") }
         guard name.utf8Count <= Limits.maxSegmentBytes else { throw ValidationError("field name", "longer than 1,500 bytes") }
         guard !name.isReservedFirestoreName else {
-            throw ValidationError("field name \"\(name.prefix(40))\"", "names of the form __name__ are reserved")
+            throw ValidationError("field name \(Redaction.label(name))", "names of the form __name__ are reserved")
         }
     }
 

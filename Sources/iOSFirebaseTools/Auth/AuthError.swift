@@ -54,6 +54,8 @@ public struct AuthError: Error, Sendable, Hashable, CustomStringConvertible {
 
     public let code: Code
     /// The server's message, such as `WEAK_PASSWORD : Password should be at least 6 characters`.
+    /// It is the server's free text and is not redacted, so ``description`` leaves it out; show
+    /// it to a developer, not in a log.
     public let message: String
     /// The HTTP status, or `nil` for an error raised on the device.
     public let statusCode: Int?
@@ -75,7 +77,12 @@ public struct AuthError: Error, Sendable, Hashable, CustomStringConvertible {
         }
     }
 
-    public var description: String { "AuthError(\(code)): \(message)" }
+    /// The code and HTTP status, such as `AuthError(weakPassword, HTTP 400)`, without the
+    /// server's message.
+    public var description: String {
+        let code = if case let .other(serverCode) = code { "other(\(ErrorCodeText.render(serverCode)))" } else { "\(code)" }
+        return "AuthError(\(code)" + (statusCode.map { ", HTTP \($0))" } ?? ")")
+    }
 
     /// Reads the error body of a failed Identity Toolkit or Secure Token response.
     static func from(_ response: HTTPResponse) -> AuthError {

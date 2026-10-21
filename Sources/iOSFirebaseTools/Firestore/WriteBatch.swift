@@ -110,7 +110,7 @@ public struct WriteBatch: Sendable {
         let all = Set(paths.map(\.names))
         for path in paths where path.names.count > 1 {
             for length in 1..<path.names.count where all.contains(Array(path.names.prefix(length))) {
-                throw ValidationError("field paths", "\(path) is inside another field of the same write")
+                throw ValidationError("field paths", "\(Redaction.label(path.encoded)) is inside another field of the same write")
             }
         }
         guard all.count == paths.count else { throw ValidationError("field paths", "a field is named twice") }

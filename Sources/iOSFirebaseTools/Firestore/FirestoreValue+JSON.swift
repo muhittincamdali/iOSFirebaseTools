@@ -60,7 +60,7 @@ extension FirestoreValue: Codable {
         if let text = try? container.decode(String.self, forKey: .integerValue) {
             guard text.utf8.count <= 20, let value = Int64(text) else {
                 throw DecodingError.dataCorruptedError(forKey: .integerValue, in: container,
-                    debugDescription: "integerValue \"\(text.prefix(24))\" is not a 64-bit integer")
+                    debugDescription: "integerValue is not a 64-bit integer (\(text.utf8.count) bytes)")
             }
             return value
         }
@@ -76,7 +76,7 @@ extension FirestoreValue: Codable {
             case "-Infinity": return -.infinity
             default:
                 throw DecodingError.dataCorruptedError(forKey: .doubleValue, in: container,
-                    debugDescription: "doubleValue \"\(text.prefix(24))\" is not a number")
+                    debugDescription: "doubleValue is not a number (\(text.utf8.count) bytes)")
             }
         }
         return try container.decode(Double.self, forKey: .doubleValue)

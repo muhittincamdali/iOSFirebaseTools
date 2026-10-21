@@ -33,10 +33,11 @@ struct RedactionTests {
         #expect(secret.revealed == token)
     }
 
-    @Test("A session shows the user but neither token")
+    @Test("A session shows the start of the user ID, but no token and no e-mail address")
     func sessionIsRedacted() {
         for text in renderings(of: session) {
             #expect(!text.contains("c2VjcmV0") && !text.contains("refresh-token-value"), "\(text)")
+            #expect(!text.contains("ada@example.com") && !text.contains("6kkpCpjp8ZoLQh5pxcKdIGVzJWfr"), "\(text)")
         }
         #expect(session.description.contains("6kkpCpjp8Z…"))
         #expect(!session.description.contains("6kkpCpjp8ZoLQh5pxcKdIGVzJWfr"))

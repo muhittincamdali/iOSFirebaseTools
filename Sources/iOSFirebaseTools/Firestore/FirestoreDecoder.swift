@@ -193,7 +193,7 @@ struct SingleValueContainer: SingleValueDecodingContainer {
         let float = Float(double)
         // A finite Double too large for Float would become infinity.
         guard float.isFinite || !double.isFinite else {
-            throw DecodingError.typeMismatch(type, .init(codingPath: codingPath, debugDescription: "\(double) does not fit in Float"))
+            throw DecodingError.typeMismatch(type, .init(codingPath: codingPath, debugDescription: "The double does not fit in Float"))
         }
         return float
     }
