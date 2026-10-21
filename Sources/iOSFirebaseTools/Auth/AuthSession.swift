@@ -38,17 +38,15 @@ public struct AuthSession: Sendable, Hashable, Codable {
     }
 
     /// The claims of ``idToken``, read without verifying the signature. Use them on the device
-    /// to show state; servers verify tokens with ``IDTokenVerifier``.
+    /// to show state; servers verify tokens with ``IDTokenVerifier``. They print as redacted as
+    /// the session does.
     public func unverifiedClaims() throws -> IDTokenClaims {
         try JSONWebToken(idToken.revealed).claims()
     }
 }
 
 extension AuthSession: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
-    private var shortUserID: String {
-        guard Redaction.isClean(userID) else { return Redaction.hidden }
-        return userID.count > 10 ? "\(userID.prefix(10))…" : userID
-    }
+    private var shortUserID: String { Redaction.shortID(userID) }
 
     private var redactedEmail: String { email == nil ? "none" : Redaction.hidden }
 

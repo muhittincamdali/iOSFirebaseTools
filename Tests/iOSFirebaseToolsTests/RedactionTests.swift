@@ -69,6 +69,25 @@ struct RedactionTests {
         #expect(response.description == "HTTPResponse(200, headers: [], body: [body omitted: \(response.body.count) bytes, no content type])")
     }
 
+    @Test("ID token claims show the start of the user ID, but no e-mail address and no claim values")
+    func claimsAreRedacted() throws {
+        let payload = #"{"iss":"https://securetoken.google.com/demo-lab","aud":"demo-lab","sub":"6kkpCpjp8ZoLQh5pxcKdIGVzJWfr","#
+            + #""iat":1800000000,"exp":1800003600,"auth_time":1800000000,"email":"ada@example.com","email_verified":true,"#
+            + #""firebase":{"sign_in_provider":"password"},"plan":"hunter2-gold"}"#
+        let jwt = Base64URL.encode(Data(#"{"alg":"none"}"#.utf8)) + "." + Base64URL.encode(Data(payload.utf8)) + "."
+        let signedIn = AuthSession(userID: "6kkpCpjp8ZoLQh5pxcKdIGVzJWfr", email: "ada@example.com", isAnonymous: false,
+                                   idToken: Secret(jwt), refreshToken: Secret(refresh), expiresAt: Date(timeIntervalSince1970: 1_800_003_600))
+        let claims = try signedIn.unverifiedClaims()
+        for text in renderings(of: claims) {
+            for secret in ["ada@example.com", "hunter2", "6kkpCpjp8ZoLQh5pxcKdIGVzJWfr"] {
+                #expect(!text.contains(secret), "\(text)")
+            }
+        }
+        #expect(claims.description.hasPrefix(#"IDTokenClaims(user: 6kkpCpjp8Z…, project: "demo-lab", provider: "password", email: <redacted>"#))
+        #expect(claims.description.hasSuffix("claims: <redacted, 10 claims>)"))
+        #expect(claims.email == "ada@example.com" && claims["plan"] == .string("hunter2-gold"))
+    }
+
     @Test("Codable keeps the full value for the keychain")
     func codableRoundTrip() throws {
         let data = try JSONEncoder().encode(session)

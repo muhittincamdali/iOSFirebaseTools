@@ -99,6 +99,13 @@ enum Redaction {
         return !Detectors.matches(value)
     }
 
+    /// The first 10 characters of a user ID followed by `…`, or ``hidden`` for an ID that is not
+    /// clean.
+    static func shortID(_ id: String) -> String {
+        guard isClean(id) else { return hidden }
+        return id.count > 10 ? "\(id.prefix(10))…" : id
+    }
+
     private static let labelPunctuation = Set(" _.:/()[]+-".unicodeScalars)
 
     /// A value the developer passed or a token holds, echoed in an error: quoted when it is at

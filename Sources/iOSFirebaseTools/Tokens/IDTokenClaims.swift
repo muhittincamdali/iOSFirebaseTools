@@ -60,6 +60,54 @@ public struct IDTokenClaims: Sendable, Hashable, Decodable {
     }
 }
 
+// The claims hold the user's e-mail address and whatever custom claims the Admin SDK set, so
+// the text forms follow ``AuthSession``: the start of the user ID, never the e-mail address or
+// a claim's value.
+extension IDTokenClaims: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    /// Firebase's own provider IDs. `password` is one, so it cannot go through
+    /// `Redaction.label`, which hides secret names.
+    private static let knownProviders: Set<String> = [
+        "password", "anonymous", "phone", "custom", "apple.com", "google.com", "facebook.com", "github.com",
+        "twitter.com", "microsoft.com", "yahoo.com", "gc.apple.com", "playgames.google.com",
+    ]
+
+    private var providerText: String {
+        guard let signInProvider else { return "none" }
+        return Self.knownProviders.contains(signInProvider) ? "\"\(signInProvider)\"" : Redaction.label(signInProvider)
+    }
+
+    private var fields: KeyValuePairs<String, Any> {
+        [
+            "user": Redaction.shortID(subject),
+            "project": Redaction.label(audience),
+            "provider": providerText,
+            "email": email == nil ? "none" : Redaction.hidden,
+            "emailVerified": emailVerified,
+            "issued": issuedAt,
+            "expires": expiresAt,
+            "claims": "<redacted, \(all.count) claims>",
+        ]
+    }
+
+    /// The claims as text for a log:
+    ///
+    /// ```text
+    /// IDTokenClaims(user: 6kkpCpjp8Z…, project: "demo-lab", provider: "password", email: <redacted>,
+    ///   emailVerified: true, issued: 2026-10-15 09:41:00 +0000, expires: 2026-10-15 10:41:00 +0000,
+    ///   claims: <redacted, 11 claims>)
+    /// ```
+    public var description: String {
+        "IDTokenClaims(" + fields.map { "\($0.key): \($0.value)" }.joined(separator: ", ") + ")"
+    }
+
+    public var debugDescription: String { description }
+
+    /// `dump` and the debugger see the same fields as ``description``.
+    public var customMirror: Mirror {
+        Mirror(self, children: fields.map { (label: $0.key as String?, value: $0.value) }, displayStyle: .struct)
+    }
+}
+
 /// Why a token was rejected.
 public enum TokenError: Error, Sendable, Hashable, CustomStringConvertible {
     /// The token is not a well-formed JWT with the claims of a Firebase ID token.
