@@ -93,7 +93,8 @@ struct LoggingTransport: HTTPTransport {
 }
 ```
 
-Listing a secret name, such as `authorization` or `key`, does not make its value visible.
+Listing a secret name, such as `authorization` or `key`, does not make its value visible. Pass
+`recordsHostOnly: true` to write every URL as scheme, host and port only.
 
 ## What it does not find
 
