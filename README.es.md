@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9c07e3e50654370118b00850bdfc999a3d191be3 status=reviewed -->
+<!-- i18n-source: README.md@d129bb0a18c40a2fac23059d3da5c2523967051e status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -51,7 +51,7 @@ verifica ID tokens en un servidor. No tiene dependencias fuera del SDK de Apple.
   los valores de las consultas, los segmentos de ruta que parecen ID y los mensajes del servidor no
   aparecen en lo que muestran `print`, `dump`, los registros y el depurador; consulta
   [Qué muestran los registros](#qué-muestran-los-registros).
-- **Probado de principio a fin** — 137 pruebas de Swift Testing, 10 de ellas contra los emuladores de
+- **Probado de principio a fin** — 139 pruebas de Swift Testing, 10 de ellas contra los emuladores de
   Authentication y Firestore con Security Rules, y cinco pruebas de interfaz de la app de ejemplo
   en un simulador.
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9c07e3e50654370118b00850bdfc999a3d191be3 status=reviewed -->
+<!-- i18n-source: README.md@d129bb0a18c40a2fac23059d3da5c2523967051e status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -50,7 +50,7 @@ tokens em um servidor. Não tem dependências além do SDK da Apple.
 - **Logs sem segredos** — tokens, endereços de e-mail, corpos de requisição, valores de consulta,
   segmentos de caminho parecidos com IDs e as mensagens do servidor ficam de fora do que `print`,
   `dump`, os logs e o depurador mostram; veja [O que os logs mostram](#o-que-os-logs-mostram).
-- **Testado de ponta a ponta** — 137 testes com Swift Testing, 10 deles contra os emuladores de
+- **Testado de ponta a ponta** — 139 testes com Swift Testing, 10 deles contra os emuladores de
   Authentication e Firestore com Security Rules, e cinco testes de interface do app de exemplo em
   um simulador.
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9c07e3e50654370118b00850bdfc999a3d191be3 status=reviewed -->
+<!-- i18n-source: README.md@d129bb0a18c40a2fac23059d3da5c2523967051e status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/iOSFirebaseTools/master/.github/brand/banner-light.svg" alt="iOSFirebaseTools: Firebase Auth and Firestore for Swift over REST: Codable models, emulator tests and server-side token checks."></picture></p>
@@ -53,7 +53,7 @@ d’Apple.
   des paramètres de requête, les segments de chemin qui ressemblent à des identifiants et les
   messages du serveur sont absents de ce que montrent `print`, `dump`, les journaux et le
   débogueur ; voir [Ce que montrent les journaux](#ce-que-montrent-les-journaux).
-- **Testé de bout en bout** — 137 tests Swift Testing, dont 10 contre les émulateurs Authentication
+- **Testé de bout en bout** — 139 tests Swift Testing, dont 10 contre les émulateurs Authentication
   et Firestore avec des Security Rules, et cinq tests d’interface de l’app d’exemple sur un
   simulateur.
 
