@@ -109,6 +109,31 @@ try await firestore.commit(batch)
 Commits are never retried automatically: with a transform such as an increment, a commit whose
 answer was lost may already have been applied.
 
+### Transactions
+
+A write that depends on what is stored, such as flipping a flag or moving a balance, needs the
+read and the write to happen together. ``FirestoreClient/runTransaction(maxAttempts:_:)`` reads
+through a ``FirestoreTransaction`` and commits its writes only if none of the documents it read
+changed in the meantime:
+
+```swift
+func togglePin(at path: String, in firestore: FirestoreClient) async throws -> Bool? {
+    try await firestore.runTransaction { transaction in
+        guard let note = try await transaction.document(path, as: Note.self) else { return nil }
+        try transaction.update(path, fields: ["pinned": .bool(!note.data.pinned)])
+        return !note.data.pinned
+    }
+}
+```
+
+- Read every document first, then write. A read after a write throws a ``ValidationError``,
+  because the writes are only sent with the commit.
+- When Firestore aborts the commit because of a concurrent write, the closure runs again from
+  the start, up to `maxAttempts` times (5 by default, at most 10). Keep it free of side effects
+  outside the transaction, such as updating the UI.
+- An error thrown by the closure rolls the transaction back and is rethrown; nothing is written.
+- Security Rules apply to every read and write in the transaction, as for single requests.
+
 ## Field names and document IDs
 
 Field paths in `update`, `filter` and `order(by:)` are dot-separated; ``FieldPath`` quotes names
@@ -128,6 +153,7 @@ so it always reaches the right document.
 | Maps and arrays nested at most 20 levels              | ``FirestoreValue/validate()``     |
 | No array directly inside an array                     | ``FirestoreValue/validate()``     |
 | At most 500 writes per commit, 10 MiB per request     | ``WriteBatch``, ``FirestoreClient`` |
+| 1–10 attempts per transaction, reads before writes    | ``FirestoreClient``, ``FirestoreTransaction`` |
 | `in` and `array-contains-any` with 1–30 values, `not-in` with 1–10 | ``FirestoreQuery``   |
 | Responses at most 16 MiB                              | ``URLSessionTransport``           |
 

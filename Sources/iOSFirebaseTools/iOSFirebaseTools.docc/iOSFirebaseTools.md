@@ -34,8 +34,9 @@ What it does for you:
 - Verifies ID tokens on a server against Google's published keys, following Firebase's rules.
 - Treats everything from outside the process as untrusted: response sizes, token sizes, numbers
   that would overflow or trap, emulator addresses and document IDs are all bounded or encoded.
-- Never prints a token: ``Secret`` and ``AuthSession`` redact themselves in logs, `dump` and the
-  debugger.
+- Keeps logs clean: tokens, e-mail addresses, request bodies, query values, ID-like path segments
+  and the server's free-text messages are left out of the text of every value the package
+  defines; see <doc:LoggingAndRedaction>.
 
 What it does not do: real-time listeners and offline persistence need Firestore's gRPC
 streaming and local cache, which are part of the Firebase SDK, not of the REST API.
@@ -74,6 +75,7 @@ streaming and local cache, which are part of the Firebase SDK, not of the REST A
 - ``FirestoreDocument``
 - ``FirestorePage``
 - ``WriteBatch``
+- ``FirestoreTransaction``
 - ``FieldTransform``
 - ``FirestoreError``
 
@@ -109,5 +111,7 @@ streaming and local cache, which are part of the Firebase SDK, not of the REST A
 
 ### Values that stay private
 
+- <doc:LoggingAndRedaction>
 - ``Secret``
+- ``RedactionPolicy``
 - ``ValidationError``

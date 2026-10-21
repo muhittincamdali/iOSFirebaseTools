@@ -208,6 +208,10 @@ struct EmulatorTests {
         let notes = try await loadNotes(ownerID: userID, from: firestore)
         #expect(notes.map(\.data.pinned) == [true])
         #expect(notes.first?.data.createdAt != nil)
+        #expect(try await togglePin(at: path, in: firestore) == false)
+        #expect(try await firestore.document(path, as: Note.self)?.data.pinned == false)
+        #expect(try await togglePin(at: "notes/missing-\(UUID().uuidString)", in: firestore) == nil)
+        try await pinNote(at: path, in: firestore)
 
         let newPath = "notes/moved-\(UUID().uuidString)"
         try await moveNote(from: path, to: newPath, in: firestore)

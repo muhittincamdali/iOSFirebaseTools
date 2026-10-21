@@ -93,7 +93,10 @@ extension FirestoreClient {
     /// should have no side effects outside the transaction. An error thrown by `body` rolls
     /// the transaction back and is rethrown.
     ///
-    /// - Parameter maxAttempts: 1 to ``maxTransactionAttempts``; Firebase's SDKs use 5.
+    /// - Parameters:
+    ///   - maxAttempts: 1 to ``maxTransactionAttempts``; Firebase's SDKs use 5.
+    ///   - body: Reads through the transaction, then writes; its result is returned after the
+    ///     commit.
     public func runTransaction<Result: Sendable>(
         maxAttempts: Int = 5,
         _ body: @Sendable (inout FirestoreTransaction) async throws -> Result

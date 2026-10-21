@@ -87,6 +87,39 @@ struct RedactionTextTests {
     }
 }
 
+/// The transport from the Logging and Redaction article, compiled here.
+struct LoggingTransport: HTTPTransport {
+    let base = URLSessionTransport()
+    let policy = RedactionPolicy(allowedHeaders: RedactionPolicy.defaultAllowedHeaders.union(["x-request-id"]),
+                                 allowedQueryParameters: ["pageSize"])
+
+    func send(_ request: HTTPRequest) async throws -> HTTPResponse {
+        print(request.redactedDescription(policy))
+        let response = try await base.send(request)
+        print(response.redactedDescription(policy))
+        return response
+    }
+}
+
+@Suite("Logging and Redaction article")
+struct RedactionArticleTests {
+    @Test("The article's request prints as the article shows")
+    func articleExample() {
+        let request = HTTPRequest(
+            method: "POST",
+            url: URL(string: "https://securetoken.googleapis.com/v1/token?key=AIza…")!,
+            headers: ["Content-Type": "application/x-www-form-urlencoded", "Authorization": "Bearer eyJ…"],
+            body: Data("grant_type=refresh_token&refresh_token=AMf-vB…".utf8)
+        )
+        #expect(request.description == "HTTPRequest(POST https://securetoken.googleapis.com/v1/token?key=<redacted>, "
+            + "headers: [authorization: <redacted>, content-type: application/x-www-form-urlencoded], "
+            + "body: [body omitted: 48 bytes, application/x-www-form-urlencoded])")
+        let listed = LoggingTransport().policy
+        #expect(Redaction.headers(["X-Request-ID": "r-1", "Authorization": "Bearer x"], policy: listed)
+            == "[authorization: <redacted>, x-request-id: r-1]")
+    }
+}
+
 @Suite("Redaction limits")
 struct RedactionLimitTests {
     /// Runs `body` on a thread with a 512 KiB stack, the size the redaction rules are tested at.

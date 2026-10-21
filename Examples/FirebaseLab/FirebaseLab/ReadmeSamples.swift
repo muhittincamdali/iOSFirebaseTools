@@ -127,6 +127,15 @@ func moveNote(from oldPath: String, to newPath: String, in firestore: FirestoreC
     try await firestore.commit(batch)
 }
 
+/// Flips `pinned` even when two devices tap at once: the read and the write happen together.
+func togglePin(at path: String, in firestore: FirestoreClient) async throws -> Bool? {
+    try await firestore.runTransaction { transaction in
+        guard let note = try await transaction.document(path, as: Note.self) else { return nil }
+        try transaction.update(path, fields: ["pinned": .bool(!note.data.pinned)])
+        return !note.data.pinned
+    }
+}
+
 // MARK: - On your server
 
 func userID(fromAuthorizationHeader header: String, verifier: IDTokenVerifier) async throws -> String {
