@@ -165,7 +165,12 @@ extension FirestoreClient {
         guard var components = URLComponents(string: base + path + suffix) else {
             throw ValidationError("Firestore URL", Redaction.path(path))
         }
-        if !query.isEmpty { components.queryItems = query }
+        if !query.isEmpty {
+            components.queryItems = query
+            // URLComponents leaves "+" alone, and Google's servers read it as a space; page
+            // tokens and transaction IDs are base64 and may contain one.
+            components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+        }
         guard let url = components.url else { throw ValidationError("Firestore URL", Redaction.path(path)) }
         return url
     }

@@ -202,6 +202,17 @@ struct FirestoreClientTests {
         #expect(transport.requests[0].url.absoluteString.hasSuffix("/documents/users/ada:runQuery"))
     }
 
+    @Test("A page token with + and / reaches the server unchanged")
+    func encodesPageToken() async throws {
+        let transport = MockTransport(json: #"{"documents":[],"nextPageToken":""}"#)
+        let page = try await client(transport).documents(in: "notes", as: TestNote.self, pageSize: 2, pageToken: "Ab+c/d==")
+        let query = try #require(transport.requests.first.flatMap { URLComponents(url: $0.url, resolvingAgainstBaseURL: false) }?.percentEncodedQuery)
+        // Google's servers decode the query as a form, where a raw "+" is a space.
+        let token = query.split(separator: "&").first { $0.hasPrefix("pageToken=") }?.dropFirst("pageToken=".count)
+        #expect(token.map { String($0).replacingOccurrences(of: "+", with: " ").removingPercentEncoding } == "Ab+c/d==", "\(query)")
+        #expect(page.nextPageToken == nil)
+    }
+
     @Test("Page sizes and request sizes are bounded")
     func boundsSizes() async throws {
         let transport = MockTransport(json: "{}")
