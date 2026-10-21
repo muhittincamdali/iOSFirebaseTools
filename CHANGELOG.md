@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2026-10-21
+## [2.0.0] - 2026-10-22
 
 A rebuild. 1.x wrapped the Firebase iOS SDK; 2.0 talks to Firebase Authentication and Cloud
 Firestore through their REST APIs, has no dependencies, and adds server-side ID token
