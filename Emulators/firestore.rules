@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// Rules for the package's emulator tests and the FirebaseLab example: every note belongs to the
+// user in its ownerID field, and only that user can read, list, change or delete it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /notes/{noteID} {
+      // A missing note reads as missing (resource == null) instead of as denied.
+      allow get: if request.auth != null && (resource == null || resource.data.ownerID == request.auth.uid);
+      allow list, delete: if request.auth != null && resource.data.ownerID == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.ownerID == request.auth.uid;
+      allow update: if request.auth != null && resource.data.ownerID == request.auth.uid
+        && request.resource.data.ownerID == resource.data.ownerID;
+    }
+
+    // Scratch space for the emulator tests: any signed-in user.
+    match /scratch/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

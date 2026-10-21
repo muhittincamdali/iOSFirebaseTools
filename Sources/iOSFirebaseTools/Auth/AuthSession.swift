@@ -1,0 +1,87 @@
+import Foundation
+
+/// A signed-in user: who it is and the tokens that prove it.
+///
+/// Printing a session shows the start of the user ID and the expiry, never the tokens or the
+/// e-mail address:
+///
+/// ```text
+/// AuthSession(user: 6kkpCpjp8Z…, email: <redacted>, anonymous: false, expires: 2026-10-15 10:41:00 +0000)
+/// ```
+public struct AuthSession: Sendable, Hashable, Codable {
+    /// The user's ID (`localId`), the `request.auth.uid` of Security Rules.
+    public let userID: String
+    /// The e-mail address, or `nil` for an anonymous user.
+    public let email: String?
+    /// `true` for a user created with ``FirebaseAuthClient/signInAnonymously()``.
+    public let isAnonymous: Bool
+    /// The Firebase ID token sent to Firestore and to your own servers. It is valid for an hour.
+    public let idToken: Secret
+    /// Exchanges for a new ID token. It stays valid until the user is disabled, deleted or
+    /// changes their password.
+    public let refreshToken: Secret
+    /// When ``idToken`` expires.
+    public let expiresAt: Date
+
+    public init(userID: String, email: String?, isAnonymous: Bool, idToken: Secret, refreshToken: Secret, expiresAt: Date) {
+        self.userID = userID
+        self.email = email
+        self.isAnonymous = isAnonymous
+        self.idToken = idToken
+        self.refreshToken = refreshToken
+        self.expiresAt = expiresAt
+    }
+
+    /// `true` when the ID token expires within `margin` of `date`.
+    public func needsRefresh(at date: Date, margin: TimeInterval = 300) -> Bool {
+        expiresAt.timeIntervalSince(date) <= margin
+    }
+
+    /// The claims of ``idToken``, read without verifying the signature. Use them on the device
+    /// to show state; servers verify tokens with ``IDTokenVerifier``. They print as redacted as
+    /// the session does.
+    public func unverifiedClaims() throws -> IDTokenClaims {
+        try JSONWebToken(idToken.revealed).claims()
+    }
+}
+
+extension AuthSession: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    private var shortUserID: String { Redaction.shortID(userID) }
+
+    private var redactedEmail: String { email == nil ? "none" : Redaction.hidden }
+
+    public var description: String {
+        "AuthSession(user: \(shortUserID), email: \(redactedEmail), anonymous: \(isAnonymous), expires: \(expiresAt))"
+    }
+
+    public var debugDescription: String { description }
+
+    /// `dump` and the debugger see the same fields as ``description``.
+    public var customMirror: Mirror {
+        Mirror(self, children: ["user": shortUserID, "email": redactedEmail, "anonymous": isAnonymous, "expires": expiresAt],
+               displayStyle: .struct)
+    }
+}
+
+/// Keeps the session between launches. ``KeychainSessionStore`` is the one for apps;
+/// ``InMemorySessionStore`` forgets the session when the process ends.
+public protocol SessionStore: Sendable {
+    func load() async throws -> AuthSession?
+    func save(_ session: AuthSession) async throws
+    func clear() async throws
+}
+
+/// A ``SessionStore`` that keeps the session in memory only.
+public actor InMemorySessionStore: SessionStore {
+    private var session: AuthSession?
+
+    public init(session: AuthSession? = nil) {
+        self.session = session
+    }
+
+    public func load() -> AuthSession? { session }
+
+    public func save(_ session: AuthSession) { self.session = session }
+
+    public func clear() { session = nil }
+}
