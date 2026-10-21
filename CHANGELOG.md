@@ -46,15 +46,17 @@ is gone; see "Removed".
   transient error, runs the closure again in a new transaction, up to 5 attempts by
   default. FirebaseLab pins notes with one.
 - `Secret`, which hides tokens from `print`, `dump`, `debugPrint` and `Mirror`, and redacted
-  text forms for every value that can carry a credential or personal data: `AuthSession` (no
-  tokens, no e-mail address), `HTTPRequest` and `HTTPResponse` (no bodies, user info, fragments,
+  text forms for every value that can carry a credential or personal data: `AuthSession` and
+  `IDTokenClaims` (no tokens, no e-mail address, no custom claim values), `AppleSignInNonce`
+  (its length only), `HTTPRequest` and `HTTPResponse` (no bodies, user info, fragments,
   query values or ID-like path segments; header values for an allowlist only), `AuthError` and
   `FirestoreError` (code and status, not the server's message), `TokenError` and
   `ValidationError` (only short printable values), and `FirebaseProject` and
   `GoogleServiceInfo` (no API key). `RedactionPolicy` and `redactedDescription(_:)` let an app
   allow more headers and query parameters in its own logs, or record URLs as scheme, host and
   port only.
-- `HTTPTransport` with `URLSessionTransport`, which stops reading a response past 16 MiB.
+- `HTTPTransport` with `URLSessionTransport`, which stops reading a response past 16 MiB and
+  throws `TransportError.network` with the `URLError` code when a connection fails.
 - tvOS 17, watchOS 10 and visionOS 1 support next to iOS 17 and macOS 14.
 - `Emulators/` with the emulator configuration and Security Rules, and end-to-end tests that run
   against them.
@@ -89,7 +91,9 @@ is gone; see "Removed".
   e-mail addresses, bearer tokens, JWTs, long base64 or hex runs, Luhn card numbers and mod-97
   IBANs; and every step is bounded (8 KiB URLs, 32 path segments and query items, 64 headers,
   256-character values), so a hostile value cannot slow down or crash logging. Header names
-  pass the same checks as query names. Error messages no longer quote values from
+  pass the same checks as query names, and compound names such as `resetToken` or
+  `userpassword` hide the path segment after them. A failed connection never carries the
+  request URL, so the API key in `?key=` cannot reach a log through a `URLError`. Error messages no longer quote values from
   `JSONDecoder`, `EncodingError` or the token, and `dump`, `debugPrint` and the debugger show
   errors through the same text forms, not their stored server messages or token values.
 
