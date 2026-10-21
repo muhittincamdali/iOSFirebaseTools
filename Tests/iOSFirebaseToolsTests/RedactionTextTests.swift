@@ -46,7 +46,7 @@ struct RedactionTextTests {
         #expect(firestore.description == "FirestoreError(permissionDenied, HTTP 403)")
     }
 
-    @Test("dump, debugPrint and Mirror show the errors' text forms, not the server's text or the token's values")
+    @Test("dump, debugPrint, Mirror and localizedDescription show the errors' text forms, not the server's text or the token's values")
     func errorsInDumpAndDebugger() {
         let auth = AuthError.from(.googleError(400, message: "WEAK_PASSWORD : hunter2 for ada@example.com"))
         let odd = AuthError.from(.googleError(400, message: "token eyJhbGciOi.e30.x for ada@example.com"))
@@ -57,7 +57,11 @@ struct RedactionTextTests {
             var dumped = ""
             dump(value, to: &dumped)
             let children = Mirror(reflecting: value).children.map { "\($0.label ?? ""): \($0.value)" }.joined(separator: ", ")
-            for text in [dumped, String(reflecting: value), children] {
+            // Errors bridged to NSError, as crash reporters and os_log see them.
+            let bridged = (value as? any Error).map { error in
+                [error.localizedDescription, (error as NSError).debugDescription, "\((error as NSError).userInfo)"]
+            } ?? []
+            for text in [dumped, String(reflecting: value), children] + bridged {
                 for secret in ["hunter2", "ada@example.com", "eyJhbGciOi", "AIzaSy"] {
                     #expect(!text.contains(secret), "\(text)")
                 }
